@@ -48,7 +48,7 @@ public class Titan extends JFrame {
 
 				try {
 					com.apple.eawt.Application macApp = com.apple.eawt.Application.getApplication();
-					macApp.setDockIconImage(new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/c2_icon.png")).getImage());
+					macApp.setDockIconImage(new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/titan_icon.png")).getImage());
 					macApp.addApplicationListener(new MacAboutBoxHandler());
 				} catch (Exception e) {
 				}
@@ -78,7 +78,7 @@ public class Titan extends JFrame {
 		setTitle("Login");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 317, 319);
-		setIconImage(new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/c2_icon.png")).getImage());
+		setIconImage(new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/titan_icon.png")).getImage());
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -87,7 +87,7 @@ public class Titan extends JFrame {
 		lblIp.setHorizontalAlignment(SwingConstants.RIGHT);
 
 		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setIcon(new ImageIcon(Titan.class.getResource("/com/titan/image/c2_logo.png")));
+		lblNewLabel.setIcon(new ImageIcon(Titan.class.getResource("/com/titan/image/titan_logo.png")));
 
 		textFieldIP = new JTextField();
 		textFieldIP.addKeyListener(new KeyAdapter() {

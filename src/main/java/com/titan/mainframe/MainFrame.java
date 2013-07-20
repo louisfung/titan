@@ -56,7 +56,7 @@ public class MainFrame extends JFrame {
 		setTitle("Titan");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1200, 700);
-		setIconImage(new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/c2_icon.png")).getImage());
+		setIconImage(new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/titan_icon.png")).getImage());
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
