@@ -1,0 +1,1 @@
+mvn install:install-file -Dfile=libInUse/gephi-toolkit-0-1.8.7-all/gephi-toolkit.jar -DgroupId=org.gephi -DartifactId=gephi  -Dversion=0.8.7 -Dpackaging=jar
