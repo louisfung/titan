@@ -82,7 +82,7 @@ public class AddScreenPermissionGroupDialog extends JDialog {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				JButton okButton = new JButton("Save");
-				okButton.setIcon(new ImageIcon(AddScreenPermissionGroupDialog.class.getResource("/com/c2/titan/image/famfamfam/disk.png")));
+				okButton.setIcon(new ImageIcon(AddScreenPermissionGroupDialog.class.getResource("/com/titan/image/famfamfam/disk.png")));
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);

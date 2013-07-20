@@ -65,7 +65,7 @@ public class ViewInstanceDialog extends JDialog {
 		contentPanel.setLayout(new MigLayout("", "[grow][grow][][][grow]", "[][][][][][][][][][][][][][][][][][][][][]"));
 		{
 			JLabel label = new JLabel("");
-			label.setIcon(new ImageIcon(ViewInstanceDialog.class.getResource("/com/c2/titan/instancepanel/vmInformation.png")));
+			label.setIcon(new ImageIcon(ViewInstanceDialog.class.getResource("/com/titan/instancepanel/vmInformation.png")));
 			contentPanel.add(label, "cell 0 0 5 1");
 		}
 		{
@@ -259,7 +259,7 @@ public class ViewInstanceDialog extends JDialog {
 		}
 		{
 			JLabel label = new JLabel("");
-			label.setIcon(new ImageIcon(ViewInstanceDialog.class.getResource("/com/c2/titan/instancepanel/flavorInformation.png")));
+			label.setIcon(new ImageIcon(ViewInstanceDialog.class.getResource("/com/titan/instancepanel/flavorInformation.png")));
 			contentPanel.add(label, "cell 0 12 5 1");
 		}
 		{

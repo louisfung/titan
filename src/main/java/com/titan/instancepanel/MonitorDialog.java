@@ -90,7 +90,7 @@ public class MonitorDialog extends JFrame implements WindowListener, Runnable {
 							}
 						}
 					});
-					btnPlay.setIcon(new ImageIcon(MonitorDialog.class.getResource("/com/c2/titan/image/famfamfam/control_play.png")));
+					btnPlay.setIcon(new ImageIcon(MonitorDialog.class.getResource("/com/titan/image/famfamfam/control_play.png")));
 
 					JButton pauseButton = new JButton("Pause");
 					pauseButton.addActionListener(new ActionListener() {
@@ -100,14 +100,14 @@ public class MonitorDialog extends JFrame implements WindowListener, Runnable {
 							}
 						}
 					});
-					pauseButton.setIcon(new ImageIcon(MonitorDialog.class.getResource("/com/c2/titan/image/famfamfam/control_pause.png")));
+					pauseButton.setIcon(new ImageIcon(MonitorDialog.class.getResource("/com/titan/image/famfamfam/control_pause.png")));
 
 					JButton screenCaptureButton = new JButton("Screen capture");
 					screenCaptureButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 						}
 					});
-					screenCaptureButton.setIcon(new ImageIcon(MonitorDialog.class.getResource("/com/c2/titan/image/famfamfam/disk.png")));
+					screenCaptureButton.setIcon(new ImageIcon(MonitorDialog.class.getResource("/com/titan/image/famfamfam/disk.png")));
 					GroupLayout gl_panel = new GroupLayout(panel);
 					gl_panel.setHorizontalGroup(gl_panel.createParallelGroup(Alignment.LEADING).addGroup(
 							gl_panel.createSequentialGroup()

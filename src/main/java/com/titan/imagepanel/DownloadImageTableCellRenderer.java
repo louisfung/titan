@@ -21,7 +21,7 @@ public class DownloadImageTableCellRenderer implements TableCellRenderer {
 		panel.lblDate.setText(new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").format(downloadImage.uploadDate));
 		panel.lblLicense.setText(downloadImage.License + ", " + downloadImage.size);
 		panel.lblAuthor.setText(downloadImage.author + " " + downloadImage.authorEmail);
-		URL url = getClass().getClassLoader().getResource("com/c2/titan/image/os/" + downloadImage.osType + ".png");
+		URL url = getClass().getClassLoader().getResource("com/titan/image/os/" + downloadImage.osType + ".png");
 		if (url != null) {
 			ImageIcon icon = new ImageIcon(url);
 			panel.logoLabel.setIcon(icon);

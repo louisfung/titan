@@ -60,7 +60,7 @@ public class VDISettingDialog extends JDialog {
 						setVisible(false);
 					}
 				});
-				saveButton.setIcon(new ImageIcon(VDISettingDialog.class.getResource("/com/c2/titan/image/famfamfam/disk.png")));
+				saveButton.setIcon(new ImageIcon(VDISettingDialog.class.getResource("/com/titan/image/famfamfam/disk.png")));
 				saveButton.setActionCommand("OK");
 				buttonPane.add(saveButton);
 				getRootPane().setDefaultButton(saveButton);

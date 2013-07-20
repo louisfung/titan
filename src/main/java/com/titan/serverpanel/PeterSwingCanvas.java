@@ -16,13 +16,13 @@ public class PeterSwingCanvas extends mxInteractiveCanvas {
 	AutoFitLabel iconLabel = new AutoFitLabel();
 	JLabel textLabel = new JLabel();
 	mxGraphComponent graphComponent;
-	ImageIcon firewall = new ImageIcon(getClass().getClassLoader().getResource("com/c2/titan/image/servericons/firewall.png"));
-	ImageIcon internet = new ImageIcon(getClass().getClassLoader().getResource("com/c2/titan/image/servericons/internet.png"));
-	ImageIcon nas = new ImageIcon(getClass().getClassLoader().getResource("com/c2/titan/image/servericons/nas.png"));
-	ImageIcon router = new ImageIcon(getClass().getClassLoader().getResource("com/c2/titan/image/servericons/router.png"));
-	ImageIcon server = new ImageIcon(getClass().getClassLoader().getResource("com/c2/titan/image/servericons/server.png"));
-	ImageIcon switchImg = new ImageIcon(getClass().getClassLoader().getResource("com/c2/titan/image/servericons/switch.png"));
-	ImageIcon titan = new ImageIcon(getClass().getClassLoader().getResource("com/c2/titan/image/servericons/titan.png"));
+	ImageIcon firewall = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/servericons/firewall.png"));
+	ImageIcon internet = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/servericons/internet.png"));
+	ImageIcon nas = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/servericons/nas.png"));
+	ImageIcon router = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/servericons/router.png"));
+	ImageIcon server = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/servericons/server.png"));
+	ImageIcon switchImg = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/servericons/switch.png"));
+	ImageIcon titan = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/servericons/titan.png"));
 
 	//	Color borderColor = new Color(0, 0, 255);
 	//	Color backgroundcolor = new Color(0, 0, 255);

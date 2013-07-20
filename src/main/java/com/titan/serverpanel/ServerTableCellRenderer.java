@@ -75,10 +75,10 @@ public class ServerTableCellRenderer extends JPanel implements TableCellRenderer
 		try {
 			if (column == 0) {
 				if ((Boolean) value) {
-					jLabel.setIcon(new ImageIcon(getClass().getClassLoader().getResource("com/c2/titan/image/famfamfam/tick.png")));
+					jLabel.setIcon(new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/famfamfam/tick.png")));
 					jLabel.setText("online");
 				} else {
-					jLabel.setIcon(new ImageIcon(getClass().getClassLoader().getResource("com/c2/titan/image/famfamfam/cross.png")));
+					jLabel.setIcon(new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/famfamfam/cross.png")));
 					jLabel.setText("online");
 				}
 			} else if (column == 3) {

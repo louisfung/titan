@@ -80,7 +80,7 @@ public class VDIUserDialog extends JDialog {
 			}
 			{
 				JButton saveButton = new JButton("Save");
-				saveButton.setIcon(new ImageIcon(VDIUserDialog.class.getResource("/com/c2/titan/image/famfamfam/disk.png")));
+				saveButton.setIcon(new ImageIcon(VDIUserDialog.class.getResource("/com/titan/image/famfamfam/disk.png")));
 				saveButton.setActionCommand("OK");
 				buttonPane.add(saveButton);
 				getRootPane().setDefaultButton(saveButton);

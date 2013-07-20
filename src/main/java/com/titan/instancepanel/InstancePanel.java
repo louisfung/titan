@@ -120,7 +120,7 @@ public class InstancePanel extends JPanel implements Runnable, MainPanel {
 						.addComponent(panel, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)));
 
 		JButton btnLaunch = new JButton("Launch");
-		btnLaunch.setIcon(new ImageIcon(InstancePanel.class.getResource("/com/c2/titan/image/famfamfam/add.png")));
+		btnLaunch.setIcon(new ImageIcon(InstancePanel.class.getResource("/com/titan/image/famfamfam/add.png")));
 		btnLaunch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				new LaunchInstanceDialog(InstancePanel.this.frame).setVisible(true);
@@ -130,7 +130,7 @@ public class InstancePanel extends JPanel implements Runnable, MainPanel {
 		panel.add(btnLaunch);
 
 		JButton btnStop = new JButton("Stop");
-		btnStop.setIcon(new ImageIcon(InstancePanel.class.getResource("/com/c2/titan/image/famfamfam/control_stop_blue.png")));
+		btnStop.setIcon(new ImageIcon(InstancePanel.class.getResource("/com/titan/image/famfamfam/control_stop_blue.png")));
 		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (instanceTable.getSelectedRowCount() > 0) {
@@ -156,7 +156,7 @@ public class InstancePanel extends JPanel implements Runnable, MainPanel {
 		panel.add(btnStop);
 
 		JButton btnRemote = new JButton("Remote");
-		btnRemote.setIcon(new ImageIcon(InstancePanel.class.getResource("/com/c2/titan/image/famfamfam/application_osx_terminal.png")));
+		btnRemote.setIcon(new ImageIcon(InstancePanel.class.getResource("/com/titan/image/famfamfam/application_osx_terminal.png")));
 		btnRemote.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (instanceTable.getSelectedRowCount() == 1) {
@@ -168,7 +168,7 @@ public class InstancePanel extends JPanel implements Runnable, MainPanel {
 		});
 
 		JButton btnDelete = new JButton("Delete");
-		btnDelete.setIcon(new ImageIcon(InstancePanel.class.getResource("/com/c2/titan/image/famfamfam/cross.png")));
+		btnDelete.setIcon(new ImageIcon(InstancePanel.class.getResource("/com/titan/image/famfamfam/cross.png")));
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (instanceTable.getSelectedRowCount() > 0) {
@@ -224,7 +224,7 @@ public class InstancePanel extends JPanel implements Runnable, MainPanel {
 		panel.add(btnRemote);
 
 		JButton btnPause = new JButton("Pause");
-		btnPause.setIcon(new ImageIcon(InstancePanel.class.getResource("/com/c2/titan/image/famfamfam/control_pause_blue.png")));
+		btnPause.setIcon(new ImageIcon(InstancePanel.class.getResource("/com/titan/image/famfamfam/control_pause_blue.png")));
 		btnPause.setToolTipText("Stores the content of the VM in memory");
 		btnPause.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -273,7 +273,7 @@ public class InstancePanel extends JPanel implements Runnable, MainPanel {
 				}
 			}
 		});
-		btnUnpause.setIcon(new ImageIcon(InstancePanel.class.getResource("/com/c2/titan/image/famfamfam/control_play_blue.png")));
+		btnUnpause.setIcon(new ImageIcon(InstancePanel.class.getResource("/com/titan/image/famfamfam/control_play_blue.png")));
 		btnUnpause.setToolTipText("Unpause the content of the VM in memory");
 		panel.add(btnUnpause);
 
@@ -301,7 +301,7 @@ public class InstancePanel extends JPanel implements Runnable, MainPanel {
 			}
 		});
 		btnSuspend.setToolTipText("Suspend VM to disk");
-		btnSuspend.setIcon(new ImageIcon(InstancePanel.class.getResource("/com/c2/titan/image/famfamfam/disk.png")));
+		btnSuspend.setIcon(new ImageIcon(InstancePanel.class.getResource("/com/titan/image/famfamfam/disk.png")));
 		panel.add(btnSuspend);
 
 		JButton btnResume = new JButton("Resume");
@@ -328,11 +328,11 @@ public class InstancePanel extends JPanel implements Runnable, MainPanel {
 			}
 		});
 		btnResume.setToolTipText("Resume VM from disk");
-		btnResume.setIcon(new ImageIcon(InstancePanel.class.getResource("/com/c2/titan/image/famfamfam/disk.png")));
+		btnResume.setIcon(new ImageIcon(InstancePanel.class.getResource("/com/titan/image/famfamfam/disk.png")));
 		panel.add(btnResume);
 
 		JButton btnLog = new JButton("Log");
-		btnLog.setIcon(new ImageIcon(InstancePanel.class.getResource("/com/c2/titan/image/famfamfam/script.png")));
+		btnLog.setIcon(new ImageIcon(InstancePanel.class.getResource("/com/titan/image/famfamfam/script.png")));
 		btnLog.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (instanceTable.getSelectedRowCount() == 1) {

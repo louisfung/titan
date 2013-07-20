@@ -10,8 +10,8 @@ import javax.swing.JTextField;
 import javax.swing.table.TableCellRenderer;
 
 public class BooleanTableCellRenderer extends JLabel implements TableCellRenderer {
-	ImageIcon tick = new ImageIcon(getClass().getClassLoader().getResource("com/c2/titan/image/famfamfam/tick.png"));
-	ImageIcon cross = new ImageIcon(getClass().getClassLoader().getResource("com/c2/titan/image/famfamfam/cross.png"));
+	ImageIcon tick = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/famfamfam/tick.png"));
+	ImageIcon cross = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/famfamfam/cross.png"));
 
 	public BooleanTableCellRenderer() {
 		this.setHorizontalAlignment(JTextField.CENTER);

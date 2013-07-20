@@ -166,7 +166,7 @@ public class SDNPanel extends JPanel implements MainPanel {
 				target.resetZoom();
 			}
 		});
-		btnResetZoom.setIcon(new ImageIcon(SDNPanel.class.getResource("/com/c2/titan/image/famfamfam/arrow_inout.png")));
+		btnResetZoom.setIcon(new ImageIcon(SDNPanel.class.getResource("/com/titan/image/famfamfam/arrow_inout.png")));
 		toolBar.add(btnResetZoom);
 
 		target.refresh();
