@@ -1,4 +1,4 @@
-package com.c2.pandora.jmf;
+package com.titan.jmf;
 
 import java.awt.BorderLayout;
 import java.awt.Component;

@@ -1,4 +1,4 @@
-package com.c2.pandora.sdn;
+package com.titan.sdn;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -32,8 +32,8 @@ import org.openide.util.Lookup;
 
 import processing.core.PApplet;
 
-import com.c2.pandora.MainPanel;
-import com.c2.pandora.mainframe.MainFrame;
+import com.titan.MainPanel;
+import com.titan.mainframe.MainFrame;
 
 public class SDNPanel extends JPanel implements MainPanel {
 	MainFrame mainframe;
@@ -166,7 +166,7 @@ public class SDNPanel extends JPanel implements MainPanel {
 				target.resetZoom();
 			}
 		});
-		btnResetZoom.setIcon(new ImageIcon(SDNPanel.class.getResource("/com/c2/pandora/image/famfamfam/arrow_inout.png")));
+		btnResetZoom.setIcon(new ImageIcon(SDNPanel.class.getResource("/com/c2/titan/image/famfamfam/arrow_inout.png")));
 		toolBar.add(btnResetZoom);
 
 		target.refresh();

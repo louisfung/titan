@@ -1,4 +1,4 @@
-package com.c2.pandora;
+package com.titan;
 
 import java.awt.Color;
 import java.awt.Component;
@@ -10,8 +10,8 @@ import javax.swing.JTextField;
 import javax.swing.table.TableCellRenderer;
 
 public class BooleanTableCellRenderer extends JLabel implements TableCellRenderer {
-	ImageIcon tick = new ImageIcon(getClass().getClassLoader().getResource("com/c2/pandora/image/famfamfam/tick.png"));
-	ImageIcon cross = new ImageIcon(getClass().getClassLoader().getResource("com/c2/pandora/image/famfamfam/cross.png"));
+	ImageIcon tick = new ImageIcon(getClass().getClassLoader().getResource("com/c2/titan/image/famfamfam/tick.png"));
+	ImageIcon cross = new ImageIcon(getClass().getClassLoader().getResource("com/c2/titan/image/famfamfam/cross.png"));
 
 	public BooleanTableCellRenderer() {
 		this.setHorizontalAlignment(JTextField.CENTER);

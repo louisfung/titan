@@ -1,4 +1,4 @@
-package com.c2.pandora.settingpanel;
+package com.titan.settingpanel;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -20,20 +20,20 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 
-import com.c2.pandora.MainPanel;
-import com.c2.pandora.communication.CommunicateLib;
-import com.c2.pandora.settingpanel.screenpermission.AddScreenPermissionGroupDialog;
-import com.c2.pandoraserver.Command;
-import com.c2.pandoraserver.ReturnCommand;
-import com.c2.pandoraserver.table.InstancePermission;
-import com.c2.pandoraserver.table.InstancePermissionGroup;
-import com.c2.pandoraserver.table.ScreenPermission;
-import com.c2.pandoraserver.table.ScreenPermissionGroup;
-import com.c2.pandoraserver.table.User;
 import com.peterswing.GenericTableModel;
 import com.peterswing.advancedswing.jprogressbardialog.JProgressBarDialog;
 import com.peterswing.advancedswing.jtable.SortableTableModel;
 import com.peterswing.advancedswing.jtable.TableSorterColumnListener;
+import com.titan.MainPanel;
+import com.titan.communication.CommunicateLib;
+import com.titan.settingpanel.screenpermission.AddScreenPermissionGroupDialog;
+import com.titanserver.Command;
+import com.titanserver.ReturnCommand;
+import com.titanserver.table.InstancePermission;
+import com.titanserver.table.InstancePermissionGroup;
+import com.titanserver.table.ScreenPermission;
+import com.titanserver.table.ScreenPermissionGroup;
+import com.titanserver.table.User;
 
 public class SettingPanel extends JPanel implements MainPanel, Runnable {
 	JFrame frame;

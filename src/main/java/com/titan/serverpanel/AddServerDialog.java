@@ -1,4 +1,4 @@
-package com.c2.pandora.serverpanel;
+package com.titan.serverpanel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -15,8 +15,8 @@ import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
 
-import com.c2.pandora.PandoraSetting;
-import com.c2.pandoraserver.structure.PandoraServerDefinition;
+import com.titan.TitanSetting;
+import com.titanserver.structure.TitanServerDefinition;
 
 public class AddServerDialog extends JDialog {
 	private final JPanel contentPanel = new JPanel();
@@ -75,11 +75,11 @@ public class AddServerDialog extends JDialog {
 							lblError.setText("IP cannot be empty");
 							return;
 						}
-						PandoraServerDefinition pandoraServerDefinition = new PandoraServerDefinition();
-						pandoraServerDefinition.id = textFieldID.getText();
-						pandoraServerDefinition.ip = textFieldIP.getText();
-						PandoraSetting.getInstance().addPandoraServers(pandoraServerDefinition);
-						PandoraSetting.getInstance().save();
+						TitanServerDefinition titanServerDefinition = new TitanServerDefinition();
+						titanServerDefinition.id = textFieldID.getText();
+						titanServerDefinition.ip = textFieldIP.getText();
+						TitanSetting.getInstance().addTitanServers(titanServerDefinition);
+						TitanSetting.getInstance().save();
 						setVisible(false);
 					}
 				});

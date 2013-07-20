@@ -1,4 +1,4 @@
-package com.c2.pandora.imagepanel;
+package com.titan.imagepanel;
 
 import java.awt.Component;
 import java.util.EventObject;

@@ -1,4 +1,4 @@
-package com.c2.pandora.mainframe;
+package com.titan.mainframe;
 
 import java.util.Enumeration;
 import java.util.Vector;
@@ -7,11 +7,11 @@ import javax.swing.Icon;
 import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeNode;
 
-import com.c2.pandoraserver.structure.PandoraServerDefinition;
 import com.peterswing.CommonLib;
+import com.titanserver.structure.TitanServerDefinition;
 
 public class ServerTreeNode implements ServerMutableTreeNode {
-	public PandoraServerDefinition server;
+	public TitanServerDefinition server;
 	Vector<ServerMutableTreeNode> children = new Vector<ServerMutableTreeNode>();
 	public MutableTreeNode parent;
 	boolean visible = true;
@@ -25,7 +25,7 @@ public class ServerTreeNode implements ServerMutableTreeNode {
 		this.icon = icon;
 	}
 
-	public ServerTreeNode(PandoraServerDefinition server) {
+	public ServerTreeNode(TitanServerDefinition server) {
 		this.server = server;
 	}
 

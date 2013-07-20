@@ -1,4 +1,4 @@
-package com.c2.pandora.communication;
+package com.titan.communication;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -8,7 +8,7 @@ import java.io.OutputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
 
-import com.c2.pandoraserver.InOut;
+import com.titanserver.InOut;
 
 public class ProxySocketServer implements Runnable {
 	InOut inout;

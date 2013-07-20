@@ -1,4 +1,4 @@
-package com.c2.pandora.vdipanel;
+package com.titan.vdipanel;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;

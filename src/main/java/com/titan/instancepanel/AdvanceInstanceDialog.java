@@ -1,4 +1,4 @@
-package com.c2.pandora.instancepanel;
+package com.titan.instancepanel;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;
@@ -14,12 +14,12 @@ import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
 
-import com.c2.pandora.PandoraCommonLib;
-import com.c2.pandora.communication.CommunicateLib;
-import com.c2.pandoraserver.Command;
-import com.c2.pandoraserver.ReturnCommand;
 import com.peterswing.CommonLib;
 import com.peterswing.advancedswing.enhancedtextarea.EnhancedTextArea;
+import com.titan.TitanCommonLib;
+import com.titan.communication.CommunicateLib;
+import com.titanserver.Command;
+import com.titanserver.ReturnCommand;
 
 public class AdvanceInstanceDialog extends JDialog {
 	private final JPanel contentPanel = new JPanel();
@@ -52,7 +52,7 @@ public class AdvanceInstanceDialog extends JDialog {
 					parameters.put("instanceName", AdvanceInstanceDialog.this.instanceName);
 					parameters.put("commandStr", textField.getText());
 					command.parameters.add(parameters);
-					ReturnCommand r = CommunicateLib.send(PandoraCommonLib.getCurrentServerIP(), command);
+					ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 					enhancedTextArea.setText(enhancedTextArea.getText() + "\n" + r.map.get("result"));
 				}
 			});

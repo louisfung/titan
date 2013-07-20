@@ -41,11 +41,6 @@
 			<version>1.6.4</version>
 		</dependency>
 		<dependency>
-			<groupId>com.titan</groupId>
-			<artifactId>titan-server</artifactId>
-			<version>20130717</version>
-		</dependency>
-		<dependency>
 			<groupId>com.peter</groupId>
 			<artifactId>peter-swing</artifactId>
 			<version>20130717</version>
@@ -100,9 +95,14 @@
 			<artifactId>jgraphx</artifactId>
 			<version>2.0.0.1</version>
 		</dependency>
+		<dependency>
+			<groupId>com.titanserver</groupId>
+			<artifactId>titan-server</artifactId>
+			<version>20130717</version>
+		</dependency>
 	</dependencies>
 	<build>
-		<finalName>pandora${project.version}</finalName>
+		<finalName>titan${project.version}</finalName>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>

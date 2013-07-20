@@ -1,4 +1,4 @@
-package com.c2.pandora.vdipanel;
+package com.titan.vdipanel;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -60,7 +60,7 @@ public class VDISettingDialog extends JDialog {
 						setVisible(false);
 					}
 				});
-				saveButton.setIcon(new ImageIcon(VDISettingDialog.class.getResource("/com/c2/pandora/image/famfamfam/disk.png")));
+				saveButton.setIcon(new ImageIcon(VDISettingDialog.class.getResource("/com/c2/titan/image/famfamfam/disk.png")));
 				saveButton.setActionCommand("OK");
 				buttonPane.add(saveButton);
 				getRootPane().setDefaultButton(saveButton);

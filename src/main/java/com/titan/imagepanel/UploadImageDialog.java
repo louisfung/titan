@@ -1,4 +1,4 @@
-package com.c2.pandora.imagepanel;
+package com.titan.imagepanel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -23,10 +23,10 @@ import javax.swing.border.EmptyBorder;
 
 import net.miginfocom.swing.MigLayout;
 
-import com.c2.pandora.PandoraCommonLib;
-import com.c2.pandora.communication.CommunicateLib;
-import com.c2.pandoraserver.Command;
-import com.c2.pandoraserver.ReturnCommand;
+import com.titan.TitanCommonLib;
+import com.titan.communication.CommunicateLib;
+import com.titanserver.Command;
+import com.titanserver.ReturnCommand;
 
 public class UploadImageDialog extends JDialog {
 	private final JPanel contentPanel = new JPanel();
@@ -147,12 +147,12 @@ public class UploadImageDialog extends JDialog {
 									Command command = new Command();
 									command.command = "send file";
 									File file = new File(fileTextField.getText());
-									ReturnCommand r = CommunicateLib.send(PandoraCommonLib.getCurrentServerIP(), command, file, UploadImageDialog.this);
+									ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command, file, UploadImageDialog.this);
 									result = (String) r.map.get("result");
 
 									if (result.equals("ok")) {
 										command = new Command();
-										command.command = "from pandora: glance image-create";
+										command.command = "from titan: glance image-create";
 										HashMap<String, Object> parameters = new HashMap<String, Object>();
 										parameters.put("$x-image-meta-name", nameTextField.getText());
 										String format = formatComboBox.getSelectedItem().toString().split("-")[0].trim().toLowerCase();
@@ -162,7 +162,7 @@ public class UploadImageDialog extends JDialog {
 										parameters.put("$x-image-meta-is-public", chckbxPublic.isSelected());
 										parameters.put("$POSTDATA", file.getName());
 										command.parameters.add(parameters);
-										r = CommunicateLib.send(PandoraCommonLib.getCurrentServerIP(), command);
+										r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 									} else {
 										throw new Exception();
 									}

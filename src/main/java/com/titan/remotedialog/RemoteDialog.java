@@ -1,4 +1,4 @@
-package com.c2.pandora.remotedialog;
+package com.titan.remotedialog;
 
 import java.awt.BorderLayout;
 import java.awt.event.WindowEvent;
@@ -15,11 +15,11 @@ import javax.swing.JDialog;
 import javax.swing.JPanel;
 import javax.swing.border.EmptyBorder;
 
-import com.c2.pandora.Global;
-import com.c2.pandora.PandoraCommonLib;
-import com.c2.pandora.communication.CommunicateLib;
-import com.c2.pandoraserver.InOut;
 import com.peter.tightvncpanel.TightVNC;
+import com.titan.Global;
+import com.titan.TitanCommonLib;
+import com.titan.communication.CommunicateLib;
+import com.titanserver.InOut;
 
 public class RemoteDialog extends JDialog implements WindowListener {
 	private final JPanel contentPanel = new JPanel();
@@ -46,7 +46,7 @@ public class RemoteDialog extends JDialog implements WindowListener {
 		}
 
 		Global.primaryServerIP = "210.5.164.14:4444";
-		final InOut inout = CommunicateLib.requestProxy(PandoraCommonLib.getCurrentServerIP(), 5905);
+		final InOut inout = CommunicateLib.requestProxy(TitanCommonLib.getCurrentServerIP(), 5905);
 
 		final SocketServer socketServer = new SocketServer(inout);
 

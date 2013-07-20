@@ -1,4 +1,4 @@
-package com.c2.pandora.thread;
+package com.titan.thread;
 
 import java.util.Date;
 

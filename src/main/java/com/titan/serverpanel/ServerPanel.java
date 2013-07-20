@@ -1,4 +1,4 @@
-package com.c2.pandora.serverpanel;
+package com.titan.serverpanel;
 
 import info.monitorenter.gui.chart.Chart2D;
 import info.monitorenter.gui.chart.ITrace2D;
@@ -36,15 +36,15 @@ import org.hyperic.sigar.CpuPerc;
 import org.hyperic.sigar.FileSystem;
 import org.hyperic.sigar.Mem;
 
-import com.c2.pandora.PandoraCommonLib;
-import com.c2.pandora.PandoraSetting;
-import com.c2.pandora.communication.CommunicateLib;
-import com.c2.pandora.thread.PandoraServerUpdateThread;
-import com.c2.pandora.thread.Status;
-import com.c2.pandoraserver.Command;
-import com.c2.pandoraserver.ReturnCommand;
-import com.c2.pandoraserver.structure.PandoraServerDefinition;
 import com.peterswing.advancedswing.searchtextfield.JSearchTextField;
+import com.titan.TitanCommonLib;
+import com.titan.TitanSetting;
+import com.titan.communication.CommunicateLib;
+import com.titan.thread.Status;
+import com.titan.thread.TitanServerUpdateThread;
+import com.titanserver.Command;
+import com.titanserver.ReturnCommand;
+import com.titanserver.structure.TitanServerDefinition;
 
 import eu.hansolo.steelseries.gauges.Radial;
 
@@ -113,9 +113,9 @@ public class ServerPanel extends JPanel {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				Command command = new Command();
-				command.command = "getPandoraServerInfo";
+				command.command = "getTitanServerInfo";
 				command.parameters.add(table.getValueAt(table.getSelectedRow(), 1));
-				ReturnCommand r = CommunicateLib.send(PandoraCommonLib.getCurrentServerIP(), command);
+				ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 				if (r != null) {
 					DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
 					rightRenderer.setHorizontalAlignment(JTextField.RIGHT);
@@ -422,13 +422,13 @@ public class ServerPanel extends JPanel {
 					int rowNo = table.getSelectedRow();
 					String id = (String) model.getValueAt(rowNo, 1);
 					String ip = (String) model.getValueAt(rowNo, 2);
-					for (int x = PandoraSetting.getInstance().pandoraServers.size() - 1; x >= 0; x--) {
-						PandoraServerDefinition server = PandoraSetting.getInstance().pandoraServers.get(x);
+					for (int x = TitanSetting.getInstance().titanServers.size() - 1; x >= 0; x--) {
+						TitanServerDefinition server = TitanSetting.getInstance().titanServers.get(x);
 						if (server.id.equals(id) && server.ip.equals(ip)) {
-							PandoraSetting.getInstance().pandoraServers.remove(x);
+							TitanSetting.getInstance().titanServers.remove(x);
 						}
 					}
-					PandoraSetting.getInstance().save();
+					TitanSetting.getInstance().save();
 					model.fireTableDataChanged();
 				}
 			}
@@ -451,8 +451,8 @@ public class ServerPanel extends JPanel {
 				try {
 					String serverID = (String) table.getValueAt(table.getSelectedRow(), 1);
 					if (serverID != null) {
-						if (PandoraServerUpdateThread.status.size() != 0 && PandoraServerUpdateThread.status.get(serverID) != null) {
-							Object objs[] = PandoraServerUpdateThread.status.get(serverID).toArray();
+						if (TitanServerUpdateThread.status.size() != 0 && TitanServerUpdateThread.status.get(serverID) != null) {
+							Object objs[] = TitanServerUpdateThread.status.get(serverID).toArray();
 							int start = objs.length - 1;
 							for (int x = start; x >= lastx; x--) {
 								Status status = (Status) objs[x];

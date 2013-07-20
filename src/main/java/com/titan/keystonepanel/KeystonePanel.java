@@ -1,4 +1,4 @@
-package com.c2.pandora.keystonepanel;
+package com.titan.keystonepanel;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -24,16 +24,16 @@ import javax.swing.table.DefaultTableCellRenderer;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import com.c2.pandora.MainPanel;
-import com.c2.pandora.PandoraCommonLib;
-import com.c2.pandora.communication.CommunicateLib;
-import com.c2.pandoraserver.Command;
-import com.c2.pandoraserver.ReturnCommand;
 import com.peterswing.CommonLib;
 import com.peterswing.GenericTableModel;
 import com.peterswing.advancedswing.jprogressbardialog.JProgressBarDialog;
 import com.peterswing.advancedswing.jtable.SortableTableModel;
 import com.peterswing.advancedswing.jtable.TableSorterColumnListener;
+import com.titan.MainPanel;
+import com.titan.TitanCommonLib;
+import com.titan.communication.CommunicateLib;
+import com.titanserver.Command;
+import com.titanserver.ReturnCommand;
 
 public class KeystonePanel extends JPanel implements MainPanel {
 	JProgressBarDialog d;
@@ -199,11 +199,11 @@ public class KeystonePanel extends JPanel implements MainPanel {
 						JOptionPane.showMessageDialog(frame, "Role name cannot be empty !", "Error", JOptionPane.ERROR_MESSAGE);
 					} else {
 						Command command = new Command();
-						command.command = "from pandora: keystone role-create";
+						command.command = "from titan: keystone role-create";
 						HashMap<String, String> parameters = new HashMap<String, String>();
 						parameters.put("$roleName", roleName);
 						command.parameters.add(parameters);
-						ReturnCommand r = CommunicateLib.send(PandoraCommonLib.getCurrentServerIP(), command);
+						ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 						String msg = (String) r.map.get("result");
 
 						if (msg == null) {
@@ -235,11 +235,11 @@ public class KeystonePanel extends JPanel implements MainPanel {
 
 					if (x == JOptionPane.YES_OPTION) {
 						Command command = new Command();
-						command.command = "from pandora: keystone role-delete";
+						command.command = "from titan: keystone role-delete";
 						HashMap<String, String> parameters = new HashMap<String, String>();
 						parameters.put("$roleId", roleId);
 						command.parameters.add(parameters);
-						ReturnCommand r = CommunicateLib.send(PandoraCommonLib.getCurrentServerIP(), command);
+						ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 						String msg = (String) r.map.get("result");
 						initRoleTable();
 					}
@@ -289,11 +289,11 @@ public class KeystonePanel extends JPanel implements MainPanel {
 
 					if (x == JOptionPane.YES_OPTION) {
 						Command command = new Command();
-						command.command = "from pandora: keystone tenant-delete";
+						command.command = "from titan: keystone tenant-delete";
 						HashMap<String, String> parameters = new HashMap<String, String>();
 						parameters.put("$tenantId", tenantId);
 						command.parameters.add(parameters);
-						ReturnCommand r = CommunicateLib.send(PandoraCommonLib.getCurrentServerIP(), command);
+						ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 						String msg = (String) r.map.get("result");
 
 						initTenantTable();
@@ -348,8 +348,8 @@ public class KeystonePanel extends JPanel implements MainPanel {
 				try {
 					d.jProgressBar.setString("keystone user-list");
 					Command command = new Command();
-					command.command = "from pandora: keystone user-list";
-					ReturnCommand r = CommunicateLib.send(PandoraCommonLib.getCurrentServerIP(), command);
+					command.command = "from titan: keystone user-list";
+					ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 					String msg = (String) r.map.get("result");
 					if (msg == null) {
 						JOptionPane.showMessageDialog(frame, "Error, return value is null", "Error", JOptionPane.ERROR_MESSAGE);
@@ -443,8 +443,8 @@ public class KeystonePanel extends JPanel implements MainPanel {
 				try {
 					d.jProgressBar.setString("keystone role-list");
 					Command command = new Command();
-					command.command = "from pandora: keystone role-list";
-					ReturnCommand r = CommunicateLib.send(PandoraCommonLib.getCurrentServerIP(), command);
+					command.command = "from titan: keystone role-list";
+					ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 					String msg = (String) r.map.get("result");
 					if (msg.contains("error")) {
 						String errorMessage = JSONObject.fromObject(msg).getJSONObject("error").getString("message");
@@ -509,8 +509,8 @@ public class KeystonePanel extends JPanel implements MainPanel {
 				try {
 					d.jProgressBar.setString("keystone tenant-list");
 					Command command = new Command();
-					command.command = "from pandora: keystone tenant-list";
-					ReturnCommand r = CommunicateLib.send(PandoraCommonLib.getCurrentServerIP(), command);
+					command.command = "from titan: keystone tenant-list";
+					ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 					String msg = (String) r.map.get("result");
 					if (msg.contains("error")) {
 						String errorMessage = JSONObject.fromObject(msg).getJSONObject("error").getString("message");
@@ -587,8 +587,8 @@ public class KeystonePanel extends JPanel implements MainPanel {
 				try {
 					d.jProgressBar.setString("keystone endpoint-list");
 					Command command = new Command();
-					command.command = "from pandora: keystone endpoint-list";
-					ReturnCommand r = CommunicateLib.send(PandoraCommonLib.getCurrentServerIP(), command);
+					command.command = "from titan: keystone endpoint-list";
+					ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 					String msg = (String) r.map.get("result");
 					if (msg.contains("error")) {
 						String errorMessage = JSONObject.fromObject(msg).getJSONObject("error").getString("message");

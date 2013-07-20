@@ -1,4 +1,4 @@
-package com.c2.pandora.openstackserver;
+package com.titan.openstackserver;
 
 import java.awt.BorderLayout;
 import java.util.Vector;
@@ -14,11 +14,11 @@ import javax.swing.border.EmptyBorder;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import com.c2.pandora.communication.CommunicateLib;
-import com.c2.pandoraserver.Command;
-import com.c2.pandoraserver.ReturnCommand;
 import com.peterswing.GenericTableModel;
 import com.peterswing.advancedswing.jprogressbardialog.JProgressBarDialog;
+import com.titan.communication.CommunicateLib;
+import com.titanserver.Command;
+import com.titanserver.ReturnCommand;
 
 public class OpenstackServerFrame extends JDialog implements Runnable {
 
@@ -188,7 +188,7 @@ public class OpenstackServerFrame extends JDialog implements Runnable {
 	public void run() {
 		d.jProgressBar.setString("nova endpoints");
 		Command command = new Command();
-		command.command = "from pandora: nova endpoints";
+		command.command = "from titan: nova endpoints";
 		ReturnCommand r = CommunicateLib.send(command);
 		System.out.println("-------------------------------------------------------------");
 		JSONObject endpoints = JSONObject.fromObject(r.map.get("result"));
@@ -267,7 +267,7 @@ public class OpenstackServerFrame extends JDialog implements Runnable {
 
 		d.jProgressBar.setString("nova flavor-list");
 		command = new Command();
-		command.command = "from pandora: nova flavor-list";
+		command.command = "from titan: nova flavor-list";
 		r = CommunicateLib.send(command);
 		System.out.println("-------------------------------------------------------------");
 		JSONObject flavorList = JSONObject.fromObject(r.map.get("result"));
@@ -313,7 +313,7 @@ public class OpenstackServerFrame extends JDialog implements Runnable {
 
 		d.jProgressBar.setString("nova agent-list");
 		command = new Command();
-		command.command = "from pandora: nova agent-list";
+		command.command = "from titan: nova agent-list";
 		r = CommunicateLib.send(command);
 		System.out.println(r.map.get("result"));
 		System.out.println("-------------------------------------------------------------");
@@ -321,7 +321,7 @@ public class OpenstackServerFrame extends JDialog implements Runnable {
 
 		d.jProgressBar.setString("nova aggregate-list");
 		command = new Command();
-		command.command = "from pandora: nova aggregate-list";
+		command.command = "from titan: nova aggregate-list";
 		r = CommunicateLib.send(command);
 		System.out.println(r.map.get("result"));
 		System.out.println("-------------------------------------------------------------");
@@ -329,7 +329,7 @@ public class OpenstackServerFrame extends JDialog implements Runnable {
 
 		d.jProgressBar.setString("nova cloudpipe-list");
 		command = new Command();
-		command.command = "from pandora: nova cloudpipe-list";
+		command.command = "from titan: nova cloudpipe-list";
 		r = CommunicateLib.send(command);
 		System.out.println(r.map.get("result"));
 		System.out.println("-------------------------------------------------------------");
@@ -337,7 +337,7 @@ public class OpenstackServerFrame extends JDialog implements Runnable {
 
 		d.jProgressBar.setString("nova host-list");
 		command = new Command();
-		command.command = "from pandora: nova host-list";
+		command.command = "from titan: nova host-list";
 		r = CommunicateLib.send(command);
 		System.out.println(r.map.get("result"));
 		System.out.println("-------------------------------------------------------------");
@@ -345,7 +345,7 @@ public class OpenstackServerFrame extends JDialog implements Runnable {
 
 		d.jProgressBar.setString("nova hypervisor-list");
 		command = new Command();
-		command.command = "from pandora: nova hypervisor-list";
+		command.command = "from titan: nova hypervisor-list";
 		r = CommunicateLib.send(command);
 		System.out.println(r.map.get("result"));
 		System.out.println("-------------------------------------------------------------");
@@ -365,7 +365,7 @@ public class OpenstackServerFrame extends JDialog implements Runnable {
 
 		d.jProgressBar.setString("nova image-list");
 		command = new Command();
-		command.command = "from pandora: nova image-list";
+		command.command = "from titan: nova image-list";
 		r = CommunicateLib.send(command);
 		System.out.println(r.map.get("result"));
 		System.out.println("-------------------------------------------------------------");

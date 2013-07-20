@@ -1,4 +1,4 @@
-package com.c2.pandora.serverpanel;
+package com.titan.serverpanel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -22,8 +22,8 @@ import org.jfree.chart.renderer.xy.XYSplineRenderer;
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
-import com.c2.pandora.thread.PandoraServerUpdateThread;
-import com.c2.pandora.thread.Status;
+import com.titan.thread.Status;
+import com.titan.thread.TitanServerUpdateThread;
 
 public class ServerTableCellRenderer extends JPanel implements TableCellRenderer {
 	JLabel jLabel = new JLabel();
@@ -75,17 +75,17 @@ public class ServerTableCellRenderer extends JPanel implements TableCellRenderer
 		try {
 			if (column == 0) {
 				if ((Boolean) value) {
-					jLabel.setIcon(new ImageIcon(getClass().getClassLoader().getResource("com/c2/pandora/image/famfamfam/tick.png")));
+					jLabel.setIcon(new ImageIcon(getClass().getClassLoader().getResource("com/c2/titan/image/famfamfam/tick.png")));
 					jLabel.setText("online");
 				} else {
-					jLabel.setIcon(new ImageIcon(getClass().getClassLoader().getResource("com/c2/pandora/image/famfamfam/cross.png")));
+					jLabel.setIcon(new ImageIcon(getClass().getClassLoader().getResource("com/c2/titan/image/famfamfam/cross.png")));
 					jLabel.setText("online");
 				}
 			} else if (column == 3) {
 				String serverID = (String) table.getValueAt(row, 1);
-				if (PandoraServerUpdateThread.status.size() != 0 && PandoraServerUpdateThread.status.get(serverID) != null) {
+				if (TitanServerUpdateThread.status.size() != 0 && TitanServerUpdateThread.status.get(serverID) != null) {
 					final XYSeries series1 = new XYSeries("data");
-					Object objs[] = PandoraServerUpdateThread.status.get(serverID).toArray();
+					Object objs[] = TitanServerUpdateThread.status.get(serverID).toArray();
 
 					for (int x = objs.length - 1; x >= 0; x--) {
 						Status status = (Status) objs[x];

@@ -1,4 +1,4 @@
-package com.c2.pandora.settingpanel.screenpermission;
+package com.titan.settingpanel.screenpermission;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -20,15 +20,15 @@ import javax.swing.table.DefaultTableCellRenderer;
 
 import net.miginfocom.swing.MigLayout;
 
-import com.c2.pandora.communication.CommunicateLib;
-import com.c2.pandora.settingpanel.SettingPanel;
-import com.c2.pandoraserver.Command;
-import com.c2.pandoraserver.ReturnCommand;
-import com.c2.pandoraserver.table.ScreenPermission;
 import com.peterswing.CommonLib;
 import com.peterswing.GenericTableModel;
 import com.peterswing.advancedswing.jtable.SortableTableModel;
 import com.peterswing.advancedswing.jtable.TableSorterColumnListener;
+import com.titan.communication.CommunicateLib;
+import com.titan.settingpanel.SettingPanel;
+import com.titanserver.Command;
+import com.titanserver.ReturnCommand;
+import com.titanserver.table.ScreenPermission;
 
 public class AddScreenPermissionGroupDialog extends JDialog {
 	private final JPanel contentPanel = new JPanel();
@@ -82,7 +82,7 @@ public class AddScreenPermissionGroupDialog extends JDialog {
 			getContentPane().add(buttonPane, BorderLayout.SOUTH);
 			{
 				JButton okButton = new JButton("Save");
-				okButton.setIcon(new ImageIcon(AddScreenPermissionGroupDialog.class.getResource("/com/c2/pandora/image/famfamfam/disk.png")));
+				okButton.setIcon(new ImageIcon(AddScreenPermissionGroupDialog.class.getResource("/com/c2/titan/image/famfamfam/disk.png")));
 				okButton.setActionCommand("OK");
 				buttonPane.add(okButton);
 				getRootPane().setDefaultButton(okButton);

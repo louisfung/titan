@@ -1,4 +1,4 @@
-package com.c2.pandora.vdipanel;
+package com.titan.vdipanel;
 
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -25,17 +25,17 @@ import javax.swing.table.DefaultTableCellRenderer;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import com.c2.pandora.MainPanel;
-import com.c2.pandora.PandoraCommonLib;
-import com.c2.pandora.communication.CommunicateLib;
-import com.c2.pandoraserver.Command;
-import com.c2.pandoraserver.ReturnCommand;
 import com.peterswing.CommonLib;
 import com.peterswing.GenericTableModel;
 import com.peterswing.advancedswing.jprogressbardialog.JProgressBarDialog;
 import com.peterswing.advancedswing.jtable.SortableTableModel;
 import com.peterswing.advancedswing.jtable.TableSorterColumnListener;
 import com.peterswing.advancedswing.searchtextfield.JSearchTextField;
+import com.titan.MainPanel;
+import com.titan.TitanCommonLib;
+import com.titan.communication.CommunicateLib;
+import com.titanserver.Command;
+import com.titanserver.ReturnCommand;
 
 public class VDIPanel extends JPanel implements Runnable, MainPanel {
 	JTable vdiTable;
@@ -134,8 +134,8 @@ public class VDIPanel extends JPanel implements Runnable, MainPanel {
 	public void run() {
 		d.jProgressBar.setString("nova endpoints");
 		Command command = new Command();
-		command.command = "from pandora: nova list";
-		ReturnCommand r = CommunicateLib.send(PandoraCommonLib.getCurrentServerIP(), command);
+		command.command = "from titan: nova list";
+		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 		JSONArray servers = JSONObject.fromObject(r.map.get("result")).getJSONArray("servers");
 		instanceTableModel.columnNames.clear();
 		instanceTableModel.columnNames.add("Name");
@@ -185,9 +185,9 @@ public class VDIPanel extends JPanel implements Runnable, MainPanel {
 		Vector<Object> col22 = new Vector<Object>();
 		for (int x = 0; x < servers.size(); x++) {
 			JSONObject obj = servers.getJSONObject(x);
-			col1.add(PandoraCommonLib.getJSONString(obj, "name", ""));
-			col2.add(PandoraCommonLib.getJSONString(obj, "status", ""));
-			col3.add(PandoraCommonLib.getJSONString(obj, "progress", ""));
+			col1.add(TitanCommonLib.getJSONString(obj, "name", ""));
+			col2.add(TitanCommonLib.getJSONString(obj, "status", ""));
+			col3.add(TitanCommonLib.getJSONString(obj, "progress", ""));
 
 			try {
 				String address = "";
@@ -201,24 +201,24 @@ public class VDIPanel extends JPanel implements Runnable, MainPanel {
 			} catch (Exception ex) {
 				col4.add("");
 			}
-			col5.add(PandoraCommonLib.getJSONString(obj.getJSONObject("flavor"), "id", ""));
-			col6.add(PandoraCommonLib.getJSONString(obj, "OS-EXT-SRV-ATTR:instance_name", ""));
-			col7.add(PandoraCommonLib.getJSONString(obj, "OS-EXT-SRV-ATTR:hypervisor_hostname", ""));
-			col8.add(PandoraCommonLib.getJSONString(obj, "OS-EXT-SRV-ATTR:host", ""));
-			col9.add(PandoraCommonLib.getJSONString(obj, "OS-EXT-STS:power_state", ""));
-			col10.add(PandoraCommonLib.getJSONString(obj, "OS-EXT-STS:vm_state", ""));
-			col11.add(PandoraCommonLib.getJSONString(obj, "OS-EXT-AZ:availability_zone", ""));
-			col12.add(PandoraCommonLib.getJSONString(obj, "OS-EXT-STS:task_state", ""));
-			col13.add(PandoraCommonLib.getJSONString(obj, "accessIPv4", ""));
-			col14.add(PandoraCommonLib.getJSONString(obj, "accessIPv6", ""));
-			col15.add(PandoraCommonLib.getJSONString(obj, "id", ""));
-			col16.add(PandoraCommonLib.getJSONString(obj, "user_id", ""));
-			col17.add(PandoraCommonLib.getJSONString(obj, "config_drive", ""));
-			col18.add(PandoraCommonLib.getJSONString(obj, "created", ""));
-			col19.add(PandoraCommonLib.getJSONString(obj, "hostId", ""));
-			col20.add(PandoraCommonLib.getJSONString(obj, "key_name", ""));
-			col21.add(PandoraCommonLib.getJSONString(obj, "tenant_id", ""));
-			col22.add(PandoraCommonLib.getJSONString(obj, "updated", ""));
+			col5.add(TitanCommonLib.getJSONString(obj.getJSONObject("flavor"), "id", ""));
+			col6.add(TitanCommonLib.getJSONString(obj, "OS-EXT-SRV-ATTR:instance_name", ""));
+			col7.add(TitanCommonLib.getJSONString(obj, "OS-EXT-SRV-ATTR:hypervisor_hostname", ""));
+			col8.add(TitanCommonLib.getJSONString(obj, "OS-EXT-SRV-ATTR:host", ""));
+			col9.add(TitanCommonLib.getJSONString(obj, "OS-EXT-STS:power_state", ""));
+			col10.add(TitanCommonLib.getJSONString(obj, "OS-EXT-STS:vm_state", ""));
+			col11.add(TitanCommonLib.getJSONString(obj, "OS-EXT-AZ:availability_zone", ""));
+			col12.add(TitanCommonLib.getJSONString(obj, "OS-EXT-STS:task_state", ""));
+			col13.add(TitanCommonLib.getJSONString(obj, "accessIPv4", ""));
+			col14.add(TitanCommonLib.getJSONString(obj, "accessIPv6", ""));
+			col15.add(TitanCommonLib.getJSONString(obj, "id", ""));
+			col16.add(TitanCommonLib.getJSONString(obj, "user_id", ""));
+			col17.add(TitanCommonLib.getJSONString(obj, "config_drive", ""));
+			col18.add(TitanCommonLib.getJSONString(obj, "created", ""));
+			col19.add(TitanCommonLib.getJSONString(obj, "hostId", ""));
+			col20.add(TitanCommonLib.getJSONString(obj, "key_name", ""));
+			col21.add(TitanCommonLib.getJSONString(obj, "tenant_id", ""));
+			col22.add(TitanCommonLib.getJSONString(obj, "updated", ""));
 		}
 		instanceTableModel.values.clear();
 		instanceTableModel.values.add(col1);

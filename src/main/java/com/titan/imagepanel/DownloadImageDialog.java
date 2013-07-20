@@ -1,4 +1,4 @@
-package com.c2.pandora.imagepanel;
+package com.titan.imagepanel;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -30,12 +30,12 @@ import net.miginfocom.swing.MigLayout;
 import org.apache.commons.io.IOUtils;
 import org.w3c.dom.NodeList;
 
-import com.c2.pandora.PandoraCommonLib;
 import com.peterswing.CommonLib;
 import com.peterswing.GenericTableModel;
 import com.peterswing.advancedswing.downloadfiledialog.DownloadFileDialog;
 import com.peterswing.advancedswing.jprogressbardialog.JProgressBarDialog;
 import com.peterswing.advancedswing.searchtextfield.JSearchTextField;
+import com.titan.TitanCommonLib;
 
 public class DownloadImageDialog extends JDialog {
 	private final JPanel contentPanel = new JPanel();
@@ -148,28 +148,28 @@ public class DownloadImageDialog extends JDialog {
 				tableModel.editables.put(0, true);
 				Vector<Object> col1 = new Vector<Object>();
 				try {
-					d.jProgressBar.setString("connecting to pandora image site");
-					in = new URL("http://pandora-image.kingofcoders.com/pandora-image.xml").openStream();
+					d.jProgressBar.setString("connecting to titan image site");
+					in = new URL("http://titan-image.kingofcoders.com/titan-image.xml").openStream();
 					String xml = IOUtils.toString(in);
-					NodeList list = PandoraCommonLib.getXPathNodeList(xml, "/images/image");
+					NodeList list = TitanCommonLib.getXPathNodeList(xml, "/images/image");
 					for (int x = 0; x < list.getLength(); x++) {
 						DownloadImage downloadImage = new DownloadImage();
-						downloadImage.author = PandoraCommonLib.getXPath(xml, "/images/image[" + (x + 1) + "]/author/text()");
-						downloadImage.authorEmail = PandoraCommonLib.getXPath(xml, "/images/image[" + (x + 1) + "]/authorEmail/text()");
-						downloadImage.License = PandoraCommonLib.getXPath(xml, "/images/image[" + (x + 1) + "]/License/text()");
-						downloadImage.description = PandoraCommonLib.getXPath(xml, "/images/image[" + (x + 1) + "]/description/text()");
-						downloadImage.file = PandoraCommonLib.getXPath(xml, "/images/image[" + (x + 1) + "]/file/text()");
-						downloadImage.os = PandoraCommonLib.getXPath(xml, "/images/image[" + (x + 1) + "]/os/text()");
-						downloadImage.osType = PandoraCommonLib.getXPath(xml, "/images/image[" + (x + 1) + "]/osType/text()");
-						downloadImage.uploadDate = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").parse(PandoraCommonLib.getXPath(xml, "/images/image[" + (x + 1)
+						downloadImage.author = TitanCommonLib.getXPath(xml, "/images/image[" + (x + 1) + "]/author/text()");
+						downloadImage.authorEmail = TitanCommonLib.getXPath(xml, "/images/image[" + (x + 1) + "]/authorEmail/text()");
+						downloadImage.License = TitanCommonLib.getXPath(xml, "/images/image[" + (x + 1) + "]/License/text()");
+						downloadImage.description = TitanCommonLib.getXPath(xml, "/images/image[" + (x + 1) + "]/description/text()");
+						downloadImage.file = TitanCommonLib.getXPath(xml, "/images/image[" + (x + 1) + "]/file/text()");
+						downloadImage.os = TitanCommonLib.getXPath(xml, "/images/image[" + (x + 1) + "]/os/text()");
+						downloadImage.osType = TitanCommonLib.getXPath(xml, "/images/image[" + (x + 1) + "]/osType/text()");
+						downloadImage.uploadDate = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss").parse(TitanCommonLib.getXPath(xml, "/images/image[" + (x + 1)
 								+ "]/uploadDate/text()"));
-						downloadImage.size = PandoraCommonLib.getXPath(xml, "/images/image[" + (x + 1) + "]/size/text()");
-						downloadImage.architecture = PandoraCommonLib.getXPath(xml, "/images/image[" + (x + 1) + "]/architecture/text()");
+						downloadImage.size = TitanCommonLib.getXPath(xml, "/images/image[" + (x + 1) + "]/size/text()");
+						downloadImage.architecture = TitanCommonLib.getXPath(xml, "/images/image[" + (x + 1) + "]/architecture/text()");
 						col1.add(downloadImage);
 					}
 				} catch (Exception ex) {
 					ex.printStackTrace();
-					JOptionPane.showMessageDialog(frame, "Unable to connect pandora image site !", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(frame, "Unable to connect titan image site !", "Error", JOptionPane.ERROR_MESSAGE);
 				} finally {
 					IOUtils.closeQuietly(in);
 				}

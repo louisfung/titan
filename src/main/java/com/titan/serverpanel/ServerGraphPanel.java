@@ -1,4 +1,4 @@
-package com.c2.pandora.serverpanel;
+package com.titan.serverpanel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -53,8 +53,8 @@ public class ServerGraphPanel extends JPanel {
 			mxCell ports2[] = addPort(firewall);
 			mxCell nas = (mxCell) graph.insertVertex(parent, null, "nas:", x += 100, 100, 100, 100);
 			mxCell ports3[] = addPort(nas);
-			mxCell pandora = (mxCell) graph.insertVertex(parent, null, "pandora:", x += 100, 100, 100, 100);
-			mxCell ports4[] = addPort(pandora);
+			mxCell titan = (mxCell) graph.insertVertex(parent, null, "titan:", x += 100, 100, 100, 100);
+			mxCell ports4[] = addPort(titan);
 			//			mxCell router = (mxCell) graph.insertVertex(parent, null, "router:", x += 100, 100, 100,100);
 			//			mxCell ports5[] = addPort(router);
 			mxCell server = (mxCell) graph.insertVertex(parent, null, "server:", x += 100, 100, 100, 100);

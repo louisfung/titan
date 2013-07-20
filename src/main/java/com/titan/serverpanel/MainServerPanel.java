@@ -1,4 +1,4 @@
-package com.c2.pandora.serverpanel;
+package com.titan.serverpanel;
 
 import java.awt.BorderLayout;
 import java.awt.Font;
@@ -11,8 +11,8 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.border.EmptyBorder;
 
-import com.c2.pandora.MainPanel;
-import com.c2.pandora.openstackserver.OpenstackServerFrame;
+import com.titan.MainPanel;
+import com.titan.openstackserver.OpenstackServerFrame;
 
 public class MainServerPanel extends JPanel implements MainPanel {
 	JFrame parentFrame;

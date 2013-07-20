@@ -1,6 +1,7 @@
-package com.c2.pandora.keystonepanel;
+package com.titan.keystonepanel;
 
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -19,12 +20,11 @@ import javax.swing.border.EmptyBorder;
 import net.miginfocom.swing.MigLayout;
 import net.sf.json.JSONObject;
 
-import com.c2.pandora.PandoraCommonLib;
-import com.c2.pandora.communication.CommunicateLib;
-import com.c2.pandoraserver.Command;
-import com.c2.pandoraserver.ReturnCommand;
 import com.peterswing.CommonLib;
-import java.awt.Color;
+import com.titan.TitanCommonLib;
+import com.titan.communication.CommunicateLib;
+import com.titanserver.Command;
+import com.titanserver.ReturnCommand;
 
 public class AddTenantDialog extends JDialog {
 
@@ -94,13 +94,13 @@ public class AddTenantDialog extends JDialog {
 							return;
 						}
 						Command command = new Command();
-						command.command = "from pandora: keystone tenant-create";
+						command.command = "from titan: keystone tenant-create";
 						HashMap<String, String> parameters = new HashMap<String, String>();
 						parameters.put("$name", nameTextField.getText());
 						parameters.put("$description", descriptionTextField.getText());
 						parameters.put("$enabled", checkBox.isSelected() ? "true" : "false");
 						command.parameters.add(parameters);
-						ReturnCommand r = CommunicateLib.send(PandoraCommonLib.getCurrentServerIP(), command);
+						ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 						String msg = (String) r.map.get("result");
 
 						if (msg == null) {

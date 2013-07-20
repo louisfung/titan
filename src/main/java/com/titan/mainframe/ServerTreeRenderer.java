@@ -1,4 +1,4 @@
-package com.c2.pandora.mainframe;
+package com.titan.mainframe;
 
 import java.awt.Color;
 import java.awt.Component;

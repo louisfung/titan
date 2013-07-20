@@ -1,4 +1,4 @@
-package com.c2.pandora.flavorpanel;
+package com.titan.flavorpanel;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -24,19 +24,19 @@ import javax.swing.table.DefaultTableCellRenderer;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import com.c2.pandora.BooleanTableCellRenderer;
-import com.c2.pandora.MainPanel;
-import com.c2.pandora.PandoraCommonLib;
-import com.c2.pandora.SimpleTableDialog;
-import com.c2.pandora.communication.CommunicateLib;
-import com.c2.pandoraserver.Command;
-import com.c2.pandoraserver.ReturnCommand;
 import com.peterswing.CommonLib;
 import com.peterswing.GenericTableModel;
 import com.peterswing.advancedswing.jprogressbardialog.JProgressBarDialog;
 import com.peterswing.advancedswing.jtable.ComputerUnit;
 import com.peterswing.advancedswing.jtable.SortableTableModel;
 import com.peterswing.advancedswing.jtable.TableSorterColumnListener;
+import com.titan.BooleanTableCellRenderer;
+import com.titan.MainPanel;
+import com.titan.SimpleTableDialog;
+import com.titan.TitanCommonLib;
+import com.titan.communication.CommunicateLib;
+import com.titanserver.Command;
+import com.titanserver.ReturnCommand;
 
 public class FlavorPanel extends JPanel implements Runnable, MainPanel {
 	private JTable flavorTable;
@@ -130,11 +130,11 @@ public class FlavorPanel extends JPanel implements Runnable, MainPanel {
 					int temp = JOptionPane.showConfirmDialog(FlavorPanel.this.frame, "Confirm to delete flavor " + flavorName + " ?", "Warning", JOptionPane.YES_NO_OPTION);
 					if (temp == JOptionPane.YES_OPTION) {
 						Command command = new Command();
-						command.command = "from pandora: nova delete-flavor";
+						command.command = "from titan: nova delete-flavor";
 						HashMap<String, String> parameters = new HashMap<String, String>();
 						parameters.put("$flavorId", flavorId);
 						command.parameters.add(parameters);
-						ReturnCommand r = CommunicateLib.send(PandoraCommonLib.getCurrentServerIP(), command);
+						ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 						refresh();
 					}
 				}
@@ -156,8 +156,8 @@ public class FlavorPanel extends JPanel implements Runnable, MainPanel {
 	public void run() {
 		d.jProgressBar.setString("nova endpoints");
 		Command command = new Command();
-		command.command = "from pandora: nova flavor-list";
-		ReturnCommand r = CommunicateLib.send(PandoraCommonLib.getCurrentServerIP(), command);
+		command.command = "from titan: nova flavor-list";
+		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 		JSONArray flavors = JSONObject.fromObject(r.map.get("result")).getJSONArray("flavors");
 		flavorTableModel.columnNames.clear();
 		flavorTableModel.columnNames.add("Id");

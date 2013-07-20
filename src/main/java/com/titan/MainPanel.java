@@ -1,4 +1,4 @@
-package com.c2.pandora;
+package com.titan;
 
 public interface MainPanel {
 	public void refresh();

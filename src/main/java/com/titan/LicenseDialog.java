@@ -1,4 +1,4 @@
-package com.c2.pandora;
+package com.titan;
 
 import java.awt.BorderLayout;
 import java.awt.Frame;

@@ -1,4 +1,4 @@
-package com.c2.pandora.instancepanel;
+package com.titan.instancepanel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;

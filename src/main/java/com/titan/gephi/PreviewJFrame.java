@@ -1,4 +1,4 @@
-package com.c2.pandora.gephi;
+package com.titan.gephi;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -36,7 +36,7 @@ public class PreviewJFrame {
 		ImportController importController = Lookup.getDefault().lookup(ImportController.class);
 		Container container;
 		try {
-			File file = new File(getClass().getResource("/com/c2/pandora/gephi/Java.gexf").toURI());
+			File file = new File(getClass().getResource("/com/c2/titan/gephi/Java.gexf").toURI());
 			container = importController.importFile(file);
 		} catch (Exception ex) {
 			ex.printStackTrace();

@@ -1,4 +1,4 @@
-package com.c2.pandora.instancepanel;
+package com.titan.instancepanel;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -65,7 +65,7 @@ public class ViewInstanceDialog extends JDialog {
 		contentPanel.setLayout(new MigLayout("", "[grow][grow][][][grow]", "[][][][][][][][][][][][][][][][][][][][][]"));
 		{
 			JLabel label = new JLabel("");
-			label.setIcon(new ImageIcon(ViewInstanceDialog.class.getResource("/com/c2/pandora/instancepanel/vmInformation.png")));
+			label.setIcon(new ImageIcon(ViewInstanceDialog.class.getResource("/com/c2/titan/instancepanel/vmInformation.png")));
 			contentPanel.add(label, "cell 0 0 5 1");
 		}
 		{
@@ -259,7 +259,7 @@ public class ViewInstanceDialog extends JDialog {
 		}
 		{
 			JLabel label = new JLabel("");
-			label.setIcon(new ImageIcon(ViewInstanceDialog.class.getResource("/com/c2/pandora/instancepanel/flavorInformation.png")));
+			label.setIcon(new ImageIcon(ViewInstanceDialog.class.getResource("/com/c2/titan/instancepanel/flavorInformation.png")));
 			contentPanel.add(label, "cell 0 12 5 1");
 		}
 		{

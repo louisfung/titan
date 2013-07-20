@@ -1,4 +1,4 @@
-package com.c2.pandora.keystonepanel;
+package com.titan.keystonepanel;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -24,15 +24,15 @@ import javax.swing.table.DefaultTableCellRenderer;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import com.c2.pandora.PandoraCommonLib;
-import com.c2.pandora.communication.CommunicateLib;
-import com.c2.pandoraserver.Command;
-import com.c2.pandoraserver.ReturnCommand;
 import com.peterswing.CommonLib;
 import com.peterswing.GenericTableModel;
 import com.peterswing.advancedswing.jprogressbardialog.JProgressBarDialog;
 import com.peterswing.advancedswing.jtable.SortableTableModel;
 import com.peterswing.advancedswing.jtable.TableSorterColumnListener;
+import com.titan.TitanCommonLib;
+import com.titan.communication.CommunicateLib;
+import com.titanserver.Command;
+import com.titanserver.ReturnCommand;
 
 public class UserDetailDialog extends JDialog {
 	private JTable roleTable;
@@ -114,13 +114,13 @@ public class UserDetailDialog extends JDialog {
 						String tenantName = allTenants.get(tenantId);
 
 						Command command = new Command();
-						command.command = "from pandora: keystone user-role-list";
+						command.command = "from titan: keystone user-role-list";
 						d.jProgressBar.setString("getting role list for tenant " + tenantId);
 						HashMap<String, String> parameters = new HashMap<String, String>();
 						parameters.put("$userId", userId);
 						parameters.put("$Tenant_Id", tenantId);
 						command.parameters.add(parameters);
-						ReturnCommand r = CommunicateLib.send(PandoraCommonLib.getCurrentServerIP(), command);
+						ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 						String msg = (String) r.map.get("result");
 						if (msg == null) {
 							JOptionPane.showMessageDialog(frame, "Error, return value is null", "Error", JOptionPane.ERROR_MESSAGE);

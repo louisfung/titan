@@ -1,4 +1,4 @@
-package com.c2.pandora.communication;
+package com.titan.communication;
 
 import java.io.File;
 import java.io.FileInputStream;

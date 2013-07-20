@@ -1,4 +1,4 @@
-package com.c2.pandora.keystonepanel;
+package com.titan.keystonepanel;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -6,7 +6,6 @@ import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Enumeration;

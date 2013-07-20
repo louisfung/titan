@@ -1,4 +1,4 @@
-package com.c2.pandora.instancepanel;
+package com.titan.instancepanel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -30,16 +30,16 @@ import net.miginfocom.swing.MigLayout;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
-import com.c2.pandora.PandoraCommonLib;
-import com.c2.pandora.communication.CommunicateLib;
-import com.c2.pandora.imagepanel.DownloadImageDialog;
-import com.c2.pandoraserver.Command;
-import com.c2.pandoraserver.ReturnCommand;
 import com.peterswing.CommonLib;
 import com.peterswing.GenericTableModel;
 import com.peterswing.advancedswing.jtable.ComputerUnit;
 import com.peterswing.advancedswing.jtable.SortableTableModel;
 import com.peterswing.advancedswing.jtable.TableSorterColumnListener;
+import com.titan.TitanCommonLib;
+import com.titan.communication.CommunicateLib;
+import com.titan.imagepanel.DownloadImageDialog;
+import com.titanserver.Command;
+import com.titanserver.ReturnCommand;
 
 public class LaunchInstanceDialog extends JDialog {
 	private final JPanel contentPanel = new JPanel();
@@ -168,14 +168,14 @@ public class LaunchInstanceDialog extends JDialog {
 							return;
 						} else {
 							Command command = new Command();
-							command.command = "from pandora: nova boot";
+							command.command = "from titan: nova boot";
 							HashMap<String, String> parameters = new HashMap<String, String>();
 							parameters.put("$flavorRef", (String) flavorTable.getValueAt(flavorTable.getSelectedRow(), 0));
 							parameters.put("$name", instanceNameTextField.getText());
 							parameters.put("$min_count", String.valueOf(spinner.getValue()));
 							parameters.put("$imageRef", (String) imageTable.getValueAt(imageTable.getSelectedRow(), 0));
 							command.parameters.add(parameters);
-							ReturnCommand r = CommunicateLib.send(PandoraCommonLib.getCurrentServerIP(), command);
+							ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 							System.out.println(r.map.get("result"));
 							if (r.map.get("result").toString().contains("overLimit")) {
 								JSONObject result = JSONObject.fromObject(r.map.get("result")).getJSONObject("overLimit");
@@ -210,8 +210,8 @@ public class LaunchInstanceDialog extends JDialog {
 
 	private void initFlavorTable() {
 		Command command = new Command();
-		command.command = "from pandora: nova flavor-list";
-		ReturnCommand r = CommunicateLib.send(PandoraCommonLib.getCurrentServerIP(), command);
+		command.command = "from titan: nova flavor-list";
+		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 		JSONArray flavors = JSONObject.fromObject(r.map.get("result")).getJSONArray("flavors");
 		flavorTableModel.columnNames.clear();
 		flavorTableModel.columnNames.add("Id");
@@ -265,8 +265,8 @@ public class LaunchInstanceDialog extends JDialog {
 
 	private void initImageTable() {
 		Command command = new Command();
-		command.command = "from pandora: glance image-list";
-		ReturnCommand r = CommunicateLib.send(PandoraCommonLib.getCurrentServerIP(), command);
+		command.command = "from titan: glance image-list";
+		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 		JSONArray images = JSONObject.fromObject(r.map.get("result")).getJSONArray("images");
 		imageTableModel.columnNames.clear();
 		imageTableModel.columnNames.add("Id");

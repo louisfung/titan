@@ -1,4 +1,4 @@
-package com.c2.pandora.instancepanel;
+package com.titan.instancepanel;
 
 import java.awt.BorderLayout;
 import java.awt.Component;
@@ -27,13 +27,13 @@ import javax.swing.border.EmptyBorder;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
-import com.c2.pandora.PandoraCommonLib;
-import com.c2.pandora.communication.CommunicateLib;
-import com.c2.pandora.communication.ProxySocketServer;
-import com.c2.pandoraserver.Command;
-import com.c2.pandoraserver.InOut;
-import com.c2.pandoraserver.ReturnCommand;
 import com.peter.tightvncpanel.TightVNC;
+import com.titan.TitanCommonLib;
+import com.titan.communication.CommunicateLib;
+import com.titan.communication.ProxySocketServer;
+import com.titanserver.Command;
+import com.titanserver.InOut;
+import com.titanserver.ReturnCommand;
 import com.toedter.calendar.JCalendar;
 
 public class MonitorDialog extends JFrame implements WindowListener, Runnable {
@@ -90,7 +90,7 @@ public class MonitorDialog extends JFrame implements WindowListener, Runnable {
 							}
 						}
 					});
-					btnPlay.setIcon(new ImageIcon(MonitorDialog.class.getResource("/com/c2/pandora/image/famfamfam/control_play.png")));
+					btnPlay.setIcon(new ImageIcon(MonitorDialog.class.getResource("/com/c2/titan/image/famfamfam/control_play.png")));
 
 					JButton pauseButton = new JButton("Pause");
 					pauseButton.addActionListener(new ActionListener() {
@@ -100,14 +100,14 @@ public class MonitorDialog extends JFrame implements WindowListener, Runnable {
 							}
 						}
 					});
-					pauseButton.setIcon(new ImageIcon(MonitorDialog.class.getResource("/com/c2/pandora/image/famfamfam/control_pause.png")));
+					pauseButton.setIcon(new ImageIcon(MonitorDialog.class.getResource("/com/c2/titan/image/famfamfam/control_pause.png")));
 
 					JButton screenCaptureButton = new JButton("Screen capture");
 					screenCaptureButton.addActionListener(new ActionListener() {
 						public void actionPerformed(ActionEvent e) {
 						}
 					});
-					screenCaptureButton.setIcon(new ImageIcon(MonitorDialog.class.getResource("/com/c2/pandora/image/famfamfam/disk.png")));
+					screenCaptureButton.setIcon(new ImageIcon(MonitorDialog.class.getResource("/com/c2/titan/image/famfamfam/disk.png")));
 					GroupLayout gl_panel = new GroupLayout(panel);
 					gl_panel.setHorizontalGroup(gl_panel.createParallelGroup(Alignment.LEADING).addGroup(
 							gl_panel.createSequentialGroup()
@@ -153,10 +153,10 @@ public class MonitorDialog extends JFrame implements WindowListener, Runnable {
 			Command command = new Command();
 			command.command = "get vnc port";
 			command.parameters.add(instanceName);
-			ReturnCommand r = CommunicateLib.send(PandoraCommonLib.getCurrentServerIP(), command);
+			ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 			int port = (Integer) r.map.get("port");
 			setTitle(getTitle() + ", port=" + port);
-			final InOut inout = CommunicateLib.requestProxy(PandoraCommonLib.getCurrentServerIP(), 5900 + port);
+			final InOut inout = CommunicateLib.requestProxy(TitanCommonLib.getCurrentServerIP(), 5900 + port);
 			ProxySocketServer p = new ProxySocketServer(inout);
 			while (!p.started) {
 				try {

@@ -1,17 +1,17 @@
-package com.c2.pandora.thread;
+package com.titan.thread;
 
 import java.util.Date;
 import java.util.HashMap;
 import java.util.TreeSet;
 
-import com.c2.pandora.PandoraSetting;
-import com.c2.pandora.communication.CommunicateLib;
-import com.c2.pandora.serverpanel.ServerPanel;
-import com.c2.pandora.serverpanel.ServerTableModel;
-import com.c2.pandoraserver.Command;
-import com.c2.pandoraserver.ReturnCommand;
+import com.titan.TitanSetting;
+import com.titan.communication.CommunicateLib;
+import com.titan.serverpanel.ServerPanel;
+import com.titan.serverpanel.ServerTableModel;
+import com.titanserver.Command;
+import com.titanserver.ReturnCommand;
 
-public class PandoraServerUpdateThread implements Runnable {
+public class TitanServerUpdateThread implements Runnable {
 	public static HashMap<String, TreeSet<Status>> status = new HashMap<String, TreeSet<Status>>();
 
 	public void run() {
@@ -61,7 +61,7 @@ public class PandoraServerUpdateThread implements Runnable {
 				}
 			}
 			try {
-				Thread.currentThread().sleep(PandoraSetting.getInstance().pandoraServerUpdateThread_milliSeconds);
+				Thread.currentThread().sleep(TitanSetting.getInstance().titanServerUpdateThread_milliSeconds);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}

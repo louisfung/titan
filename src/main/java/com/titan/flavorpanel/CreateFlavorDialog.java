@@ -1,4 +1,4 @@
-package com.c2.pandora.flavorpanel;
+package com.titan.flavorpanel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -19,10 +19,10 @@ import javax.swing.border.EmptyBorder;
 import net.miginfocom.swing.MigLayout;
 import net.sf.json.JSONObject;
 
-import com.c2.pandora.PandoraCommonLib;
-import com.c2.pandora.communication.CommunicateLib;
-import com.c2.pandoraserver.Command;
-import com.c2.pandoraserver.ReturnCommand;
+import com.titan.TitanCommonLib;
+import com.titan.communication.CommunicateLib;
+import com.titanserver.Command;
+import com.titanserver.ReturnCommand;
 
 public class CreateFlavorDialog extends JDialog {
 
@@ -119,7 +119,7 @@ public class CreateFlavorDialog extends JDialog {
 					public void actionPerformed(ActionEvent e) {
 						errorLabel.setVisible(false);
 						Command command = new Command();
-						command.command = "from pandora: nova create-flavor";
+						command.command = "from titan: nova create-flavor";
 						HashMap<String, String> parameters = new HashMap<String, String>();
 						parameters.put("$name", nameTextField.getText());
 						parameters.put("$vcpu", vcpuTextField.getText());
@@ -128,7 +128,7 @@ public class CreateFlavorDialog extends JDialog {
 						parameters.put("$ephemermal", ephemermalTextField.getText());
 						parameters.put("$swap", swapTextField.getText());
 						command.parameters.add(parameters);
-						ReturnCommand r = CommunicateLib.send(PandoraCommonLib.getCurrentServerIP(), command);
+						ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 						try {
 							JSONObject j = JSONObject.fromObject(r.map.get("result")).getJSONObject("flavor");
 							if (j.isNullObject()) {

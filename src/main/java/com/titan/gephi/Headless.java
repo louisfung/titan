@@ -1,4 +1,4 @@
-package com.c2.pandora.gephi;
+package com.titan.gephi;
 
 import java.awt.Color;
 import java.io.File;
@@ -63,7 +63,7 @@ public class Headless {
 		//Import file       
 		Container container;
 		try {
-			File file = new File(getClass().getResource("/com/c2/pandora/gephi/polblogs.gml").toURI());
+			File file = new File(getClass().getResource("/com/c2/titan/gephi/polblogs.gml").toURI());
 			container = importController.importFile(file);
 			container.getLoader().setEdgeDefault(EdgeDefault.DIRECTED); //Force DIRECTED
 		} catch (Exception ex) {

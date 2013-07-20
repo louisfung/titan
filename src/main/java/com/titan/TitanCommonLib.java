@@ -1,4 +1,4 @@
-package com.c2.pandora;
+package com.titan;
 
 import java.io.ByteArrayInputStream;
 
@@ -14,11 +14,11 @@ import net.sf.json.JSONObject;
 import org.w3c.dom.Document;
 import org.w3c.dom.NodeList;
 
-import com.c2.pandora.mainframe.MainFrame;
-import com.c2.pandora.mainframe.ServerTreeNode;
-import com.c2.pandoraserver.structure.PandoraServerDefinition;
+import com.titan.mainframe.MainFrame;
+import com.titan.mainframe.ServerTreeNode;
+import com.titanserver.structure.TitanServerDefinition;
 
-public class PandoraCommonLib {
+public class TitanCommonLib {
 	public static String getJSONString(JSONObject obj, String key, String returnValue) {
 		try {
 			return obj.getString(key);
@@ -31,7 +31,7 @@ public class PandoraCommonLib {
 		if (MainFrame.serverTree.getSelectionCount() == 0 || !(MainFrame.serverTree.getLastSelectedPathComponent() instanceof ServerTreeNode)) {
 			return Global.primaryServerIP;
 		} else {
-			PandoraServerDefinition server = ((ServerTreeNode) MainFrame.serverTree.getLastSelectedPathComponent()).server;
+			TitanServerDefinition server = ((ServerTreeNode) MainFrame.serverTree.getLastSelectedPathComponent()).server;
 			return server.ip;
 		}
 	}

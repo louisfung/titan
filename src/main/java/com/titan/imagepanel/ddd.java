@@ -1,10 +1,9 @@
-package com.c2.pandora.imagepanel;
+package com.titan.imagepanel;
 
 import java.awt.Component;
 import java.awt.EventQueue;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseMotionAdapter;
-import java.awt.event.MouseMotionListener;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;

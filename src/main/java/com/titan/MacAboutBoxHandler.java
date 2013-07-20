@@ -1,4 +1,4 @@
-package com.c2.pandora;
+package com.titan;
 
 import com.apple.eawt.ApplicationAdapter;
 import com.apple.eawt.ApplicationEvent;
@@ -12,7 +12,7 @@ public class MacAboutBoxHandler extends ApplicationAdapter {
 	}
 
 	public void handleQuit(ApplicationEvent event) {
-		PandoraSetting.getInstance().save();
+		TitanSetting.getInstance().save();
 		System.exit(0);
 	}
 }

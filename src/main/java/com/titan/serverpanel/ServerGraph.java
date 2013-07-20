@@ -1,4 +1,4 @@
-package com.c2.pandora.serverpanel;
+package com.titan.serverpanel;
 
 import com.mxgraph.canvas.mxICanvas;
 import com.mxgraph.view.mxCellState;

@@ -1,4 +1,4 @@
-package com.c2.pandora;
+package com.titan;
 
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -11,16 +11,16 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-import com.c2.pandoraserver.structure.PandoraServerDefinition;
-
 import net.miginfocom.swing.MigLayout;
+
+import com.titanserver.structure.TitanServerDefinition;
 
 public class AddServerDialog extends JDialog {
 	private JTextField idTextField;
 	private JTextField ipTextField;
 
 	public AddServerDialog(final Frame frame) {
-		super(frame, "Add pandora server", true);
+		super(frame, "Add titan server", true);
 		getContentPane().setLayout(new MigLayout("", "[][grow]", "[][][grow]"));
 
 		JLabel lblId = new JLabel("ID");
@@ -51,11 +51,11 @@ public class AddServerDialog extends JDialog {
 					JOptionPane.showMessageDialog(frame, "IP cannot be empty!", "Error", JOptionPane.ERROR_MESSAGE);
 					return;
 				}
-				PandoraServerDefinition pandoraServerDefinition = new PandoraServerDefinition();
-				pandoraServerDefinition.id = idTextField.getText();
-				pandoraServerDefinition.ip = ipTextField.getText();
-				PandoraSetting.getInstance().pandoraServers.add(pandoraServerDefinition);
-				PandoraSetting.getInstance().save();
+				TitanServerDefinition titanServerDefinition = new TitanServerDefinition();
+				titanServerDefinition.id = idTextField.getText();
+				titanServerDefinition.ip = ipTextField.getText();
+				TitanSetting.getInstance().titanServers.add(titanServerDefinition);
+				TitanSetting.getInstance().save();
 				setVisible(false);
 			}
 		});

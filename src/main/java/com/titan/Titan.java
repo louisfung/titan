@@ -1,9 +1,8 @@
-package com.c2.pandora;
+package com.titan;
 
 import java.awt.Color;
 import java.awt.EventQueue;
 import java.awt.Font;
-import java.awt.Insets;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
@@ -25,10 +24,10 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
-import com.c2.pandora.communication.CommunicateLib;
-import com.c2.pandora.mainframe.MainFrame;
-import com.c2.pandoraserver.Command;
-import com.c2.pandoraserver.ReturnCommand;
+import com.titan.communication.CommunicateLib;
+import com.titan.mainframe.MainFrame;
+import com.titanserver.Command;
+import com.titanserver.ReturnCommand;
 
 public class Titan extends JFrame {
 	private JPanel contentPane;
@@ -49,7 +48,7 @@ public class Titan extends JFrame {
 
 				try {
 					com.apple.eawt.Application macApp = com.apple.eawt.Application.getApplication();
-					macApp.setDockIconImage(new ImageIcon(getClass().getClassLoader().getResource("com/c2/pandora/image/c2_icon.png")).getImage());
+					macApp.setDockIconImage(new ImageIcon(getClass().getClassLoader().getResource("com/c2/titan/image/c2_icon.png")).getImage());
 					macApp.addApplicationListener(new MacAboutBoxHandler());
 				} catch (Exception e) {
 				}
@@ -79,7 +78,7 @@ public class Titan extends JFrame {
 		setTitle("Login");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 317, 319);
-		setIconImage(new ImageIcon(getClass().getClassLoader().getResource("com/c2/pandora/image/c2_icon.png")).getImage());
+		setIconImage(new ImageIcon(getClass().getClassLoader().getResource("com/c2/titan/image/c2_icon.png")).getImage());
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -88,7 +87,7 @@ public class Titan extends JFrame {
 		lblIp.setHorizontalAlignment(SwingConstants.RIGHT);
 
 		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setIcon(new ImageIcon(Titan.class.getResource("/com/c2/pandora/image/c2_logo.png")));
+		lblNewLabel.setIcon(new ImageIcon(Titan.class.getResource("/com/c2/titan/image/c2_logo.png")));
 
 		textFieldIP = new JTextField();
 		textFieldIP.addKeyListener(new KeyAdapter() {

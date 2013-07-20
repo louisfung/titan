@@ -1,4 +1,4 @@
-package com.c2.pandora.instancepanel;
+package com.titan.instancepanel;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;

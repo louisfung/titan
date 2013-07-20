@@ -1,4 +1,4 @@
-package com.c2.pandora.communication;
+package com.titan.communication;
 
 import java.io.File;
 import java.io.ObjectInputStream;
@@ -11,11 +11,11 @@ import java.util.Date;
 import javax.net.SocketFactory;
 import javax.swing.JDialog;
 
-import com.c2.pandora.Global;
-import com.c2.pandoraserver.Command;
-import com.c2.pandoraserver.InOut;
-import com.c2.pandoraserver.ReturnCommand;
 import com.peterswing.advancedswing.jprogressbardialog.JProgressBarDialog;
+import com.titan.Global;
+import com.titanserver.Command;
+import com.titanserver.InOut;
+import com.titanserver.ReturnCommand;
 
 public class CommunicateLib {
 	public static ReturnCommand send(Command command) {

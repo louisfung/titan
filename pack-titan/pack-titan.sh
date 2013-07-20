@@ -10,7 +10,7 @@ if [ ! -d $workspace ]; then
 	exit;
 fi
 
-rm -fr pandora$version.zip
+rm -fr titan$version.zip
 rm -fr lib
 rm -fr *.jar
 
@@ -20,19 +20,19 @@ mvn clean package install
 cd $workspace/peter-swing
 mvn clean package install
 
-cd $workspace/c2-pandora-server
+cd $workspace/c2-titan-server
 mvn clean install
 
-cd $workspace/c2-pandora
+cd $workspace/c2-titan
 mvn clean package
 
 cd $current
-cp -fr $workspace/c2-pandora-server/libInUse/hyperic-sigar-1.6.4/sigar-bin/lib .
-cp $workspace/c2-pandora-server/target/*.jar .
-cp $workspace/c2-pandora/target/*.jar .
+cp -fr $workspace/c2-titan-server/libInUse/hyperic-sigar-1.6.4/sigar-bin/lib .
+cp $workspace/c2-titan-server/target/*.jar .
+cp $workspace/c2-titan/target/*.jar .
 
-#zip -r pandora$version.zip lib *.jar
-tar cjvf pandora$version.tar.bz2 lib *.jar
+#zip -r titan$version.zip lib *.jar
+tar cjvf titan$version.tar.bz2 lib *.jar
 
 rm -fr lib
 rm -fr *.jar
