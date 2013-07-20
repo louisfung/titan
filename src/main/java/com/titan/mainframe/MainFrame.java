@@ -27,6 +27,7 @@ import org.apache.commons.io.IOUtils;
 import com.peterswing.CommonLib;
 import com.peterswing.FilterTreeModel;
 import com.titan.AddServerDialog;
+import com.titan.Global;
 import com.titan.LicenseDialog;
 import com.titan.MainPanel;
 import com.titan.Titan;
@@ -41,6 +42,7 @@ import com.titan.serverpanel.MainServerPanel;
 import com.titan.settingpanel.SettingPanel;
 import com.titan.thread.TitanServerUpdateThread;
 import com.titan.vdipanel.VDIPanel;
+import com.titanserver.structure.TitanServerDefinition;
 
 public class MainFrame extends JFrame {
 	private JPanel contentPane;
@@ -281,8 +283,15 @@ public class MainFrame extends JFrame {
 
 	protected void updateServerTree() {
 		serverRoot.children.removeAllElements();
+		TitanServerDefinition serverDefinition = new TitanServerDefinition();
+		serverDefinition.id = "";
+		serverDefinition.ip = Global.primaryServerIP;
+		ServerTreeNode server = new ServerTreeNode(serverDefinition);
+		server.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/famfamfam/server.png")));
+		serverRoot.children.add(server);
+
 		for (int x = 0; x < TitanSetting.getInstance().titanServers.size(); x++) {
-			ServerTreeNode server = new ServerTreeNode(TitanSetting.getInstance().titanServers.get(x));
+			server = new ServerTreeNode(TitanSetting.getInstance().titanServers.get(x));
 			server.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/famfamfam/server.png")));
 			serverRoot.children.add(server);
 		}
