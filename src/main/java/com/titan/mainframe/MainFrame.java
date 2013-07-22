@@ -34,12 +34,12 @@ import com.titan.Titan;
 import com.titan.TitanSetting;
 import com.titan.WelcomePanel;
 import com.titan.flavorpanel.FlavorPanel;
-import com.titan.imagepanel.ImagePanel;
 import com.titan.instancepanel.InstancePanel;
 import com.titan.keystonepanel.KeystonePanel;
 import com.titan.sdn.SDNPanel;
 import com.titan.serverpanel.MainServerPanel;
 import com.titan.settingpanel.SettingPanel;
+import com.titan.storagepanel.StoragePanel;
 import com.titan.thread.TitanServerUpdateThread;
 import com.titan.vdipanel.VDIPanel;
 import com.titanserver.structure.TitanServerDefinition;
@@ -183,7 +183,7 @@ public class MainFrame extends JFrame {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				mainContentPanel.removeAll();
-				mainContentPanel.add(new ImagePanel(MainFrame.this), BorderLayout.CENTER);
+				mainContentPanel.add(new StoragePanel(MainFrame.this), BorderLayout.CENTER);
 				mainContentPanel.updateUI();
 			}
 		});

@@ -1,4 +1,4 @@
-package com.titan.imagepanel;
+package com.titan.storagepanel;
 
 import java.awt.Component;
 import java.util.EventObject;

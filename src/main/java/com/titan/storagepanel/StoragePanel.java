@@ -1,4 +1,4 @@
-package com.titan.imagepanel;
+package com.titan.storagepanel;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
@@ -35,7 +35,7 @@ import com.titan.communication.CommunicateLib;
 import com.titanserver.Command;
 import com.titanserver.ReturnCommand;
 
-public class ImagePanel extends JPanel implements Runnable, MainPanel {
+public class StoragePanel extends JPanel implements Runnable, MainPanel {
 	private JTable imageTable;
 	final JFrame frame;
 	JProgressBarDialog d;
@@ -46,7 +46,7 @@ public class ImagePanel extends JPanel implements Runnable, MainPanel {
 	SortableTableModel sortableUploadTableModel = new SortableTableModel(uploadTableModel);
 	TableSorterColumnListener tableSorterColumnListener;
 
-	public ImagePanel(JFrame frame) {
+	public StoragePanel(JFrame frame) {
 		this.frame = frame;
 		setLayout(new BorderLayout(0, 0));
 
@@ -78,7 +78,7 @@ public class ImagePanel extends JPanel implements Runnable, MainPanel {
 		JButton uploadButton = new JButton("Upload");
 		uploadButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				UploadImageDialog dialog = new UploadImageDialog(ImagePanel.this.frame);
+				UploadImageDialog dialog = new UploadImageDialog(StoragePanel.this.frame);
 				dialog.setVisible(true);
 				if (dialog.refresh) {
 					refresh();
@@ -93,7 +93,7 @@ public class ImagePanel extends JPanel implements Runnable, MainPanel {
 				if (imageTable.getSelectedRowCount() == 1) {
 					String imageId = (String) sortableTableModel.getValueAt(imageTable.getSelectedRow(), sortableTableModel.getColumnIndex("Id"));
 					String imageName = (String) sortableTableModel.getValueAt(imageTable.getSelectedRow(), sortableTableModel.getColumnIndex("Name"));
-					int temp = JOptionPane.showConfirmDialog(ImagePanel.this.frame, "Confirm to delete image " + imageName + " ?", "Warning", JOptionPane.YES_NO_OPTION);
+					int temp = JOptionPane.showConfirmDialog(StoragePanel.this.frame, "Confirm to delete image " + imageName + " ?", "Warning", JOptionPane.YES_NO_OPTION);
 					if (temp == JOptionPane.YES_OPTION) {
 						Command command = new Command();
 						command.command = "from titan: glance image-delete";

@@ -37,7 +37,7 @@ import com.peterswing.advancedswing.jtable.SortableTableModel;
 import com.peterswing.advancedswing.jtable.TableSorterColumnListener;
 import com.titan.TitanCommonLib;
 import com.titan.communication.CommunicateLib;
-import com.titan.imagepanel.DownloadImageDialog;
+import com.titan.storagepanel.DownloadImageDialog;
 import com.titanserver.Command;
 import com.titanserver.ReturnCommand;
 

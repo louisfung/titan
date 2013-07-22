@@ -1,4 +1,4 @@
-package com.titan.imagepanel;
+package com.titan.storagepanel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
