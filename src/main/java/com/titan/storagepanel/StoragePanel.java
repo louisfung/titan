@@ -42,9 +42,15 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 	GenericTableModel imageTableModel = new GenericTableModel();
 	SortableTableModel sortableTableModel = new SortableTableModel(imageTableModel);
 	private JTable uploadTable;
+
 	GenericTableModel uploadTableModel = new GenericTableModel();
 	SortableTableModel sortableUploadTableModel = new SortableTableModel(uploadTableModel);
 	TableSorterColumnListener tableSorterColumnListener;
+
+	GenericTableModel cinderTableModel = new GenericTableModel();
+	SortableTableModel sortableCinderTableModel = new SortableTableModel(cinderTableModel);
+	TableSorterColumnListener cinderTableSorterColumnListener;
+	private JTable cinderTable;
 
 	public StoragePanel(JFrame frame) {
 		this.frame = frame;
@@ -55,7 +61,7 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 		flowLayout.setAlignment(FlowLayout.LEFT);
 		add(panel, BorderLayout.NORTH);
 
-		JLabel lblFlavor = new JLabel("Image");
+		JLabel lblFlavor = new JLabel("Storage");
 		lblFlavor.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
 		panel.add(lblFlavor);
 
@@ -66,8 +72,44 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		panel_1.add(tabbedPane, BorderLayout.CENTER);
 
+		JPanel blockStoragePanel = new JPanel();
+		tabbedPane.addTab("Block storage", null, blockStoragePanel, null);
+		blockStoragePanel.setLayout(new BorderLayout(0, 0));
+
+		JPanel panel_5 = new JPanel();
+		FlowLayout flowLayout_2 = (FlowLayout) panel_5.getLayout();
+		flowLayout_2.setAlignment(FlowLayout.LEFT);
+		blockStoragePanel.add(panel_5, BorderLayout.SOUTH);
+
+		JButton btnCreateVolume = new JButton("Create volume");
+		panel_5.add(btnCreateVolume);
+
+		JButton btnDeleteVolume = new JButton("Delete volume");
+		panel_5.add(btnDeleteVolume);
+
+		JButton btnDetail = new JButton("Detail");
+		panel_5.add(btnDetail);
+
+		JButton attachVMButton = new JButton("Attach VM");
+		panel_5.add(attachVMButton);
+
+		JButton btnDetactVm = new JButton("Detact VM");
+		panel_5.add(btnDetactVm);
+
+		JScrollPane scrollPane_2 = new JScrollPane();
+		blockStoragePanel.add(scrollPane_2, BorderLayout.CENTER);
+
+		cinderTable = new JTable();
+		cinderTableSorterColumnListener = new TableSorterColumnListener(cinderTable, sortableCinderTableModel);
+		cinderTable.getTableHeader().setReorderingAllowed(false);
+		cinderTable.setModel(sortableCinderTableModel);
+		cinderTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		cinderTable.getTableHeader().addMouseListener(cinderTableSorterColumnListener);
+		imageTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		scrollPane_2.setViewportView(cinderTable);
+
 		JPanel panel_3 = new JPanel();
-		tabbedPane.addTab("List", null, panel_3, null);
+		tabbedPane.addTab("Image", null, panel_3, null);
 		panel_3.setLayout(new BorderLayout(0, 0));
 
 		JPanel panel_2 = new JPanel();
@@ -166,6 +208,98 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 	}
 
 	public void run() {
+		refreshCinder();
+		refreshImage();
+	}
+
+	private void refreshCinder() {
+		d.jProgressBar.setString("cinder list");
+		Command command = new Command();
+		command.command = "from titan: cinder list";
+		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+		JSONArray images = JSONObject.fromObject(r.map.get("result")).getJSONArray("volumes");
+		cinderTableModel.columnNames.clear();
+		cinderTableModel.columnNames.add("Id");
+		cinderTableModel.columnNames.add("Name");
+		cinderTableModel.columnNames.add("Size");
+		cinderTableModel.columnNames.add("Bootable");
+		cinderTableModel.columnNames.add("Status");
+		cinderTableModel.columnNames.add("Attachments");
+		cinderTableModel.columnNames.add("Zone");
+		cinderTableModel.columnNames.add("Created at");
+		cinderTableModel.columnNames.add("Tenant id");
+		cinderTableModel.columnNames.add("Description");
+		cinderTableModel.columnNames.add("Host");
+		cinderTableModel.columnNames.add("Volume type");
+		cinderTableModel.columnNames.add("Snapshot id");
+		cinderTableModel.columnNames.add("Source vol id");
+		cinderTableModel.columnNames.add("Meta");
+
+		cinderTableModel.columnTypes.clear();
+		cinderTableModel.columnTypes.put(2, ComputerUnit.class);
+
+		Vector<Object> col1 = new Vector<Object>();
+		Vector<Object> col2 = new Vector<Object>();
+		Vector<Object> col3 = new Vector<Object>();
+		Vector<Object> col4 = new Vector<Object>();
+		Vector<Object> col5 = new Vector<Object>();
+		Vector<Object> col6 = new Vector<Object>();
+		Vector<Object> col7 = new Vector<Object>();
+
+		for (int x = 0; x < images.size(); x++) {
+			JSONObject obj = images.getJSONObject(x);
+			col1.add(obj.getString("id"));
+			col2.add(obj.getString("display_name"));
+			col3.add(CommonLib.convertFilesize(Long.parseLong(obj.getString("size"))));
+			col4.add(obj.getString("bootable"));
+			col5.add(obj.getString("status"));
+			col6.add(obj.getString("attachments"));
+			col7.add(obj.getString("availability_zone"));
+			col7.add(obj.getString("created_at"));
+			col7.add(obj.getString("os-vol-tenant-attr:tenant_id"));
+			col7.add(obj.getString("display_description"));
+			col7.add(obj.getString("os-vol-host-attr:host"));
+			col7.add(obj.getString("availability_zone"));
+			col7.add(obj.getString("availability_zone"));
+		}
+		cinderTableModel.values.clear();
+		cinderTableModel.values.add(col1);
+		cinderTableModel.values.add(col2);
+		cinderTableModel.values.add(col3);
+		cinderTableModel.values.add(col4);
+		cinderTableModel.values.add(col5);
+		cinderTableModel.values.add(col6);
+		cinderTableModel.values.add(col7);
+
+		DefaultTableCellRenderer leftRenderer = new DefaultTableCellRenderer();
+		leftRenderer.setHorizontalAlignment(JTextField.LEFT);
+		DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+		rightRenderer.setHorizontalAlignment(JTextField.RIGHT);
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment(JTextField.CENTER);
+
+		sortableCinderTableModel.fireTableStructureChanged();
+		sortableCinderTableModel.fireTableDataChanged();
+		sortableCinderTableModel.sortByColumn(tableSorterColumnListener.sortCol, cinderTableSorterColumnListener.isSortAsc);
+
+		cinderTable.getColumnModel().getColumn(0).setPreferredWidth(300);
+		cinderTable.getColumnModel().getColumn(1).setPreferredWidth(300);
+		cinderTable.getColumnModel().getColumn(2).setPreferredWidth(120);
+		cinderTable.getColumnModel().getColumn(3).setPreferredWidth(80);
+		cinderTable.getColumnModel().getColumn(4).setPreferredWidth(80);
+		cinderTable.getColumnModel().getColumn(5).setPreferredWidth(200);
+		cinderTable.getColumnModel().getColumn(6).setPreferredWidth(200);
+
+		cinderTable.getColumnModel().getColumn(0).setCellRenderer(rightRenderer);
+		cinderTable.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
+		cinderTable.getColumnModel().getColumn(2).setCellRenderer(rightRenderer);
+		cinderTable.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
+		cinderTable.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
+		cinderTable.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
+		cinderTable.getColumnModel().getColumn(6).setCellRenderer(centerRenderer);
+	}
+
+	private void refreshImage() {
 		d.jProgressBar.setString("nova endpoints");
 		Command command = new Command();
 		command.command = "from titan: glance image-list";

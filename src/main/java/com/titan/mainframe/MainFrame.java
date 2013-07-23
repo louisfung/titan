@@ -177,20 +177,6 @@ public class MainFrame extends JFrame {
 		lblFlavors.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
 		controlPanel.add(lblFlavors, "cell 0 13,grow");
 
-		JLabel lblImages = new JLabel("");
-		lblImages.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/image.png")));
-		lblImages.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				mainContentPanel.removeAll();
-				mainContentPanel.add(new StoragePanel(MainFrame.this), BorderLayout.CENTER);
-				mainContentPanel.updateUI();
-			}
-		});
-		lblImages.setForeground(Color.DARK_GRAY);
-		lblImages.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
-		controlPanel.add(lblImages, "cell 0 14,grow");
-
 		JLabel lblVdi = new JLabel("");
 		lblVdi.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/vdi.png")));
 		lblVdi.addMouseListener(new MouseAdapter() {
@@ -201,6 +187,20 @@ public class MainFrame extends JFrame {
 				mainContentPanel.updateUI();
 			}
 		});
+		
+				JLabel lblStorages = new JLabel("");
+				lblStorages.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/storage.png")));
+				lblStorages.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						mainContentPanel.removeAll();
+						mainContentPanel.add(new StoragePanel(MainFrame.this), BorderLayout.CENTER);
+						mainContentPanel.updateUI();
+					}
+				});
+				lblStorages.setForeground(Color.DARK_GRAY);
+				lblStorages.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
+				controlPanel.add(lblStorages, "cell 0 14,grow");
 		lblVdi.setForeground(Color.DARK_GRAY);
 		lblVdi.setFont(new Font("Dialog", Font.PLAIN, 16));
 		controlPanel.add(lblVdi, "cell 0 15");
