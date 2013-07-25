@@ -5,7 +5,6 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Vector;
@@ -34,7 +33,6 @@ import com.peterswing.advancedswing.jtable.TableSorterColumnListener;
 import com.titan.MainPanel;
 import com.titan.TitanCommonLib;
 import com.titan.communication.CommunicateLib;
-import com.titan.flavorpanel.FlavorPanel;
 import com.titan.keystonepanel.KeystonePanel;
 import com.titanserver.Command;
 import com.titanserver.ReturnCommand;
@@ -91,6 +89,19 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 		volumePanel.add(panel_5, BorderLayout.SOUTH);
 
 		JButton btnCreateVolume = new JButton("Create volume");
+		btnCreateVolume.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				Hashtable<String, String> volumeTypes = new Hashtable<String, String>();
+				for (int x = 0; x < sortableVolumeTypeTableModel.getRowCount(); x++) {
+					String volumeId = (String) sortableVolumeTypeTableModel.getValueAt(x, 0);
+					String volumeName = (String) sortableVolumeTypeTableModel.getValueAt(x, 1);
+					volumeTypes.put(volumeId, volumeName);
+				}
+				CreateVolumeDialog d = new CreateVolumeDialog(frame, volumeTypes);
+				d.setVisible(true);
+				refreshVolume();
+			}
+		});
 		panel_5.add(btnCreateVolume);
 
 		JButton btnDeleteVolume = new JButton("Delete volume");
