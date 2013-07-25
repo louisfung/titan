@@ -417,7 +417,7 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 			JSONObject obj = images.getJSONObject(x);
 			col1.add(obj.getString("id"));
 			col2.add(obj.getString("display_name"));
-			col3.add(CommonLib.convertFilesize(Long.parseLong(obj.getString("size"))));
+			col3.add(CommonLib.convertFilesize(Long.parseLong(obj.getString("size")) * 1024 * 1024 * 1024));
 			col4.add(obj.getString("bootable"));
 			col5.add(obj.getString("status"));
 			col6.add(obj.getString("attachments"));
@@ -466,6 +466,7 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 		volumeTable.getColumnModel().getColumn(4).setPreferredWidth(80);
 		volumeTable.getColumnModel().getColumn(5).setPreferredWidth(200);
 		volumeTable.getColumnModel().getColumn(6).setPreferredWidth(200);
+		volumeTable.getColumnModel().getColumn(9).setPreferredWidth(400);
 
 		volumeTable.getColumnModel().getColumn(0).setCellRenderer(rightRenderer);
 		volumeTable.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);

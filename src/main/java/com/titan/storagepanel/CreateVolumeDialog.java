@@ -137,7 +137,7 @@ public class CreateVolumeDialog extends JDialog {
 						command.command = "from titan: cinder create";
 						HashMap<String, String> parameters = new HashMap<String, String>();
 						parameters.put("$displayName", nameTextField.getText());
-						parameters.put("$description", descriptionTextArea.getText().replaceAll("\"", "\\\""));
+						parameters.put("$displayDescription", descriptionTextArea.getText());
 						parameters.put("$size", String.valueOf(sizeSpinner.getValue()));
 						parameters.put("$volumeType", (String) volumeTypeComboBox.getSelectedItem());
 						command.parameters.add(parameters);
