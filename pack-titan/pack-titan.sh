@@ -20,16 +20,16 @@ mvn clean package install
 cd $workspace/peter-swing
 mvn clean package install
 
-cd $workspace/c2-titan-server
+cd $workspace/titan-server
 mvn clean install
 
-cd $workspace/c2-titan
+cd $workspace/titan
 mvn clean package
 
 cd $current
-cp -fr $workspace/c2-titan-server/libInUse/hyperic-sigar-1.6.4/sigar-bin/lib .
-cp $workspace/c2-titan-server/target/*.jar .
-cp $workspace/c2-titan/target/*.jar .
+cp -fr $workspace/titan-server/libInUse/hyperic-sigar-1.6.4/sigar-bin/lib .
+cp $workspace/titan-server/target/*.jar .
+cp $workspace/titan/target/*.jar .
 
 #zip -r titan$version.zip lib *.jar
 tar cjvf titan$version.tar.bz2 lib *.jar
