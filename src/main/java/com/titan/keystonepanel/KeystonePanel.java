@@ -674,7 +674,7 @@ public class KeystonePanel extends JPanel implements MainPanel {
 		d.setVisible(true);
 	}
 
-	Hashtable<String, String> getAllTenants() {
+	public Hashtable<String, String> getAllTenants() {
 		GenericTableModel tenantModel = (GenericTableModel) tenantTableModel.model;
 		if (tenantModel.getRowCount() == 0) {
 			initTenantTable();
@@ -686,7 +686,7 @@ public class KeystonePanel extends JPanel implements MainPanel {
 		return allTenants;
 	}
 
-	Hashtable<String, String> getAllRoles() {
+	public Hashtable<String, String> getAllRoles() {
 		GenericTableModel roleModel = (GenericTableModel) roleTableModel.model;
 		Hashtable<String, String> allRoles = new Hashtable<String, String>();
 		for (int x = 0; x < roleModel.getRowCount(); x++) {

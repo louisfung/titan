@@ -12,6 +12,7 @@ import javax.swing.JCheckBox;
 import javax.swing.JDialog;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.border.EmptyBorder;
@@ -36,7 +37,7 @@ public class CreateFlavorDialog extends JDialog {
 	private JTextField swapTextField;
 	private JLabel errorLabel;
 
-	public CreateFlavorDialog(JFrame frame) {
+	public CreateFlavorDialog(final JFrame frame) {
 		super(frame, true);
 		this.frame = frame;
 		setTitle("Create flavor");
@@ -136,8 +137,7 @@ public class CreateFlavorDialog extends JDialog {
 							}
 							setVisible(false);
 						} catch (Exception ex) {
-							errorLabel.setText(r.map.get("result").toString());
-							errorLabel.setVisible(true);
+							JOptionPane.showMessageDialog(frame, r.map.get("result"), "Error", JOptionPane.ERROR_MESSAGE);
 						}
 					}
 				});
