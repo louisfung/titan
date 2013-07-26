@@ -9,6 +9,7 @@ import info.monitorenter.util.Range;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
+import java.awt.Frame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -36,6 +37,7 @@ import org.hyperic.sigar.CpuPerc;
 import org.hyperic.sigar.FileSystem;
 import org.hyperic.sigar.Mem;
 
+import com.peterswing.advancedswing.jprogressbardialog.JProgressBarDialog;
 import com.peterswing.advancedswing.searchtextfield.JSearchTextField;
 import com.titan.TitanCommonLib;
 import com.titan.TitanSetting;
@@ -67,8 +69,10 @@ public class ServerPanel extends JPanel {
 	Radial radialCpu = new Radial();
 	Radial radialNetwork = new Radial();
 	Radial radialMemory = new Radial();
+	Frame frame;
 
-	public ServerPanel() {
+	public ServerPanel(Frame frame) {
+		this.frame = frame;
 		table.getTableHeader().setReorderingAllowed(false);
 		chart.getAxisY().setRangePolicy(new RangePolicyMinimumViewport(new Range(-1, +1)));
 		chart.addTrace(combinedTrace);
@@ -112,145 +116,7 @@ public class ServerPanel extends JPanel {
 		table.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Command command = new Command();
-				command.command = "getTitanServerInfo";
-				command.parameters.add(table.getValueAt(table.getSelectedRow(), 1));
-				ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-				if (r != null) {
-					DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
-					rightRenderer.setHorizontalAlignment(JTextField.RIGHT);
-					DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-					centerRenderer.setHorizontalAlignment(JTextField.CENTER);
-
-					////////////////////////////////////////////////////////////////////////////////////
-
-					Cpu cpu = (Cpu) r.map.get("cpu");
-					String s[][] = new String[][] {
-							{ "Idle", String.valueOf(cpu.getIdle()), "Irq", String.valueOf(cpu.getIrq()), "Nice", String.valueOf(cpu.getNice()), "Soft Irq",
-									String.valueOf(cpu.getSoftIrq()) },
-
-							{ "Stolen", String.valueOf(cpu.getStolen()), "Sys", String.valueOf(cpu.getSys()), "Total", String.valueOf(cpu.getTotal()), "User",
-									String.valueOf(cpu.getUser()) }, { "Wait", String.valueOf(cpu.getWait()), "", "", "", "", "", "" } };
-					tableCpu.setModel(new DefaultTableModel(s, new String[] { "Property", "Value", "Property", "Value", "Property", "Value", "Property", "Value" }));
-
-					tableCpu.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-					tableCpu.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
-					tableCpu.getColumnModel().getColumn(1).setCellRenderer(rightRenderer);
-					tableCpu.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
-					tableCpu.getColumnModel().getColumn(3).setCellRenderer(rightRenderer);
-					tableCpu.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
-					tableCpu.getColumnModel().getColumn(5).setCellRenderer(rightRenderer);
-
-					////////////////////////////////////////////////////////////////////////////////////
-
-					CpuInfo[] cpuInfoList = (CpuInfo[]) r.map.get("cpuInfoList");
-					s = new String[cpuInfoList.length][12];
-					for (int x = 0; x < cpuInfoList.length; x++) {
-						CpuInfo cpuInfo = cpuInfoList[x];
-						int y = 0;
-						s[x][y++] = String.valueOf(cpuInfo.getModel());
-						s[x][y++] = String.valueOf(cpuInfo.getVendor());
-						s[x][y++] = String.valueOf(cpuInfo.getCacheSize());
-						s[x][y++] = String.valueOf(cpuInfo.getCoresPerSocket());
-						s[x][y++] = String.valueOf(cpuInfo.getMhz());
-						s[x][y++] = String.valueOf(cpuInfo.getTotalCores());
-					}
-					tableCpuInfoList.setModel(new DefaultTableModel(s, new String[] { "Vendor", "Model", "Cache size", "Core per socket", "Mhz", "Total cores" }));
-
-					tableCpuInfoList.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-					tableCpuInfoList.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
-					tableCpuInfoList.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
-					tableCpuInfoList.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
-					tableCpuInfoList.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
-					tableCpuInfoList.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
-					tableCpuInfoList.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
-					tableCpuInfoList.getColumnModel().getColumn(0).setPreferredWidth(250);
-					tableCpuInfoList.getColumnModel().getColumn(1).setPreferredWidth(80);
-					tableCpuInfoList.getColumnModel().getColumn(2).setPreferredWidth(150);
-					tableCpuInfoList.getColumnModel().getColumn(3).setPreferredWidth(150);
-					tableCpuInfoList.getColumnModel().getColumn(4).setPreferredWidth(150);
-					tableCpuInfoList.getColumnModel().getColumn(5).setPreferredWidth(120);
-
-					////////////////////////////////////////////////////////////////////////////////////
-
-					CpuPerc cpuPerc = (CpuPerc) r.map.get("cpuPerc");
-					s = new String[][] { { "Idle", String.valueOf(cpuPerc.getIdle()) }, { "Irq", String.valueOf(cpuPerc.getIrq()) }, { "Nice", String.valueOf(cpuPerc.getNice()) },
-							{ "Soft Irq", String.valueOf(cpuPerc.getSoftIrq()) }, { "Stolen", String.valueOf(cpuPerc.getStolen()) }, { "Sys", String.valueOf(cpuPerc) },
-							{ "Combined", String.valueOf(cpuPerc.getCombined()) }, { "User", String.valueOf(cpuPerc.getUser()) }, { "Wait", String.valueOf(cpuPerc.getWait()) },
-							{ "Stolen", String.valueOf(cpuPerc.getStolen()) } };
-					tableCpuPerc.setModel(new DefaultTableModel(s, new String[] { "Property", "Value" }));
-
-					tableCpuPerc.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-					tableCpuPerc.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
-					tableCpuPerc.getColumnModel().getColumn(1).setCellRenderer(rightRenderer);
-					tableCpuPerc.getColumnModel().getColumn(1).setPreferredWidth(500);
-
-					////////////////////////////////////////////////////////////////////////////////////
-
-					FileSystem fsList[] = (FileSystem[]) r.map.get("fileSystemList");
-					s = new String[fsList.length][7];
-					for (int x = 0; x < fsList.length; x++) {
-						FileSystem fs = fsList[x];
-						int y = 0;
-						s[x][y++] = String.valueOf(fs.getDevName());
-						s[x][y++] = String.valueOf(fs.getDirName());
-						s[x][y++] = String.valueOf(fs.getFlags());
-						s[x][y++] = String.valueOf(fs.getOptions());
-						s[x][y++] = String.valueOf(fs.getSysTypeName());
-						s[x][y++] = String.valueOf(fs.getType());
-						s[x][y++] = String.valueOf(fs.getTypeName());
-					}
-					tableFSList.setModel(new DefaultTableModel(s, new String[] { "Dev name", "Dir name", "Flags", "Options", "Sys type name", "type", "type name" }));
-
-					tableFSList.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-					tableFSList.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
-					tableFSList.getColumnModel().getColumn(1).setCellRenderer(rightRenderer);
-					tableFSList.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
-					tableFSList.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
-					tableFSList.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
-					tableFSList.getColumnModel().getColumn(6).setCellRenderer(centerRenderer);
-					tableFSList.getColumnModel().getColumn(1).setPreferredWidth(300);
-					tableFSList.getColumnModel().getColumn(3).setPreferredWidth(300);
-					tableFSList.getColumnModel().getColumn(4).setPreferredWidth(200);
-
-					////////////////////////////////////////////////////////////////////////////////////
-					double averages[] = (double[]) r.map.get("loadAverage");
-					s = new String[2 + averages.length][2];
-					s[0][0] = "FQDN";
-					s[0][1] = (String) r.map.get("fqdn");
-
-					s[1][0] = "Load Averages";
-					s[1][1] = "";
-
-					for (int x = 0; x < averages.length; x++) {
-						s[x + 2][0] = "";
-						s[x + 2][1] = String.valueOf(averages[x]);
-					}
-
-					tableOther.setModel(new DefaultTableModel(s, new String[] { "Property", "Value" }));
-
-					tableOther.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-					tableOther.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
-					tableOther.getColumnModel().getColumn(1).setCellRenderer(rightRenderer);
-					tableOther.getColumnModel().getColumn(0).setPreferredWidth(200);
-					tableOther.getColumnModel().getColumn(1).setPreferredWidth(200);
-
-					////////////////////////////////////////////////////////////////////////////////////
-
-					Mem mem = (Mem) r.map.get("mem");
-
-					s = new String[][] { { "Actual free", String.valueOf(mem.getActualFree()) }, { "Actual used", String.valueOf(mem.getActualUsed()) },
-							{ "Free", String.valueOf(mem.getFree()) }, { "Free percent", String.valueOf(mem.getFreePercent()) + "%" }, { "Ram", String.valueOf(mem.getRam()) },
-							{ "Total", String.valueOf(mem.getTotal()) }, { "Used", String.valueOf(mem.getUsed()) }, { "Used percent", String.valueOf(mem.getUsedPercent()) } };
-					tableMem.setModel(new DefaultTableModel(s, new String[] { "Property", "Value" }));
-
-					tableMem.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
-					tableMem.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
-					tableMem.getColumnModel().getColumn(1).setCellRenderer(rightRenderer);
-
-					tableMem.getColumnModel().getColumn(0).setPreferredWidth(150);
-					tableMem.getColumnModel().getColumn(1).setPreferredWidth(500);
-				}
+				refresh();
 			}
 		});
 
@@ -483,6 +349,159 @@ public class ServerPanel extends JPanel {
 		};
 		timer.schedule(task, 1000, 20);
 
-		table.setRowSelectionInterval(0, 0);
+		if (table.getRowCount() > 0) {
+			table.setRowSelectionInterval(0, 0);
+			refresh();
+		}
+	}
+
+	protected void refresh() {
+		final JProgressBarDialog d = new JProgressBarDialog(frame, true);
+		d.thread = new Thread() {
+			public void run() {
+				d.jProgressBar.setString("getting setver info");
+				Command command = new Command();
+				command.command = "getTitanServerInfo";
+				command.parameters.add(table.getValueAt(table.getSelectedRow(), 1));
+				ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+				if (r != null) {
+					DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+					rightRenderer.setHorizontalAlignment(JTextField.RIGHT);
+					DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+					centerRenderer.setHorizontalAlignment(JTextField.CENTER);
+
+					////////////////////////////////////////////////////////////////////////////////////
+					Cpu cpu = (Cpu) r.map.get("cpu");
+					String s[][] = new String[][] {
+							{ "Idle", String.valueOf(cpu.getIdle()), "Irq", String.valueOf(cpu.getIrq()), "Nice", String.valueOf(cpu.getNice()), "Soft Irq",
+									String.valueOf(cpu.getSoftIrq()) },
+
+							{ "Stolen", String.valueOf(cpu.getStolen()), "Sys", String.valueOf(cpu.getSys()), "Total", String.valueOf(cpu.getTotal()), "User",
+									String.valueOf(cpu.getUser()) }, { "Wait", String.valueOf(cpu.getWait()), "", "", "", "", "", "" } };
+					tableCpu.setModel(new DefaultTableModel(s, new String[] { "Property", "Value", "Property", "Value", "Property", "Value", "Property", "Value" }));
+
+					tableCpu.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+					tableCpu.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+					tableCpu.getColumnModel().getColumn(1).setCellRenderer(rightRenderer);
+					tableCpu.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
+					tableCpu.getColumnModel().getColumn(3).setCellRenderer(rightRenderer);
+					tableCpu.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
+					tableCpu.getColumnModel().getColumn(5).setCellRenderer(rightRenderer);
+
+					////////////////////////////////////////////////////////////////////////////////////
+
+					CpuInfo[] cpuInfoList = (CpuInfo[]) r.map.get("cpuInfoList");
+					s = new String[cpuInfoList.length][12];
+					for (int x = 0; x < cpuInfoList.length; x++) {
+						CpuInfo cpuInfo = cpuInfoList[x];
+						int y = 0;
+						s[x][y++] = String.valueOf(cpuInfo.getModel());
+						s[x][y++] = String.valueOf(cpuInfo.getVendor());
+						s[x][y++] = String.valueOf(cpuInfo.getCacheSize());
+						s[x][y++] = String.valueOf(cpuInfo.getCoresPerSocket());
+						s[x][y++] = String.valueOf(cpuInfo.getMhz());
+						s[x][y++] = String.valueOf(cpuInfo.getTotalCores());
+					}
+					tableCpuInfoList.setModel(new DefaultTableModel(s, new String[] { "Vendor", "Model", "Cache size", "Core per socket", "Mhz", "Total cores" }));
+
+					tableCpuInfoList.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+					tableCpuInfoList.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+					tableCpuInfoList.getColumnModel().getColumn(1).setCellRenderer(centerRenderer);
+					tableCpuInfoList.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
+					tableCpuInfoList.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
+					tableCpuInfoList.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
+					tableCpuInfoList.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
+					tableCpuInfoList.getColumnModel().getColumn(0).setPreferredWidth(250);
+					tableCpuInfoList.getColumnModel().getColumn(1).setPreferredWidth(80);
+					tableCpuInfoList.getColumnModel().getColumn(2).setPreferredWidth(150);
+					tableCpuInfoList.getColumnModel().getColumn(3).setPreferredWidth(150);
+					tableCpuInfoList.getColumnModel().getColumn(4).setPreferredWidth(150);
+					tableCpuInfoList.getColumnModel().getColumn(5).setPreferredWidth(120);
+
+					////////////////////////////////////////////////////////////////////////////////////
+
+					CpuPerc cpuPerc = (CpuPerc) r.map.get("cpuPerc");
+					s = new String[][] { { "Idle", String.valueOf(cpuPerc.getIdle()) }, { "Irq", String.valueOf(cpuPerc.getIrq()) }, { "Nice", String.valueOf(cpuPerc.getNice()) },
+							{ "Soft Irq", String.valueOf(cpuPerc.getSoftIrq()) }, { "Stolen", String.valueOf(cpuPerc.getStolen()) }, { "Sys", String.valueOf(cpuPerc) },
+							{ "Combined", String.valueOf(cpuPerc.getCombined()) }, { "User", String.valueOf(cpuPerc.getUser()) }, { "Wait", String.valueOf(cpuPerc.getWait()) },
+							{ "Stolen", String.valueOf(cpuPerc.getStolen()) } };
+					tableCpuPerc.setModel(new DefaultTableModel(s, new String[] { "Property", "Value" }));
+
+					tableCpuPerc.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+					tableCpuPerc.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+					tableCpuPerc.getColumnModel().getColumn(1).setCellRenderer(rightRenderer);
+					tableCpuPerc.getColumnModel().getColumn(1).setPreferredWidth(500);
+
+					////////////////////////////////////////////////////////////////////////////////////
+
+					FileSystem fsList[] = (FileSystem[]) r.map.get("fileSystemList");
+					s = new String[fsList.length][7];
+					for (int x = 0; x < fsList.length; x++) {
+						FileSystem fs = fsList[x];
+						int y = 0;
+						s[x][y++] = String.valueOf(fs.getDevName());
+						s[x][y++] = String.valueOf(fs.getDirName());
+						s[x][y++] = String.valueOf(fs.getFlags());
+						s[x][y++] = String.valueOf(fs.getOptions());
+						s[x][y++] = String.valueOf(fs.getSysTypeName());
+						s[x][y++] = String.valueOf(fs.getType());
+						s[x][y++] = String.valueOf(fs.getTypeName());
+					}
+					tableFSList.setModel(new DefaultTableModel(s, new String[] { "Dev name", "Dir name", "Flags", "Options", "Sys type name", "type", "type name" }));
+
+					tableFSList.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+					tableFSList.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+					tableFSList.getColumnModel().getColumn(1).setCellRenderer(rightRenderer);
+					tableFSList.getColumnModel().getColumn(2).setCellRenderer(centerRenderer);
+					tableFSList.getColumnModel().getColumn(4).setCellRenderer(centerRenderer);
+					tableFSList.getColumnModel().getColumn(5).setCellRenderer(centerRenderer);
+					tableFSList.getColumnModel().getColumn(6).setCellRenderer(centerRenderer);
+					tableFSList.getColumnModel().getColumn(1).setPreferredWidth(300);
+					tableFSList.getColumnModel().getColumn(3).setPreferredWidth(300);
+					tableFSList.getColumnModel().getColumn(4).setPreferredWidth(200);
+
+					////////////////////////////////////////////////////////////////////////////////////
+					double averages[] = (double[]) r.map.get("loadAverage");
+					s = new String[2 + averages.length][2];
+					s[0][0] = "FQDN";
+					s[0][1] = (String) r.map.get("fqdn");
+
+					s[1][0] = "Load Averages";
+					s[1][1] = "";
+
+					for (int x = 0; x < averages.length; x++) {
+						s[x + 2][0] = "";
+						s[x + 2][1] = String.valueOf(averages[x]);
+					}
+
+					tableOther.setModel(new DefaultTableModel(s, new String[] { "Property", "Value" }));
+
+					tableOther.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+					tableOther.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+					tableOther.getColumnModel().getColumn(1).setCellRenderer(rightRenderer);
+					tableOther.getColumnModel().getColumn(0).setPreferredWidth(200);
+					tableOther.getColumnModel().getColumn(1).setPreferredWidth(200);
+
+					////////////////////////////////////////////////////////////////////////////////////
+
+					Mem mem = (Mem) r.map.get("mem");
+
+					s = new String[][] { { "Actual free", String.valueOf(mem.getActualFree()) }, { "Actual used", String.valueOf(mem.getActualUsed()) },
+							{ "Free", String.valueOf(mem.getFree()) }, { "Free percent", String.valueOf(mem.getFreePercent()) + "%" }, { "Ram", String.valueOf(mem.getRam()) },
+							{ "Total", String.valueOf(mem.getTotal()) }, { "Used", String.valueOf(mem.getUsed()) }, { "Used percent", String.valueOf(mem.getUsedPercent()) } };
+					tableMem.setModel(new DefaultTableModel(s, new String[] { "Property", "Value" }));
+
+					tableMem.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+					tableMem.getColumnModel().getColumn(0).setCellRenderer(centerRenderer);
+					tableMem.getColumnModel().getColumn(1).setCellRenderer(rightRenderer);
+
+					tableMem.getColumnModel().getColumn(0).setPreferredWidth(150);
+					tableMem.getColumnModel().getColumn(1).setPreferredWidth(500);
+				}
+			}
+		};
+		d.jProgressBar.setIndeterminate(true);
+		d.jProgressBar.setStringPainted(true);
+		d.setVisible(true);
 	}
 }
