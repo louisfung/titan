@@ -81,7 +81,9 @@ public class FlavorPanel extends JPanel implements Runnable, MainPanel {
 
 					Vector<Object> col1 = new Vector<Object>();
 					Vector<Object> col2 = new Vector<Object>();
+
 					dialog.tableModel.values.clear();
+
 					for (int x = 0; x < sortableTableModel.getColumnCount(); x++) {
 						col1.add(sortableTableModel.getColumnName(x));
 						col2.add(sortableTableModel.getValueAt(flavorTable.getSelectedRow(), x));
