@@ -187,20 +187,20 @@ public class MainFrame extends JFrame {
 				mainContentPanel.updateUI();
 			}
 		});
-		
-				JLabel lblStorages = new JLabel("");
-				lblStorages.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/storage.png")));
-				lblStorages.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mouseClicked(MouseEvent e) {
-						mainContentPanel.removeAll();
-						mainContentPanel.add(new StoragePanel(MainFrame.this), BorderLayout.CENTER);
-						mainContentPanel.updateUI();
-					}
-				});
-				lblStorages.setForeground(Color.DARK_GRAY);
-				lblStorages.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
-				controlPanel.add(lblStorages, "cell 0 14,grow");
+
+		JLabel lblStorages = new JLabel("");
+		lblStorages.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/storage.png")));
+		lblStorages.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				mainContentPanel.removeAll();
+				mainContentPanel.add(new StoragePanel(MainFrame.this), BorderLayout.CENTER);
+				mainContentPanel.updateUI();
+			}
+		});
+		lblStorages.setForeground(Color.DARK_GRAY);
+		lblStorages.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
+		controlPanel.add(lblStorages, "cell 0 14,grow");
 		lblVdi.setForeground(Color.DARK_GRAY);
 		lblVdi.setFont(new Font("Dialog", Font.PLAIN, 16));
 		controlPanel.add(lblVdi, "cell 0 15");
@@ -235,6 +235,18 @@ public class MainFrame extends JFrame {
 		});
 		AddServerLabel.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/famfamfam/add.png")));
 		controlPanel.add(AddServerLabel, "cell 0 2");
+
+		final JLabel editServerLabel = new JLabel("");
+		editServerLabel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				AddServerDialog d = new AddServerDialog(MainFrame.this);
+				d.setLocationRelativeTo(editServerLabel);
+				d.setVisible(true);
+			}
+		});
+		editServerLabel.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/famfamfam/pencil.png")));
+		controlPanel.add(editServerLabel, "cell 0 2");
 		splitPane.setLeftComponent(panel);
 
 		JButton btnLogout = new JButton("Logout");

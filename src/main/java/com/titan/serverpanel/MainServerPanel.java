@@ -30,7 +30,7 @@ public class MainServerPanel extends JPanel implements MainPanel {
 		add(tabbedPane, BorderLayout.CENTER);
 
 		ServerPanel serverPanel = new ServerPanel(parentFrame);
-		ServerPanel.table.addMouseListener(new MouseAdapter() {
+		ServerPanel.tableServer.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {

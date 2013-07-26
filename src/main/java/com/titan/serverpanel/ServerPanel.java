@@ -20,6 +20,7 @@ import java.util.TimerTask;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
@@ -51,7 +52,7 @@ import com.titanserver.structure.TitanServerDefinition;
 import eu.hansolo.steelseries.gauges.Radial;
 
 public class ServerPanel extends JPanel {
-	public static JTable table = new JTable();
+	public static JTable tableServer = new JTable();
 	public static ServerTableModel serverTableModel = new ServerTableModel();
 	JTable tableCpu;
 	JTable tableCpuInfoList;
@@ -71,9 +72,9 @@ public class ServerPanel extends JPanel {
 	Radial radialMemory = new Radial();
 	Frame frame;
 
-	public ServerPanel(Frame frame) {
+	public ServerPanel(final Frame frame) {
 		this.frame = frame;
-		table.getTableHeader().setReorderingAllowed(false);
+		tableServer.getTableHeader().setReorderingAllowed(false);
 		chart.getAxisY().setRangePolicy(new RangePolicyMinimumViewport(new Range(-1, +1)));
 		chart.addTrace(combinedTrace);
 		chart.addTrace(sysTrace);
@@ -113,20 +114,20 @@ public class ServerPanel extends JPanel {
 		//		chartPanel = new ChartPanel(chart);
 
 		JScrollPane scrollPane = new JScrollPane();
-		table.addMouseListener(new MouseAdapter() {
+		tableServer.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				refresh();
 			}
 		});
 
-		table.setModel(serverTableModel);
-		for (int x = 0; x < table.getColumnCount(); x++) {
-			table.getColumnModel().getColumn(x).setCellRenderer(new ServerTableCellRenderer());
+		tableServer.setModel(serverTableModel);
+		for (int x = 0; x < tableServer.getColumnCount(); x++) {
+			tableServer.getColumnModel().getColumn(x).setCellRenderer(new ServerTableCellRenderer());
 		}
 
-		table.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-		scrollPane.setViewportView(table);
+		tableServer.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+		scrollPane.setViewportView(tableServer);
 
 		JSearchTextField searchTextField = new JSearchTextField();
 
@@ -266,9 +267,9 @@ public class ServerPanel extends JPanel {
 		JButton btnAdd = new JButton("Add");
 		btnAdd.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				AddServerDialog dialog = new AddServerDialog();
+				AddServerDialog dialog = new AddServerDialog(frame);
 				dialog.setVisible(true);
-				((ServerTableModel) table.getModel()).fireTableDataChanged();
+				((ServerTableModel) tableServer.getModel()).fireTableDataChanged();
 			}
 		});
 		panel.add(btnAdd);
@@ -276,6 +277,14 @@ public class ServerPanel extends JPanel {
 		JButton btnEdit = new JButton("Edit");
 		btnEdit.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if (tableServer.getSelectedRowCount() == 0) {
+					JOptionPane.showMessageDialog(frame, "Please select a server !", "Error", JOptionPane.ERROR_MESSAGE);
+				} else {
+					String id = (String) tableServer.getValueAt(tableServer.getSelectedRow(), 1);
+					EditServerDialog dialog = new EditServerDialog(frame, id);
+					dialog.setVisible(true);
+					((ServerTableModel) tableServer.getModel()).fireTableDataChanged();
+				}
 			}
 		});
 		panel.add(btnEdit);
@@ -283,9 +292,9 @@ public class ServerPanel extends JPanel {
 		JButton btnDelete = new JButton("Delete");
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (table.getSelectedRowCount() == 1) {
-					ServerTableModel model = (ServerTableModel) table.getModel();
-					int rowNo = table.getSelectedRow();
+				if (tableServer.getSelectedRowCount() == 1) {
+					ServerTableModel model = (ServerTableModel) tableServer.getModel();
+					int rowNo = tableServer.getSelectedRow();
 					String id = (String) model.getValueAt(rowNo, 1);
 					String ip = (String) model.getValueAt(rowNo, 2);
 					for (int x = TitanSetting.getInstance().titanServers.size() - 1; x >= 0; x--) {
@@ -315,7 +324,7 @@ public class ServerPanel extends JPanel {
 			@Override
 			public void run() {
 				try {
-					String serverID = (String) table.getValueAt(table.getSelectedRow(), 1);
+					String serverID = (String) tableServer.getValueAt(tableServer.getSelectedRow(), 1);
 					if (serverID != null) {
 						if (TitanServerUpdateThread.status.size() != 0 && TitanServerUpdateThread.status.get(serverID) != null) {
 							Object objs[] = TitanServerUpdateThread.status.get(serverID).toArray();
@@ -349,8 +358,8 @@ public class ServerPanel extends JPanel {
 		};
 		timer.schedule(task, 1000, 20);
 
-		if (table.getRowCount() > 0) {
-			table.setRowSelectionInterval(0, 0);
+		if (tableServer.getRowCount() > 0) {
+			tableServer.setRowSelectionInterval(0, 0);
 			refresh();
 		}
 	}
@@ -362,7 +371,7 @@ public class ServerPanel extends JPanel {
 				d.jProgressBar.setString("getting setver info");
 				Command command = new Command();
 				command.command = "getTitanServerInfo";
-				command.parameters.add(table.getValueAt(table.getSelectedRow(), 1));
+				command.parameters.add(tableServer.getValueAt(tableServer.getSelectedRow(), 1));
 				ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 				if (r != null) {
 					DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();

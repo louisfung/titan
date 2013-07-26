@@ -52,10 +52,10 @@ public class TitanServerUpdateThread implements Runnable {
 							t.add(s);
 						}
 					}
-					int selectedRowIndex = ServerPanel.table.getSelectedRow();
+					int selectedRowIndex = ServerPanel.tableServer.getSelectedRow();
 					model.fireTableDataChanged();
 					if (selectedRowIndex >= 0 && selectedRowIndex < model.getRowCount()) {
-						ServerPanel.table.setRowSelectionInterval(selectedRowIndex, selectedRowIndex);
+						ServerPanel.tableServer.setRowSelectionInterval(selectedRowIndex, selectedRowIndex);
 					}
 				} catch (Exception ex) {
 				}

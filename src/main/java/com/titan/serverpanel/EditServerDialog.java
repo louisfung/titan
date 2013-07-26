@@ -19,18 +19,20 @@ import net.miginfocom.swing.MigLayout;
 import com.titan.TitanSetting;
 import com.titanserver.structure.TitanServerDefinition;
 
-public class AddServerDialog extends JDialog {
+public class EditServerDialog extends JDialog {
 	private final JPanel contentPanel = new JPanel();
 	private JTextField textFieldID;
 	private JTextField textFieldIP;
 	private JLabel lblError = new JLabel("");
 	Frame frame;
+	String serverId;
 
-	public AddServerDialog(Frame frame) {
+	public EditServerDialog(Frame frame, String serverId) {
 		super(frame, true);
+		this.serverId = serverId;
 		setResizable(false);
 		setModal(true);
-		setTitle("Add server");
+		setTitle("Edit server");
 		setBounds(100, 100, 238, 160);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
