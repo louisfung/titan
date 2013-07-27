@@ -71,6 +71,7 @@ public class ServerPanel extends JPanel {
 	Radial radialNetwork = new Radial();
 	Radial radialMemory = new Radial();
 	Frame frame;
+	public final JProgressBarDialog jprogressBarDialog = new JProgressBarDialog(frame, true);
 
 	public ServerPanel(final Frame frame) {
 		this.frame = frame;
@@ -280,10 +281,33 @@ public class ServerPanel extends JPanel {
 				if (tableServer.getSelectedRowCount() == 0) {
 					JOptionPane.showMessageDialog(frame, "Please select a server !", "Error", JOptionPane.ERROR_MESSAGE);
 				} else {
-					String id = (String) tableServer.getValueAt(tableServer.getSelectedRow(), 1);
-					EditServerDialog dialog = new EditServerDialog(frame, id);
-					dialog.setVisible(true);
-					((ServerTableModel) tableServer.getModel()).fireTableDataChanged();
+					if (tableServer.getSelectedRow() == 0) {
+						JOptionPane.showMessageDialog(frame, "Primary server cannot be edit !", "Error", JOptionPane.ERROR_MESSAGE);
+					} else {
+						String id = (String) tableServer.getValueAt(tableServer.getSelectedRow(), 1);
+						String ip = (String) tableServer.getValueAt(tableServer.getSelectedRow(), 2);
+
+						int serverIndex = -1;
+						for (int x = TitanSetting.getInstance().titanServers.size() - 1; x >= 0; x--) {
+							TitanServerDefinition server = TitanSetting.getInstance().titanServers.get(x);
+							if (server.id.equals(id) && server.ip.equals(ip)) {
+								serverIndex = x;
+								break;
+							}
+						}
+
+						EditServerDialog dialog = new EditServerDialog(frame, id);
+
+						dialog.textFieldID.setText(id);
+						dialog.textFieldIP.setText(ip);
+						dialog.setVisible(true);
+						if (serverIndex != -1) {
+							TitanSetting.getInstance().titanServers.get(serverIndex).id = dialog.textFieldID.getText();
+							TitanSetting.getInstance().titanServers.get(serverIndex).ip = dialog.textFieldIP.getText();
+							TitanSetting.getInstance().save();
+						}
+						((ServerTableModel) tableServer.getModel()).fireTableDataChanged();
+					}
 				}
 			}
 		});
@@ -292,19 +316,25 @@ public class ServerPanel extends JPanel {
 		JButton btnDelete = new JButton("Delete");
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (tableServer.getSelectedRowCount() == 1) {
-					ServerTableModel model = (ServerTableModel) tableServer.getModel();
-					int rowNo = tableServer.getSelectedRow();
-					String id = (String) model.getValueAt(rowNo, 1);
-					String ip = (String) model.getValueAt(rowNo, 2);
-					for (int x = TitanSetting.getInstance().titanServers.size() - 1; x >= 0; x--) {
-						TitanServerDefinition server = TitanSetting.getInstance().titanServers.get(x);
-						if (server.id.equals(id) && server.ip.equals(ip)) {
-							TitanSetting.getInstance().titanServers.remove(x);
+				if (tableServer.getSelectedRowCount() == 0) {
+					JOptionPane.showMessageDialog(frame, "Please select a server !", "Error", JOptionPane.ERROR_MESSAGE);
+				} else {
+					if (tableServer.getSelectedRow() == 0) {
+						JOptionPane.showMessageDialog(frame, "Primary server cannot be delete !", "Error", JOptionPane.ERROR_MESSAGE);
+					} else {
+						ServerTableModel model = (ServerTableModel) tableServer.getModel();
+						int rowNo = tableServer.getSelectedRow();
+						String id = (String) model.getValueAt(rowNo, 1);
+						String ip = (String) model.getValueAt(rowNo, 2);
+						for (int x = TitanSetting.getInstance().titanServers.size() - 1; x >= 0; x--) {
+							TitanServerDefinition server = TitanSetting.getInstance().titanServers.get(x);
+							if (server.id.equals(id) && server.ip.equals(ip)) {
+								TitanSetting.getInstance().titanServers.remove(x);
+							}
 						}
+						TitanSetting.getInstance().save();
+						model.fireTableDataChanged();
 					}
-					TitanSetting.getInstance().save();
-					model.fireTableDataChanged();
 				}
 			}
 		});
@@ -365,10 +395,9 @@ public class ServerPanel extends JPanel {
 	}
 
 	protected void refresh() {
-		final JProgressBarDialog d = new JProgressBarDialog(frame, true);
-		d.thread = new Thread() {
+		jprogressBarDialog.thread = new Thread() {
 			public void run() {
-				d.jProgressBar.setString("getting setver info");
+				jprogressBarDialog.jProgressBar.setString("getting setver info");
 				Command command = new Command();
 				command.command = "getTitanServerInfo";
 				command.parameters.add(tableServer.getValueAt(tableServer.getSelectedRow(), 1));
@@ -509,8 +538,8 @@ public class ServerPanel extends JPanel {
 				}
 			}
 		};
-		d.jProgressBar.setIndeterminate(true);
-		d.jProgressBar.setStringPainted(true);
-		d.setVisible(true);
+		jprogressBarDialog.jProgressBar.setIndeterminate(true);
+		jprogressBarDialog.jProgressBar.setStringPainted(true);
+		jprogressBarDialog.setVisible(true);
 	}
 }

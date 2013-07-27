@@ -26,13 +26,14 @@ import org.apache.commons.io.IOUtils;
 
 import com.peterswing.CommonLib;
 import com.peterswing.FilterTreeModel;
-import com.titan.AddServerDialog;
 import com.titan.Global;
 import com.titan.LicenseDialog;
 import com.titan.MainPanel;
 import com.titan.Titan;
+import com.titan.TitanCommonLib;
 import com.titan.TitanSetting;
 import com.titan.WelcomePanel;
+import com.titan.communication.CommunicateLib;
 import com.titan.flavorpanel.FlavorPanel;
 import com.titan.instancepanel.InstancePanel;
 import com.titan.keystonepanel.KeystonePanel;
@@ -42,6 +43,8 @@ import com.titan.settingpanel.SettingPanel;
 import com.titan.storagepanel.StoragePanel;
 import com.titan.thread.TitanServerUpdateThread;
 import com.titan.vdipanel.VDIPanel;
+import com.titanserver.Command;
+import com.titanserver.ReturnCommand;
 import com.titanserver.structure.TitanServerDefinition;
 
 public class MainFrame extends JFrame {
@@ -53,6 +56,7 @@ public class MainFrame extends JFrame {
 	public static JTree serverTree;
 	TextTreeNode serverRoot = new TextTreeNode("Servers");
 	FilterTreeModel projectFilterTreeModel = new FilterTreeModel(new ServerTreeModel(serverRoot));
+	MainServerPanel mainServerPanel;
 
 	public MainFrame() {
 		setTitle("Titan");
@@ -110,9 +114,12 @@ public class MainFrame extends JFrame {
 		lblServer.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				mainContentPanel.removeAll();
-				mainContentPanel.add(new MainServerPanel(MainFrame.this), BorderLayout.CENTER);
-				mainContentPanel.updateUI();
+				if (mainServerPanel == null || !mainServerPanel.serverPanel.jprogressBarDialog.isActive()) {
+					mainContentPanel.removeAll();
+					mainServerPanel = new MainServerPanel(MainFrame.this);
+					mainContentPanel.add(mainServerPanel, BorderLayout.CENTER);
+					mainContentPanel.updateUI();
+				}
 			}
 		});
 		lblServer.setForeground(Color.DARK_GRAY);
@@ -221,32 +228,6 @@ public class MainFrame extends JFrame {
 		lblSettings.setForeground(Color.DARK_GRAY);
 		lblSettings.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
 		controlPanel.add(lblSettings, "cell 0 17,grow");
-
-		JLabel AddServerLabel = new JLabel("");
-		AddServerLabel.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				AddServerDialog addServerDialog = new AddServerDialog(MainFrame.this);
-				CommonLib.centerDialog(addServerDialog);
-				addServerDialog.setVisible(true);
-
-				updateServerTree();
-			}
-		});
-		AddServerLabel.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/famfamfam/add.png")));
-		controlPanel.add(AddServerLabel, "cell 0 2");
-
-		final JLabel editServerLabel = new JLabel("");
-		editServerLabel.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				AddServerDialog d = new AddServerDialog(MainFrame.this);
-				d.setLocationRelativeTo(editServerLabel);
-				d.setVisible(true);
-			}
-		});
-		editServerLabel.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/famfamfam/pencil.png")));
-		controlPanel.add(editServerLabel, "cell 0 2");
 		splitPane.setLeftComponent(panel);
 
 		JButton btnLogout = new JButton("Logout");
@@ -298,6 +279,14 @@ public class MainFrame extends JFrame {
 		TitanServerDefinition serverDefinition = new TitanServerDefinition();
 		serverDefinition.id = "";
 		serverDefinition.ip = Global.primaryServerIP;
+
+		Command command = new Command();
+		command.command = "getID";
+		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+		if (r != null) {
+			serverDefinition.id = r.message;
+		}
+
 		ServerTreeNode server = new ServerTreeNode(serverDefinition);
 		server.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/famfamfam/server.png")));
 		serverRoot.children.add(server);

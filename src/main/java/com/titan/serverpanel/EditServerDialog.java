@@ -21,8 +21,8 @@ import com.titanserver.structure.TitanServerDefinition;
 
 public class EditServerDialog extends JDialog {
 	private final JPanel contentPanel = new JPanel();
-	private JTextField textFieldID;
-	private JTextField textFieldIP;
+	public JTextField textFieldID;
+	public JTextField textFieldIP;
 	private JLabel lblError = new JLabel("");
 	Frame frame;
 	String serverId;
@@ -77,11 +77,18 @@ public class EditServerDialog extends JDialog {
 							lblError.setText("IP cannot be empty");
 							return;
 						}
-						TitanServerDefinition titanServerDefinition = new TitanServerDefinition();
-						titanServerDefinition.id = textFieldID.getText();
-						titanServerDefinition.ip = textFieldIP.getText();
-						TitanSetting.getInstance().addTitanServers(titanServerDefinition);
-						TitanSetting.getInstance().save();
+
+						int duplicate = 0;
+						for (int x = TitanSetting.getInstance().titanServers.size() - 1; x >= 0; x--) {
+							TitanServerDefinition server = TitanSetting.getInstance().titanServers.get(x);
+							if (server.id.equals(textFieldID.getText())) {
+								duplicate++;
+							}
+						}
+						if (duplicate > 0) {
+							lblError.setText("ID is duplicated with other");
+							return;
+						}
 						setVisible(false);
 					}
 				});

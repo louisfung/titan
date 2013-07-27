@@ -16,6 +16,7 @@ import com.titan.openstackserver.OpenstackServerFrame;
 
 public class MainServerPanel extends JPanel implements MainPanel {
 	JFrame parentFrame;
+	public ServerPanel serverPanel;
 
 	public MainServerPanel(JFrame parentFrame) {
 		this.parentFrame = parentFrame;
@@ -29,12 +30,11 @@ public class MainServerPanel extends JPanel implements MainPanel {
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		add(tabbedPane, BorderLayout.CENTER);
 
-		ServerPanel serverPanel = new ServerPanel(parentFrame);
+		serverPanel = new ServerPanel(parentFrame);
 		ServerPanel.tableServer.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (e.getClickCount() == 2) {
-					System.out.println("ok");
 					OpenstackServerFrame f = new OpenstackServerFrame(MainServerPanel.this.parentFrame);
 					f.setVisible(true);
 				}
@@ -44,7 +44,6 @@ public class MainServerPanel extends JPanel implements MainPanel {
 
 		ServerGraphPanel serverGraphPanel = new ServerGraphPanel();
 		tabbedPane.addTab("Graph", null, serverGraphPanel, null);
-
 	}
 
 	public void refresh() {
