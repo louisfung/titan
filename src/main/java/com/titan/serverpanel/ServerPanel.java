@@ -43,6 +43,8 @@ import com.peterswing.advancedswing.searchtextfield.JSearchTextField;
 import com.titan.TitanCommonLib;
 import com.titan.TitanSetting;
 import com.titan.communication.CommunicateLib;
+import com.titan.flavorpanel.FlavorPanel;
+import com.titan.mainframe.MainFrame;
 import com.titan.thread.Status;
 import com.titan.thread.TitanServerUpdateThread;
 import com.titanserver.Command;
@@ -271,6 +273,7 @@ public class ServerPanel extends JPanel {
 				AddServerDialog dialog = new AddServerDialog(frame);
 				dialog.setVisible(true);
 				((ServerTableModel) tableServer.getModel()).fireTableDataChanged();
+				((MainFrame) frame).updateServerTree();
 			}
 		});
 		panel.add(btnAdd);
@@ -307,6 +310,7 @@ public class ServerPanel extends JPanel {
 							TitanSetting.getInstance().save();
 						}
 						((ServerTableModel) tableServer.getModel()).fireTableDataChanged();
+						((MainFrame) frame).updateServerTree();
 					}
 				}
 			}
@@ -326,14 +330,19 @@ public class ServerPanel extends JPanel {
 						int rowNo = tableServer.getSelectedRow();
 						String id = (String) model.getValueAt(rowNo, 1);
 						String ip = (String) model.getValueAt(rowNo, 2);
-						for (int x = TitanSetting.getInstance().titanServers.size() - 1; x >= 0; x--) {
-							TitanServerDefinition server = TitanSetting.getInstance().titanServers.get(x);
-							if (server.id.equals(id) && server.ip.equals(ip)) {
-								TitanSetting.getInstance().titanServers.remove(x);
+
+						int temp = JOptionPane.showConfirmDialog(frame, "Confirm to delete server " + id + " (" + ip + ") ?", "Warning", JOptionPane.YES_NO_OPTION);
+						if (temp == JOptionPane.YES_OPTION) {
+							for (int x = TitanSetting.getInstance().titanServers.size() - 1; x >= 0; x--) {
+								TitanServerDefinition server = TitanSetting.getInstance().titanServers.get(x);
+								if (server.id.equals(id) && server.ip.equals(ip)) {
+									TitanSetting.getInstance().titanServers.remove(x);
+								}
 							}
+							TitanSetting.getInstance().save();
+							model.fireTableDataChanged();
+							((MainFrame) frame).updateServerTree();
 						}
-						TitanSetting.getInstance().save();
-						model.fireTableDataChanged();
 					}
 				}
 			}

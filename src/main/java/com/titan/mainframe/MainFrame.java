@@ -55,7 +55,7 @@ public class MainFrame extends JFrame {
 	private WelcomePanel welcomePanel;
 	public static JTree serverTree;
 	TextTreeNode serverRoot = new TextTreeNode("Servers");
-	FilterTreeModel projectFilterTreeModel = new FilterTreeModel(new ServerTreeModel(serverRoot));
+	public FilterTreeModel projectFilterTreeModel = new FilterTreeModel(new ServerTreeModel(serverRoot));
 	MainServerPanel mainServerPanel;
 
 	public MainFrame() {
@@ -274,7 +274,7 @@ public class MainFrame extends JFrame {
 		new Thread(new TitanServerUpdateThread()).start();
 	}
 
-	protected void updateServerTree() {
+	public void updateServerTree() {
 		serverRoot.children.removeAllElements();
 		TitanServerDefinition serverDefinition = new TitanServerDefinition();
 		serverDefinition.id = "";
