@@ -62,7 +62,11 @@ public class MainFrame extends JFrame {
 		setTitle("Titan");
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1200, 700);
-		setIconImage(new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/titan_icon.png")).getImage());
+
+		if (!Titan.hideLogo) {//$hide$
+			setIconImage(new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/titan_icon.png")).getImage());
+		}//$hide$
+
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
 		setContentPane(contentPane);
@@ -82,7 +86,11 @@ public class MainFrame extends JFrame {
 				mainContentPanel.updateUI();
 			}
 		});
-		logoLabel.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/titanLogo.png")));
+
+		if (!Titan.hideLogo) {//$hide$
+			logoLabel.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/titanLogo.png")));
+		}//$hide$
+
 		//		logoLabel.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/openstack-logo.png")));
 		panel.add(logoLabel, BorderLayout.NORTH);
 
@@ -245,8 +253,9 @@ public class MainFrame extends JFrame {
 		mainContentPanel.add(welcomePanel, BorderLayout.CENTER);
 		welcomePanel.setLayout(new BorderLayout(0, 0));
 		welcomePanel.add(mainScreenLabel, BorderLayout.CENTER);
-
-		mainScreenLabel.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainscreen.png")));
+		if (!Titan.hideLogo) {//$hide$
+			mainScreenLabel.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainscreen.png")));
+		}//$hide$
 
 		JPanel panel_1 = new JPanel();
 		welcomePanel.add(panel_1, BorderLayout.SOUTH);

@@ -24,6 +24,14 @@ import javax.swing.SwingConstants;
 import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
+import org.apache.commons.cli.CommandLine;
+import org.apache.commons.cli.CommandLineParser;
+import org.apache.commons.cli.HelpFormatter;
+import org.apache.commons.cli.OptionBuilder;
+import org.apache.commons.cli.Options;
+import org.apache.commons.cli.ParseException;
+import org.apache.commons.cli.PosixParser;
+
 import com.titan.communication.CommunicateLib;
 import com.titan.mainframe.MainFrame;
 import com.titanserver.Command;
@@ -36,10 +44,35 @@ public class Titan extends JFrame {
 	private JPasswordField textFieldPassword;
 	private JLabel lblErrorMessage = new JLabel("");
 	MainFrame mainframe;
+	static CommandLine cmd;
+	public static boolean hideLogo;
 
-	public static void main(String[] args) {
+	public static void main(final String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
+				CommandLineParser parser = new PosixParser();
+				Options options = new Options();
+				try {
+					//options.addOption(OptionBuilder.withDescription("specific config xml").hasArg().withArgName("file").create("f"));
+					options.addOption("v", "version", false, "display version info");
+					options.addOption("n", "nologo", false, "hide logo");
+					cmd = parser.parse(options, args);
+				} catch (ParseException e1) {
+					e1.printStackTrace();
+					System.exit(1);
+				}
+
+				if (cmd.hasOption("version") || cmd.hasOption("v")) {
+					System.out.println("version : " + Global.version);
+					HelpFormatter formatter = new HelpFormatter();
+					formatter.printHelp("java -jar titan.jar [OPTION]", options);
+					System.exit(1);
+				}
+
+				if (cmd.hasOption("nologo") || cmd.hasOption("n")) {
+					hideLogo = true;
+				}
+
 				try {
 					UIManager.setLookAndFeel("com.peterswing.white.PeterSwingWhiteLookAndFeel");
 				} catch (Exception e) {
@@ -87,7 +120,9 @@ public class Titan extends JFrame {
 		lblIp.setHorizontalAlignment(SwingConstants.RIGHT);
 
 		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setIcon(new ImageIcon(Titan.class.getResource("/com/titan/image/titan_logo.png")));
+		if (!hideLogo) { //$hide$
+			lblNewLabel.setIcon(new ImageIcon(Titan.class.getResource("/com/titan/image/titan_logo.png")));
+		} //$hide$
 
 		textFieldIP = new JTextField();
 		textFieldIP.addKeyListener(new KeyAdapter() {
