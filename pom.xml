@@ -3,7 +3,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>com.titan</groupId>
 	<artifactId>titan</artifactId>
-	<version>20131001</version>
+	<version>20131009</version>
 	<dependencies>
 		<dependency>
 			<groupId>com.apple</groupId>
