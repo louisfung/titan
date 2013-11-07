@@ -41,6 +41,9 @@ import com.titan.TitanCommonLib;
 import com.titan.communication.CommunicateLib;
 import com.titanserver.Command;
 import com.titanserver.ReturnCommand;
+import info.monitorenter.gui.chart.Chart2D;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class InstancePanel extends JPanel implements Runnable, MainPanel {
 	JTable instanceTable;
@@ -49,6 +52,7 @@ public class InstancePanel extends JPanel implements Runnable, MainPanel {
 	GenericTableModel instanceTableModel = new GenericTableModel();
 	SortableTableModel instanceSortableTableModel = new SortableTableModel(instanceTableModel);
 	TableSorterColumnListener instanceTableSorterColumnListener;
+	final JSearchTextField searchTextField = new JSearchTextField();
 
 	public InstancePanel(JFrame frame) {
 		this.frame = frame;
@@ -99,25 +103,46 @@ public class InstancePanel extends JPanel implements Runnable, MainPanel {
 		instanceTable.getTableHeader().addMouseListener(instanceTableSorterColumnListener);
 		scrollPane.setViewportView(instanceTable);
 
-		JSearchTextField searchTextField = new JSearchTextField();
+		searchTextField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				instanceTableModel.searchPattern = searchTextField.getText();
+				instanceTableModel.fireTableDataChanged();
+				instanceTable.updateUI();
+			}
+		});
 
 		JPanel panel = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
 		flowLayout.setAlignment(FlowLayout.LEFT);
 		GroupLayout groupLayout = new GroupLayout(this);
-		groupLayout.setHorizontalGroup(groupLayout
-				.createParallelGroup(Alignment.LEADING)
+		groupLayout.setHorizontalGroup(
+			groupLayout.createParallelGroup(Alignment.TRAILING)
 				.addComponent(lblInstances, GroupLayout.PREFERRED_SIZE, 652, GroupLayout.PREFERRED_SIZE)
-				.addGroup(
-						groupLayout.createSequentialGroup().addGap(23).addComponent(searchTextField, GroupLayout.PREFERRED_SIZE, 214, GroupLayout.PREFERRED_SIZE)
-								.addContainerGap(415, Short.MAX_VALUE))
-				.addGroup(groupLayout.createSequentialGroup().addContainerGap().addComponent(panel, GroupLayout.DEFAULT_SIZE, 640, Short.MAX_VALUE).addContainerGap())
-				.addGroup(groupLayout.createSequentialGroup().addContainerGap().addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 640, Short.MAX_VALUE).addContainerGap()));
-		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(
-				groupLayout.createSequentialGroup().addComponent(lblInstances).addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(searchTextField, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE).addGap(13)
-						.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 345, Short.MAX_VALUE).addPreferredGap(ComponentPlacement.RELATED)
-						.addComponent(panel, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)));
+				.addGroup(groupLayout.createSequentialGroup()
+					.addGap(23)
+					.addComponent(searchTextField, GroupLayout.PREFERRED_SIZE, 214, GroupLayout.PREFERRED_SIZE)
+					.addContainerGap(798, Short.MAX_VALUE))
+				.addGroup(groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(panel, GroupLayout.DEFAULT_SIZE, 1023, Short.MAX_VALUE)
+					.addContainerGap())
+				.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
+					.addContainerGap()
+					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 1012, Short.MAX_VALUE)
+					.addGap(17))
+		);
+		groupLayout.setVerticalGroup(
+			groupLayout.createParallelGroup(Alignment.LEADING)
+				.addGroup(groupLayout.createSequentialGroup()
+					.addComponent(lblInstances)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(searchTextField, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
+					.addGap(13)
+					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 485, Short.MAX_VALUE)
+					.addPreferredGap(ComponentPlacement.RELATED)
+					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE))
+		);
 
 		JButton btnLaunch = new JButton("Launch");
 		btnLaunch.setIcon(new ImageIcon(InstancePanel.class.getResource("/com/titan/image/famfamfam/add.png")));
