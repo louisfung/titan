@@ -59,7 +59,7 @@ public class MainFrame extends JFrame {
 	MainServerPanel mainServerPanel;
 
 	public MainFrame() {
-		setTitle("Titan");
+		setTitle("Titan " + Global.version);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 1200, 700);
 
