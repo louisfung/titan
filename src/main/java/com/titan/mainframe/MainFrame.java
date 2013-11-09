@@ -34,6 +34,7 @@ import com.titan.TitanCommonLib;
 import com.titan.TitanSetting;
 import com.titan.WelcomePanel;
 import com.titan.communication.CommunicateLib;
+import com.titan.dashboard.DashboardPanel;
 import com.titan.flavorpanel.FlavorPanel;
 import com.titan.instancepanel.InstancePanel;
 import com.titan.keystonepanel.KeystonePanel;
@@ -101,6 +102,14 @@ public class MainFrame extends JFrame {
 		controlPanel.setLayout(new MigLayout("", "[1px,grow]", "[1px][][][grow][][][][][][][][][][][][][][]"));
 
 		JLabel lblDashboard = new JLabel("");
+		lblDashboard.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				mainContentPanel.removeAll();
+				mainContentPanel.add(new DashboardPanel(MainFrame.this), BorderLayout.CENTER);
+				mainContentPanel.updateUI();
+			}
+		});
 		lblDashboard.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/dashboard.png")));
 		lblDashboard.setForeground(Color.DARK_GRAY);
 		lblDashboard.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
