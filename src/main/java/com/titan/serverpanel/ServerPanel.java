@@ -17,6 +17,7 @@ import java.awt.event.MouseEvent;
 import java.util.Timer;
 import java.util.TimerTask;
 
+import javax.swing.BoxLayout;
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
@@ -32,6 +33,8 @@ import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
 
+import net.miginfocom.swing.MigLayout;
+
 import org.hyperic.sigar.Cpu;
 import org.hyperic.sigar.CpuInfo;
 import org.hyperic.sigar.CpuPerc;
@@ -43,7 +46,6 @@ import com.peterswing.advancedswing.searchtextfield.JSearchTextField;
 import com.titan.TitanCommonLib;
 import com.titan.TitanSetting;
 import com.titan.communication.CommunicateLib;
-import com.titan.flavorpanel.FlavorPanel;
 import com.titan.mainframe.MainFrame;
 import com.titan.thread.Status;
 import com.titan.thread.TitanServerUpdateThread;
@@ -52,8 +54,6 @@ import com.titanserver.ReturnCommand;
 import com.titanserver.structure.TitanServerDefinition;
 
 import eu.hansolo.steelseries.gauges.Radial;
-import net.miginfocom.swing.MigLayout;
-import javax.swing.BoxLayout;
 
 public class ServerPanel extends JPanel {
 	public static JTable tableServer = new JTable();
@@ -161,6 +161,16 @@ public class ServerPanel extends JPanel {
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		panel_1.add(tabbedPane, BorderLayout.CENTER);
+		
+		JPanel panel_3 = new JPanel();
+		tabbedPane.addTab("New tab", null, panel_3, null);
+		panel_3.setLayout(new BorderLayout(0, 0));
+		
+		JScrollPane scrollPane_8 = new JScrollPane();
+		panel_3.add(scrollPane_8, BorderLayout.CENTER);
+		
+		ServerInfoPanel serverInfoPanel = new ServerInfoPanel();
+		scrollPane_8.setViewportView(serverInfoPanel);
 
 		JScrollPane scrollPane_7 = new JScrollPane();
 		tabbedPane.addTab("Info", null, scrollPane_7, null);
