@@ -52,6 +52,8 @@ import com.titanserver.ReturnCommand;
 import com.titanserver.structure.TitanServerDefinition;
 
 import eu.hansolo.steelseries.gauges.Radial;
+import net.miginfocom.swing.MigLayout;
+import javax.swing.BoxLayout;
 
 public class ServerPanel extends JPanel {
 	public static JTable tableServer = new JTable();
@@ -78,13 +80,6 @@ public class ServerPanel extends JPanel {
 	public ServerPanel(final Frame frame) {
 		this.frame = frame;
 		tableServer.getTableHeader().setReorderingAllowed(false);
-		chart.getAxisY().setRangePolicy(new RangePolicyMinimumViewport(new Range(-1, +1)));
-		chart.addTrace(combinedTrace);
-		chart.addTrace(sysTrace);
-		chart.addTrace(userTrace);
-		chart.getAxisX().setPaintGrid(true);
-		chart.getAxisY().setPaintGrid(true);
-		chart.setGridColor(Color.LIGHT_GRAY);
 		combinedTrace.setName("sys + user");
 		sysTrace.setName("sys");
 		userTrace.setName("user");
@@ -172,56 +167,52 @@ public class ServerPanel extends JPanel {
 
 		JPanel panelInfo = new JPanel();
 		scrollPane_7.setViewportView(panelInfo);
-
-		radialCpu.setTitle("Cpu");
-		radialCpu.setUnitString("%");
-		radialCpu.setTrackStart(70);
-		radialCpu.setTrackStop(100);
-		radialCpu.setTrackVisible(true);
-		radialCpu.setLcdVisible(true);
-		radialCpu.setValueAnimated(50);
-		radialCpu.setTrackStartColor(Color.orange);
-		radialCpu.setTrackStopColor(Color.red);
-
-		radialMemory.setValueAnimated(50.0);
-		radialMemory.setUnitString("%");
-		radialMemory.setTrackVisible(true);
-		radialMemory.setTrackStopColor(Color.RED);
-		radialMemory.setTrackStop(100.0);
-		radialMemory.setTrackStartColor(Color.ORANGE);
-		radialMemory.setTrackStart(70.0);
-		radialMemory.setTitle("Ram");
-		radialMemory.setLcdVisible(true);
-
-		radialNetwork.setValueAnimated(50.0);
-		radialNetwork.setUnitString("Mbps");
-		radialNetwork.setTrackVisible(true);
-		radialNetwork.setTrackStopColor(Color.RED);
-		radialNetwork.setTrackStop(100.0);
-		radialNetwork.setTrackStartColor(Color.ORANGE);
-		radialNetwork.setTrackStart(70.0);
-		radialNetwork.setTitle("Network");
-		radialNetwork.setLcdVisible(true);
-
-		GroupLayout gl_panelInfo = new GroupLayout(panelInfo);
-		gl_panelInfo.setHorizontalGroup(gl_panelInfo.createParallelGroup(Alignment.LEADING).addGroup(
-				gl_panelInfo.createSequentialGroup().addContainerGap().addComponent(radialCpu, GroupLayout.PREFERRED_SIZE, 202, GroupLayout.PREFERRED_SIZE).addGap(20)
-						.addComponent(radialMemory, GroupLayout.PREFERRED_SIZE, 201, GroupLayout.PREFERRED_SIZE).addGap(20)
-						.addComponent(radialNetwork, GroupLayout.PREFERRED_SIZE, 201, GroupLayout.PREFERRED_SIZE).addGap(12)
-						.addComponent(chart, GroupLayout.DEFAULT_SIZE, 265, Short.MAX_VALUE).addContainerGap()));
-		gl_panelInfo.setVerticalGroup(gl_panelInfo
-				.createParallelGroup(Alignment.LEADING)
-				.addGroup(
-						gl_panelInfo
-								.createSequentialGroup()
-								.addGap(47)
-								.addGroup(
-										gl_panelInfo.createParallelGroup(Alignment.TRAILING)
-												.addComponent(radialMemory, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)
-												.addComponent(radialCpu, Alignment.LEADING, GroupLayout.PREFERRED_SIZE, GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-												.addComponent(radialNetwork, Alignment.LEADING, GroupLayout.DEFAULT_SIZE, 201, Short.MAX_VALUE)))
-				.addGroup(gl_panelInfo.createSequentialGroup().addContainerGap().addComponent(chart, GroupLayout.DEFAULT_SIZE, 294, Short.MAX_VALUE).addGap(9)));
-		panelInfo.setLayout(gl_panelInfo);
+		panelInfo.setLayout(new MigLayout("", "[150px,grow][201px][201px][265px,grow]", "[150][][][grow]"));
+				chart.getAxisY().setRangePolicy(new RangePolicyMinimumViewport(new Range(-1, +1)));
+				chart.addTrace(combinedTrace);
+				chart.addTrace(sysTrace);
+				chart.addTrace(userTrace);
+				chart.getAxisX().setPaintGrid(true);
+				chart.getAxisY().setPaintGrid(true);
+				chart.setGridColor(Color.LIGHT_GRAY);
+				panelInfo.add(chart, "cell 1 0 3 4,grow");
+						
+						JPanel panel_2 = new JPanel();
+						panelInfo.add(panel_2, "cell 0 0 1 4,grow");
+						panel_2.setLayout(new BoxLayout(panel_2, BoxLayout.Y_AXIS));
+								panel_2.add(radialCpu);
+						
+								radialCpu.setTitle("Cpu");
+								radialCpu.setUnitString("%");
+								radialCpu.setTrackStart(70);
+								radialCpu.setTrackStop(100);
+								radialCpu.setTrackVisible(true);
+								radialCpu.setLcdVisible(true);
+								radialCpu.setValueAnimated(50);
+								radialCpu.setTrackStartColor(Color.orange);
+								radialCpu.setTrackStopColor(Color.red);
+										panel_2.add(radialMemory);
+								
+										radialMemory.setValueAnimated(50.0);
+										radialMemory.setUnitString("%");
+										radialMemory.setTrackVisible(true);
+										radialMemory.setTrackStopColor(Color.RED);
+										radialMemory.setTrackStop(100.0);
+										radialMemory.setTrackStartColor(Color.ORANGE);
+										radialMemory.setTrackStart(70.0);
+										radialMemory.setTitle("Ram");
+										radialMemory.setLcdVisible(true);
+												panel_2.add(radialNetwork);
+										
+												radialNetwork.setValueAnimated(50.0);
+												radialNetwork.setUnitString("Mbps");
+												radialNetwork.setTrackVisible(true);
+												radialNetwork.setTrackStopColor(Color.RED);
+												radialNetwork.setTrackStop(100.0);
+												radialNetwork.setTrackStartColor(Color.ORANGE);
+												radialNetwork.setTrackStart(70.0);
+												radialNetwork.setTitle("Network");
+												radialNetwork.setLcdVisible(true);
 
 		JScrollPane scrollPane_1 = new JScrollPane();
 		tabbedPane.addTab("Cpu", null, scrollPane_1, null);
