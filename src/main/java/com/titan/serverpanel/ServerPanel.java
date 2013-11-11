@@ -161,14 +161,14 @@ public class ServerPanel extends JPanel {
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		panel_1.add(tabbedPane, BorderLayout.CENTER);
-		
+
 		JPanel panel_3 = new JPanel();
 		tabbedPane.addTab("New tab", null, panel_3, null);
 		panel_3.setLayout(new BorderLayout(0, 0));
-		
+
 		JScrollPane scrollPane_8 = new JScrollPane();
 		panel_3.add(scrollPane_8, BorderLayout.CENTER);
-		
+
 		ServerInfoPanel serverInfoPanel = new ServerInfoPanel();
 		scrollPane_8.setViewportView(serverInfoPanel);
 
@@ -178,51 +178,51 @@ public class ServerPanel extends JPanel {
 		JPanel panelInfo = new JPanel();
 		scrollPane_7.setViewportView(panelInfo);
 		panelInfo.setLayout(new MigLayout("", "[150px,grow][201px][201px][265px,grow]", "[150][][][grow]"));
-				chart.getAxisY().setRangePolicy(new RangePolicyMinimumViewport(new Range(-1, +1)));
-				chart.addTrace(combinedTrace);
-				chart.addTrace(sysTrace);
-				chart.addTrace(userTrace);
-				chart.getAxisX().setPaintGrid(true);
-				chart.getAxisY().setPaintGrid(true);
-				chart.setGridColor(Color.LIGHT_GRAY);
-				panelInfo.add(chart, "cell 1 0 3 4,grow");
-						
-						JPanel panel_2 = new JPanel();
-						panelInfo.add(panel_2, "cell 0 0 1 4,grow");
-						panel_2.setLayout(new BoxLayout(panel_2, BoxLayout.Y_AXIS));
-								panel_2.add(radialCpu);
-						
-								radialCpu.setTitle("Cpu");
-								radialCpu.setUnitString("%");
-								radialCpu.setTrackStart(70);
-								radialCpu.setTrackStop(100);
-								radialCpu.setTrackVisible(true);
-								radialCpu.setLcdVisible(true);
-								radialCpu.setValueAnimated(50);
-								radialCpu.setTrackStartColor(Color.orange);
-								radialCpu.setTrackStopColor(Color.red);
-										panel_2.add(radialMemory);
-								
-										radialMemory.setValueAnimated(50.0);
-										radialMemory.setUnitString("%");
-										radialMemory.setTrackVisible(true);
-										radialMemory.setTrackStopColor(Color.RED);
-										radialMemory.setTrackStop(100.0);
-										radialMemory.setTrackStartColor(Color.ORANGE);
-										radialMemory.setTrackStart(70.0);
-										radialMemory.setTitle("Ram");
-										radialMemory.setLcdVisible(true);
-												panel_2.add(radialNetwork);
-										
-												radialNetwork.setValueAnimated(50.0);
-												radialNetwork.setUnitString("Mbps");
-												radialNetwork.setTrackVisible(true);
-												radialNetwork.setTrackStopColor(Color.RED);
-												radialNetwork.setTrackStop(100.0);
-												radialNetwork.setTrackStartColor(Color.ORANGE);
-												radialNetwork.setTrackStart(70.0);
-												radialNetwork.setTitle("Network");
-												radialNetwork.setLcdVisible(true);
+		chart.getAxisY().setRangePolicy(new RangePolicyMinimumViewport(new Range(-1, +1)));
+		chart.addTrace(combinedTrace);
+		chart.addTrace(sysTrace);
+		chart.addTrace(userTrace);
+		chart.getAxisX().setPaintGrid(true);
+		chart.getAxisY().setPaintGrid(true);
+		chart.setGridColor(Color.LIGHT_GRAY);
+		panelInfo.add(chart, "cell 1 0 3 4,grow");
+
+		JPanel panel_2 = new JPanel();
+		panelInfo.add(panel_2, "cell 0 0 1 4,grow");
+		panel_2.setLayout(new BoxLayout(panel_2, BoxLayout.Y_AXIS));
+		panel_2.add(radialCpu);
+
+		radialCpu.setTitle("Cpu");
+		radialCpu.setUnitString("%");
+		radialCpu.setTrackStart(70);
+		radialCpu.setTrackStop(100);
+		radialCpu.setTrackVisible(true);
+		radialCpu.setLcdVisible(true);
+		radialCpu.setValueAnimated(50);
+		radialCpu.setTrackStartColor(Color.orange);
+		radialCpu.setTrackStopColor(Color.red);
+		panel_2.add(radialMemory);
+
+		radialMemory.setValueAnimated(50.0);
+		radialMemory.setUnitString("%");
+		radialMemory.setTrackVisible(true);
+		radialMemory.setTrackStopColor(Color.RED);
+		radialMemory.setTrackStop(100.0);
+		radialMemory.setTrackStartColor(Color.ORANGE);
+		radialMemory.setTrackStart(70.0);
+		radialMemory.setTitle("Ram");
+		radialMemory.setLcdVisible(true);
+		panel_2.add(radialNetwork);
+
+		radialNetwork.setValueAnimated(50.0);
+		radialNetwork.setUnitString("Mbps");
+		radialNetwork.setTrackVisible(true);
+		radialNetwork.setTrackStopColor(Color.RED);
+		radialNetwork.setTrackStop(100.0);
+		radialNetwork.setTrackStartColor(Color.ORANGE);
+		radialNetwork.setTrackStart(70.0);
+		radialNetwork.setTitle("Network");
+		radialNetwork.setLcdVisible(true);
 
 		JScrollPane scrollPane_1 = new JScrollPane();
 		tabbedPane.addTab("Cpu", null, scrollPane_1, null);
@@ -354,7 +354,7 @@ public class ServerPanel extends JPanel {
 		panel.add(btnShell);
 		setLayout(groupLayout);
 
-		splitPane.setDividerLocation(150);
+		splitPane.setDividerLocation(70);
 
 		Timer timer = new Timer(true);
 		TimerTask task = new TimerTask() {

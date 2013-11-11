@@ -47,6 +47,8 @@ import com.titan.vdipanel.VDIPanel;
 import com.titanserver.Command;
 import com.titanserver.ReturnCommand;
 import com.titanserver.structure.TitanServerDefinition;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 
 public class MainFrame extends JFrame {
 	private JPanel contentPane;
@@ -60,9 +62,23 @@ public class MainFrame extends JFrame {
 	MainServerPanel mainServerPanel;
 
 	public MainFrame() {
+		addWindowListener(new WindowAdapter() {
+			@Override
+			public void windowClosing(WindowEvent e) {
+				TitanSetting.getInstance().x = MainFrame.this.getX();
+				TitanSetting.getInstance().y = MainFrame.this.getY();
+				TitanSetting.getInstance().width = MainFrame.this.getWidth();
+				TitanSetting.getInstance().height = MainFrame.this.getHeight();
+				TitanSetting.getInstance().save();
+			}
+		});
 		setTitle("Titan " + Global.version);
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-		setBounds(100, 100, 1200, 700);
+		if (TitanSetting.getInstance().width == 0 || TitanSetting.getInstance().height == 0) {
+			setBounds(TitanSetting.getInstance().x, TitanSetting.getInstance().y, 1200, 700);
+		} else {
+			setBounds(TitanSetting.getInstance().x, TitanSetting.getInstance().y, TitanSetting.getInstance().width, TitanSetting.getInstance().height);
+		}
 
 		if (!Titan.hideLogo) {//$hide$
 			setIconImage(new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/titan_icon.png")).getImage());
