@@ -1,6 +1,7 @@
 package com.titan.serverpanel;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -18,8 +19,6 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.data.time.Hour;
-import org.jfree.data.time.Minute;
 import org.jfree.data.time.Second;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
@@ -73,6 +72,7 @@ public class ServerInfoPanel extends JPanel implements Runnable {
 		fromDateChooser = new JDateChooser();
 		fromDateChooser.setDateFormatString("yyyy/MM/dd");
 		fromDateChooser.setDate(new Date());
+		fromDateChooser.setPreferredSize(new Dimension(150, 25));
 		panel.add(fromDateChooser);
 
 		for (int x = 0; x < 24; x++) {
@@ -86,6 +86,7 @@ public class ServerInfoPanel extends JPanel implements Runnable {
 		toDateChooser = new JDateChooser();
 		toDateChooser.setDateFormatString("yyyy/MM/dd");
 		toDateChooser.setDate(new Date());
+		toDateChooser.setPreferredSize(new Dimension(150, 25));
 		panel.add(toDateChooser);
 
 		for (int x = 0; x < 24; x++) {
@@ -102,7 +103,7 @@ public class ServerInfoPanel extends JPanel implements Runnable {
 
 		JPanel mainChartPanel = new JPanel();
 		add(mainChartPanel, "cell 0 1,grow");
-		mainChartPanel.setLayout(new MigLayout("", "[:25%:25%][:25%:25%][:25%:25%][:25%:25%]", "[250px]"));
+		mainChartPanel.setLayout(new MigLayout("", "[24%:n:24%][24%:n:24%][24%:n:24%][grow]", "[250px]"));
 
 		mainChartPanel.add(cpuChartPanel, "cell 0 0,alignx center,aligny top");
 		//		cpuChartPanel.setPreferredSize(new Dimension(chartWidth, chartHeight));
