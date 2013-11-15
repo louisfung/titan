@@ -167,6 +167,7 @@ public class ServerPanel extends JPanel {
 		panel_3.setLayout(new BorderLayout(0, 0));
 
 		JScrollPane scrollPane_8 = new JScrollPane();
+		scrollPane_8.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		panel_3.add(scrollPane_8, BorderLayout.CENTER);
 
 		ServerInfoPanel serverInfoPanel = new ServerInfoPanel();

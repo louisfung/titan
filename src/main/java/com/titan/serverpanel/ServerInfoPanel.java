@@ -29,6 +29,7 @@ import com.titanserver.Command;
 import com.titanserver.ReturnCommand;
 import com.titanserver.table.ServerDiagnostics;
 import com.toedter.calendar.JDateChooser;
+import javax.swing.JScrollPane;
 
 public class ServerInfoPanel extends JPanel implements Runnable {
 	private JDateChooser fromDateChooser;
@@ -52,14 +53,29 @@ public class ServerInfoPanel extends JPanel implements Runnable {
 	JFreeChart networkChart = ChartFactory.createTimeSeriesChart("", "", "io/s", networkDataset, false, false, false);
 	ChartPanel networkChartPanel = new ChartPanel(networkChart);
 
+	TimeSeriesCollection cpuDetailDataset = new TimeSeriesCollection();
+	JFreeChart cpuDetailChart = ChartFactory.createTimeSeriesChart("", "", "%", cpuDetailDataset, false, false, false);
+	ChartPanel cpuDetailChartPanel = new ChartPanel(cpuDetailChart);
+
+	TimeSeriesCollection memoryDetailDataset = new TimeSeriesCollection();
+	JFreeChart memoryDetailChart = ChartFactory.createTimeSeriesChart("", "", "%", memoryDetailDataset, false, false, false);
+	ChartPanel memoryDetailChartPanel = new ChartPanel(memoryDetailChart);
+
 	int chartWidth = 250;
 	int chartHeight = 250;
 	private final JComboBox<String> fromComboBox = new JComboBox<String>();
 	private final JComboBox<String> toComboBox = new JComboBox<String>();
 	private final JButton btnRefresh = new JButton("Refresh");
+	private final JLabel lblCpu = new JLabel("CPU");
+	private final JLabel lblMemory = new JLabel("Memory");
+	private final JLabel lblDiskIo = new JLabel("Disk I/O");
+	private final JLabel lblNetwork = new JLabel("Network");
+	private final JComboBox periodComboBox = new JComboBox();
+	private final JLabel lblCpuDetail = new JLabel("CPU Detail");
+	private final JLabel lblMemoryDetail = new JLabel("Memory Detail");
 
 	public ServerInfoPanel() {
-		setLayout(new MigLayout("", "[grow]", "[][grow][][]"));
+		setLayout(new MigLayout("", "[grow][][][]", "[][][250px][][250px][][250px,grow]"));
 
 		JPanel panel = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
@@ -100,26 +116,47 @@ public class ServerInfoPanel extends JPanel implements Runnable {
 		});
 
 		panel.add(btnRefresh);
-
-		JPanel mainChartPanel = new JPanel();
-		add(mainChartPanel, "cell 0 1,grow");
-		mainChartPanel.setLayout(new MigLayout("", "[24%:n:24%][24%:n:24%][24%:n:24%][grow]", "[250px]"));
-
-		mainChartPanel.add(cpuChartPanel, "cell 0 0,alignx center,aligny top");
 		//		cpuChartPanel.setPreferredSize(new Dimension(chartWidth, chartHeight));
 		changeChartStyle(cpuChart);
-
+		changeChartStyle(cpuDetailChart);
 		changeChartStyle(memoryChart);
-		//		memoryChartPanel.setPreferredSize(new Dimension(chartWidth, chartHeight));
-		mainChartPanel.add(memoryChartPanel, "cell 1 0,alignx center,aligny top");
-
+		changeChartStyle(memoryDetailChart);
 		changeChartStyle(diskChart);
-		//		diskChartPanel.setPreferredSize(new Dimension(chartWidth, chartHeight));
-		mainChartPanel.add(diskChartPanel, "cell 2 0,alignx center,aligny top");
-
 		changeChartStyle(networkChart);
-		//		networkChartPanel.setPreferredSize(new Dimension(chartWidth, chartHeight));
-		mainChartPanel.add(networkChartPanel, "cell 3 0,alignx center,aligny top");
+
+		add(periodComboBox, "cell 1 0,growx");
+
+		add(lblCpu, "cell 0 1,alignx center");
+
+		add(lblMemory, "cell 1 1");
+
+		add(lblDiskIo, "cell 2 1");
+
+		add(lblNetwork, "cell 3 1,alignx center");
+		cpuChartPanel.setRangeZoomable(false);
+		cpuChartPanel.setMouseZoomable(false);
+		add(cpuChartPanel, "cell 0 2");
+		memoryChartPanel.setRangeZoomable(false);
+		memoryChartPanel.setMouseZoomable(false);
+		add(memoryChartPanel, "cell 1 2");
+		diskChartPanel.setMouseZoomable(false);
+		diskChartPanel.setRangeZoomable(false);
+		add(diskChartPanel, "cell 2 2");
+		networkChartPanel.setMouseZoomable(false);
+		networkChartPanel.setRangeZoomable(false);
+		add(networkChartPanel, "cell 3 2");
+
+		add(lblCpuDetail, "cell 0 3,alignx center");
+		cpuDetailChartPanel.setRangeZoomable(false);
+		cpuDetailChartPanel.setMouseZoomable(false);
+
+		add(cpuDetailChartPanel, "cell 0 4 4 1,grow");
+
+		add(lblMemoryDetail, "cell 0 5");
+		memoryDetailChartPanel.setRangeZoomable(false);
+		memoryDetailChartPanel.setMouseZoomable(false);
+
+		add(memoryDetailChartPanel, "cell 0 6 4 1,grow");
 
 		new Thread(this).start();
 	}
@@ -163,7 +200,9 @@ public class ServerInfoPanel extends JPanel implements Runnable {
 			//			diskSeries.clear();
 			//			networkSeries.clear();
 			TimeSeries cpuSeries = new TimeSeries("cpu");
+			TimeSeries cpuDetailSeries = new TimeSeries("cpu");
 			TimeSeries memorySeries = new TimeSeries("memory");
+			TimeSeries memoryDetailSeries = new TimeSeries("memory");
 			TimeSeries diskSeries = new TimeSeries("disk");
 			TimeSeries networkSeries = new TimeSeries("network");
 			for (int x = list.size() - 1; x >= 0; x -= step) {
@@ -171,7 +210,9 @@ public class ServerInfoPanel extends JPanel implements Runnable {
 					ServerDiagnostics s = list.get(x);
 					Second second = new Second(s.getDate());
 					cpuSeries.add(second, s.getCpu());
+					cpuDetailSeries.add(second, s.getCpu());
 					memorySeries.add(second, s.getMemory());
+					memoryDetailSeries.add(second, s.getMemory());
 					diskSeries.add(second, s.getDisk());
 					networkSeries.add(second, s.getNetwork());
 				} catch (Exception ex) {
@@ -179,8 +220,12 @@ public class ServerInfoPanel extends JPanel implements Runnable {
 			}
 			cpuDataset.removeAllSeries();
 			cpuDataset.addSeries(cpuSeries);
+			cpuDetailDataset.removeAllSeries();
+			cpuDetailDataset.addSeries(cpuDetailSeries);
 			memoryDataset.removeAllSeries();
 			memoryDataset.addSeries(memorySeries);
+			memoryDetailDataset.removeAllSeries();
+			memoryDetailDataset.addSeries(memoryDetailSeries);
 			diskDataset.removeAllSeries();
 			diskDataset.addSeries(diskSeries);
 			networkDataset.removeAllSeries();
