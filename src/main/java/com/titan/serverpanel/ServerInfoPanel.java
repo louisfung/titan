@@ -29,7 +29,6 @@ import com.titanserver.Command;
 import com.titanserver.ReturnCommand;
 import com.titanserver.table.ServerDiagnostics;
 import com.toedter.calendar.JDateChooser;
-import javax.swing.JScrollPane;
 
 public class ServerInfoPanel extends JPanel implements Runnable {
 	private JDateChooser fromDateChooser;
@@ -70,17 +69,17 @@ public class ServerInfoPanel extends JPanel implements Runnable {
 	private final JLabel lblMemory = new JLabel("Memory");
 	private final JLabel lblDiskIo = new JLabel("Disk I/O");
 	private final JLabel lblNetwork = new JLabel("Network");
-	private final JComboBox periodComboBox = new JComboBox();
+	private final JComboBox periodComboBox = new JComboBox(new String[] { "mintue", "hour", "day", "month" });
 	private final JLabel lblCpuDetail = new JLabel("CPU Detail");
 	private final JLabel lblMemoryDetail = new JLabel("Memory Detail");
 
 	public ServerInfoPanel() {
-		setLayout(new MigLayout("", "[grow][][][]", "[][][250px][][250px][][250px,grow]"));
+		setLayout(new MigLayout("", "[][][][]", "[][][250px][][250px][][250px]"));
 
 		JPanel panel = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
 		flowLayout.setAlignment(FlowLayout.LEFT);
-		add(panel, "cell 0 0,grow");
+		add(panel, "cell 0 0 3 1,grow");
 
 		JLabel lblFrom = new JLabel("From");
 		panel.add(lblFrom);
@@ -114,6 +113,7 @@ public class ServerInfoPanel extends JPanel implements Runnable {
 			public void actionPerformed(ActionEvent e) {
 			}
 		});
+		panel.add(periodComboBox);
 
 		panel.add(btnRefresh);
 		//		cpuChartPanel.setPreferredSize(new Dimension(chartWidth, chartHeight));
@@ -124,13 +124,11 @@ public class ServerInfoPanel extends JPanel implements Runnable {
 		changeChartStyle(diskChart);
 		changeChartStyle(networkChart);
 
-		add(periodComboBox, "cell 1 0,growx");
-
 		add(lblCpu, "cell 0 1,alignx center");
 
-		add(lblMemory, "cell 1 1");
+		add(lblMemory, "cell 1 1,alignx center");
 
-		add(lblDiskIo, "cell 2 1");
+		add(lblDiskIo, "cell 2 1,alignx center");
 
 		add(lblNetwork, "cell 3 1,alignx center");
 		cpuChartPanel.setRangeZoomable(false);
@@ -147,12 +145,14 @@ public class ServerInfoPanel extends JPanel implements Runnable {
 		add(networkChartPanel, "cell 3 2");
 
 		add(lblCpuDetail, "cell 0 3,alignx center");
+		cpuDetailChartPanel.setMaximumDrawWidth(10240);
 		cpuDetailChartPanel.setRangeZoomable(false);
 		cpuDetailChartPanel.setMouseZoomable(false);
 
 		add(cpuDetailChartPanel, "cell 0 4 4 1,grow");
 
 		add(lblMemoryDetail, "cell 0 5");
+		memoryDetailChartPanel.setMaximumDrawWidth(10240);
 		memoryDetailChartPanel.setRangeZoomable(false);
 		memoryDetailChartPanel.setMouseZoomable(false);
 

@@ -8,6 +8,7 @@ import info.monitorenter.util.Range;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Frame;
 import java.awt.event.ActionEvent;
@@ -167,10 +168,10 @@ public class ServerPanel extends JPanel {
 		panel_3.setLayout(new BorderLayout(0, 0));
 
 		JScrollPane scrollPane_8 = new JScrollPane();
-		scrollPane_8.setHorizontalScrollBarPolicy(JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		panel_3.add(scrollPane_8, BorderLayout.CENTER);
 
 		ServerInfoPanel serverInfoPanel = new ServerInfoPanel();
+		serverInfoPanel.setPreferredSize(new Dimension(500, 10));
 		scrollPane_8.setViewportView(serverInfoPanel);
 
 		JScrollPane scrollPane_7 = new JScrollPane();
