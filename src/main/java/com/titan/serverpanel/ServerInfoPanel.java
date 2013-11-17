@@ -214,6 +214,8 @@ public class ServerInfoPanel extends JPanel implements Runnable {
 		toDate.setHours(Integer.parseInt(toComboBox.getSelectedItem().toString().split(":")[0]));
 		toDate.setMinutes(Integer.parseInt(toComboBox.getSelectedItem().toString().split(":")[1]));
 		toDate.setSeconds(59);
+		System.out.println(fromDate);
+		System.out.println(toDate);
 		command.parameters.add(fromDate);
 		command.parameters.add(toDate);
 		command.parameters.add(periodComboBox.getSelectedItem());
@@ -244,7 +246,8 @@ public class ServerInfoPanel extends JPanel implements Runnable {
 		TimeSeries memoryDetailSeries = new TimeSeries("memory");
 		TimeSeries diskSeries = new TimeSeries("disk");
 		TimeSeries networkSeries = new TimeSeries("network");
-		System.out.println(list.size());
+		System.out.println(list.get(list.size() - 1).getDate());
+		System.out.println(list.get(0).getDate());
 		for (int x = list.size() - 1; x >= 0; x--) {
 			try {
 				ServerDiagnostics s = list.get(x);
