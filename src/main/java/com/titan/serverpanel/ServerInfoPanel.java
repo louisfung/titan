@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
@@ -30,6 +31,7 @@ import com.titanserver.Command;
 import com.titanserver.ReturnCommand;
 import com.titanserver.table.ServerDiagnostics;
 import com.toedter.calendar.JDateChooser;
+import javax.swing.JRadioButton;
 
 public class ServerInfoPanel extends JPanel implements Runnable {
 	private JDateChooser fromDateChooser;
@@ -75,9 +77,17 @@ public class ServerInfoPanel extends JPanel implements Runnable {
 	private final JLabel lblCpuDetail = new JLabel("CPU Detail");
 	private final JLabel lblMemoryDetail = new JLabel("Memory Detail");
 	private final JLabel updateLabel = new JLabel("");
+	ButtonGroup buttonGroup = new ButtonGroup();
+	private final JRadioButton rdbtnMax = new JRadioButton("max");
+	private final JRadioButton rdbtnMin = new JRadioButton("min");
+	private final JRadioButton rdbtnAvg = new JRadioButton("avg");
 
 	public ServerInfoPanel() {
 		setLayout(new MigLayout("", "[][][][]", "[][][250px][][250px][][250px]"));
+
+		buttonGroup.add(rdbtnMax);
+		buttonGroup.add(rdbtnMin);
+		buttonGroup.add(rdbtnAvg);
 
 		JPanel panel = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
@@ -118,6 +128,13 @@ public class ServerInfoPanel extends JPanel implements Runnable {
 			}
 		});
 		panel.add(periodComboBox);
+		rdbtnMax.setSelected(true);
+
+		panel.add(rdbtnMax);
+
+		panel.add(rdbtnMin);
+
+		panel.add(rdbtnAvg);
 
 		panel.add(btnRefresh);
 
@@ -151,14 +168,14 @@ public class ServerInfoPanel extends JPanel implements Runnable {
 		add(networkChartPanel, "cell 3 2");
 
 		add(lblCpuDetail, "cell 0 3,alignx center");
-		cpuDetailChartPanel.setMaximumDrawWidth(10240);
+		cpuDetailChartPanel.setMaximumDrawWidth(102400);
 		cpuDetailChartPanel.setRangeZoomable(false);
 		cpuDetailChartPanel.setMouseZoomable(false);
 
 		add(cpuDetailChartPanel, "cell 0 4 4 1,grow");
 
 		add(lblMemoryDetail, "cell 0 5");
-		memoryDetailChartPanel.setMaximumDrawWidth(10240);
+		memoryDetailChartPanel.setMaximumDrawWidth(102400);
 		memoryDetailChartPanel.setRangeZoomable(false);
 		memoryDetailChartPanel.setMouseZoomable(false);
 
@@ -199,6 +216,14 @@ public class ServerInfoPanel extends JPanel implements Runnable {
 		toDate.setSeconds(59);
 		command.parameters.add(fromDate);
 		command.parameters.add(toDate);
+		command.parameters.add(periodComboBox.getSelectedItem());
+		if (rdbtnAvg.isSelected()) {
+			command.parameters.add("avg");
+		} else if (rdbtnMin.isSelected()) {
+			command.parameters.add("min");
+		} else {
+			command.parameters.add("max");
+		}
 		command.parameters.add(periodComboBox.getSelectedItem());
 		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 		List<ServerDiagnostics> list = (List<ServerDiagnostics>) r.map.get("result");
