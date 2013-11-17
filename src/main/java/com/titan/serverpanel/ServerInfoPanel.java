@@ -8,6 +8,7 @@ import java.awt.event.ActionListener;
 import java.util.Date;
 import java.util.List;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
@@ -19,7 +20,7 @@ import org.jfree.chart.ChartFactory;
 import org.jfree.chart.ChartPanel;
 import org.jfree.chart.JFreeChart;
 import org.jfree.chart.plot.XYPlot;
-import org.jfree.data.time.Second;
+import org.jfree.data.time.Minute;
 import org.jfree.data.time.TimeSeries;
 import org.jfree.data.time.TimeSeriesCollection;
 
@@ -35,6 +36,7 @@ public class ServerInfoPanel extends JPanel implements Runnable {
 	private JDateChooser toDateChooser;
 	//	ITrace2D cpuTrace = new Trace2DSimple();
 	//	ITrace2D memoryTrace = new Trace2DSimple();
+	boolean isRunning;
 
 	TimeSeriesCollection cpuDataset = new TimeSeriesCollection();
 	JFreeChart cpuChart = ChartFactory.createTimeSeriesChart("", "", "%", cpuDataset, false, false, false);
@@ -72,6 +74,7 @@ public class ServerInfoPanel extends JPanel implements Runnable {
 	private final JComboBox periodComboBox = new JComboBox(new String[] { "mintue", "hour", "day", "month" });
 	private final JLabel lblCpuDetail = new JLabel("CPU Detail");
 	private final JLabel lblMemoryDetail = new JLabel("Memory Detail");
+	private final JLabel updateLabel = new JLabel("");
 
 	public ServerInfoPanel() {
 		setLayout(new MigLayout("", "[][][][]", "[][][250px][][250px][][250px]"));
@@ -79,7 +82,7 @@ public class ServerInfoPanel extends JPanel implements Runnable {
 		JPanel panel = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
 		flowLayout.setAlignment(FlowLayout.LEFT);
-		add(panel, "cell 0 0 3 1,grow");
+		add(panel, "cell 0 0 4 1,grow");
 
 		JLabel lblFrom = new JLabel("From");
 		panel.add(lblFrom);
@@ -111,11 +114,14 @@ public class ServerInfoPanel extends JPanel implements Runnable {
 		panel.add(toComboBox);
 		btnRefresh.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				new Thread(ServerInfoPanel.this).start();
 			}
 		});
 		panel.add(periodComboBox);
 
 		panel.add(btnRefresh);
+
+		panel.add(updateLabel);
 		//		cpuChartPanel.setPreferredSize(new Dimension(chartWidth, chartHeight));
 		changeChartStyle(cpuChart);
 		changeChartStyle(cpuDetailChart);
@@ -173,68 +179,81 @@ public class ServerInfoPanel extends JPanel implements Runnable {
 
 	@Override
 	public void run() {
-		while (true) {
-			Command command = new Command();
-			command.command = "getServerDiagnostics";
-			Date fromDate = toDateChooser.getDate();
-			fromDate.setHours(Integer.parseInt(fromComboBox.getSelectedItem().toString().split(":")[0]));
-			fromDate.setMinutes(Integer.parseInt(fromComboBox.getSelectedItem().toString().split(":")[1]));
-			fromDate.setSeconds(0);
-			Date toDate = toDateChooser.getDate();
-			toDate.setHours(Integer.parseInt(toComboBox.getSelectedItem().toString().split(":")[0]));
-			toDate.setMinutes(Integer.parseInt(toComboBox.getSelectedItem().toString().split(":")[1]));
-			toDate.setSeconds(59);
-			command.parameters.add(fromDate);
-			command.parameters.add(toDate);
-			ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-			List<ServerDiagnostics> list = (List<ServerDiagnostics>) r.map.get("result");
+		//		while (true) {
 
-			int step = (int) Math.pow(10, String.valueOf(list.size()).length() - 2);
-			if (step < 1) {
-				step = 1;
-			}
-			step = 1;
+		if (isRunning) {
+			return;
+		}
+		isRunning = true;
+		updateLabel.setIcon(new ImageIcon(ServerInfoPanel.class.getResource("/com/titan/image/ajax-loader.gif")));
+		updateLabel.setText("Updating charts");
+		Command command = new Command();
+		command.command = "getServerDiagnostics";
+		Date fromDate = fromDateChooser.getDate();
+		fromDate.setHours(Integer.parseInt(fromComboBox.getSelectedItem().toString().split(":")[0]));
+		fromDate.setMinutes(Integer.parseInt(fromComboBox.getSelectedItem().toString().split(":")[1]));
+		fromDate.setSeconds(0);
+		Date toDate = toDateChooser.getDate();
+		toDate.setHours(Integer.parseInt(toComboBox.getSelectedItem().toString().split(":")[0]));
+		toDate.setMinutes(Integer.parseInt(toComboBox.getSelectedItem().toString().split(":")[1]));
+		toDate.setSeconds(59);
+		command.parameters.add(fromDate);
+		command.parameters.add(toDate);
+		command.parameters.add(periodComboBox.getSelectedItem());
+		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+		List<ServerDiagnostics> list = (List<ServerDiagnostics>) r.map.get("result");
 
-			//			cpuSeries.clear();
-			//			memorySeries.clear();
-			//			diskSeries.clear();
-			//			networkSeries.clear();
-			TimeSeries cpuSeries = new TimeSeries("cpu");
-			TimeSeries cpuDetailSeries = new TimeSeries("cpu");
-			TimeSeries memorySeries = new TimeSeries("memory");
-			TimeSeries memoryDetailSeries = new TimeSeries("memory");
-			TimeSeries diskSeries = new TimeSeries("disk");
-			TimeSeries networkSeries = new TimeSeries("network");
-			for (int x = list.size() - 1; x >= 0; x -= step) {
-				try {
-					ServerDiagnostics s = list.get(x);
-					Second second = new Second(s.getDate());
-					cpuSeries.add(second, s.getCpu());
-					cpuDetailSeries.add(second, s.getCpu());
-					memorySeries.add(second, s.getMemory());
-					memoryDetailSeries.add(second, s.getMemory());
-					diskSeries.add(second, s.getDisk());
-					networkSeries.add(second, s.getNetwork());
-				} catch (Exception ex) {
-				}
-			}
-			cpuDataset.removeAllSeries();
-			cpuDataset.addSeries(cpuSeries);
-			cpuDetailDataset.removeAllSeries();
-			cpuDetailDataset.addSeries(cpuDetailSeries);
-			memoryDataset.removeAllSeries();
-			memoryDataset.addSeries(memorySeries);
-			memoryDetailDataset.removeAllSeries();
-			memoryDetailDataset.addSeries(memoryDetailSeries);
-			diskDataset.removeAllSeries();
-			diskDataset.addSeries(diskSeries);
-			networkDataset.removeAllSeries();
-			networkDataset.addSeries(networkSeries);
+		//			int step = (int) Math.pow(10, String.valueOf(list.size()).length() - 2);
+		//			if (step < 1) {
+		//				step = 1;
+		//			}
+		//			step = 1;
+
+		//			cpuSeries.clear();
+		//			memorySeries.clear();
+		//			diskSeries.clear();
+		//			networkSeries.clear();
+		TimeSeries cpuSeries = new TimeSeries("cpu");
+		TimeSeries cpuDetailSeries = new TimeSeries("cpu");
+		TimeSeries memorySeries = new TimeSeries("memory");
+		TimeSeries memoryDetailSeries = new TimeSeries("memory");
+		TimeSeries diskSeries = new TimeSeries("disk");
+		TimeSeries networkSeries = new TimeSeries("network");
+		System.out.println(list.size());
+		for (int x = list.size() - 1; x >= 0; x--) {
 			try {
-				Thread.sleep(1000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
+				ServerDiagnostics s = list.get(x);
+				Minute second = new Minute(s.getDate());
+				cpuSeries.add(second, s.getCpu());
+				cpuDetailSeries.add(second, s.getCpu());
+				memorySeries.add(second, s.getMemory());
+				memoryDetailSeries.add(second, s.getMemory());
+				diskSeries.add(second, s.getDisk());
+				networkSeries.add(second, s.getNetwork());
+			} catch (Exception ex) {
 			}
 		}
+		cpuDataset.removeAllSeries();
+		cpuDataset.addSeries(cpuSeries);
+		cpuDetailDataset.removeAllSeries();
+		cpuDetailDataset.addSeries(cpuDetailSeries);
+		memoryDataset.removeAllSeries();
+		memoryDataset.addSeries(memorySeries);
+		memoryDetailDataset.removeAllSeries();
+		memoryDetailDataset.addSeries(memoryDetailSeries);
+		diskDataset.removeAllSeries();
+		diskDataset.addSeries(diskSeries);
+		networkDataset.removeAllSeries();
+		networkDataset.addSeries(networkSeries);
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+		isRunning = false;
+
+		updateLabel.setIcon(null);
+		updateLabel.setText(null);
+		//		}
 	}
 }
