@@ -164,7 +164,7 @@ public class ServerPanel extends JPanel {
 		panel_1.add(tabbedPane, BorderLayout.CENTER);
 
 		JPanel panel_3 = new JPanel();
-		tabbedPane.addTab("New tab", null, panel_3, null);
+		tabbedPane.addTab("Chart", null, panel_3, null);
 		panel_3.setLayout(new BorderLayout(0, 0));
 
 		JScrollPane scrollPane_8 = new JScrollPane();

@@ -7,6 +7,8 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.awt.event.WindowAdapter;
+import java.awt.event.WindowEvent;
 import java.io.IOException;
 import java.io.InputStream;
 
@@ -19,6 +21,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
 import javax.swing.border.EmptyBorder;
+import javax.swing.border.LineBorder;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -43,12 +46,9 @@ import com.titan.serverpanel.MainServerPanel;
 import com.titan.settingpanel.SettingPanel;
 import com.titan.storagepanel.StoragePanel;
 import com.titan.thread.TitanServerUpdateThread;
-import com.titan.vdipanel.VDIPanel;
 import com.titanserver.Command;
 import com.titanserver.ReturnCommand;
 import com.titanserver.structure.TitanServerDefinition;
-import java.awt.event.WindowAdapter;
-import java.awt.event.WindowEvent;
 
 public class MainFrame extends JFrame {
 	private JPanel contentPane;
@@ -60,6 +60,15 @@ public class MainFrame extends JFrame {
 	TextTreeNode serverRoot = new TextTreeNode("Servers");
 	public FilterTreeModel projectFilterTreeModel = new FilterTreeModel(new ServerTreeModel(serverRoot));
 	MainServerPanel mainServerPanel;
+	private JLabel lblServer;
+	private JLabel lblDashboard;
+	private JLabel lblInstances;
+	private JLabel lblKeystone;
+	private JLabel lblFlavors;
+	private JLabel lblStorages;
+	private JLabel lblSdn;
+	private JLabel lblSettings;
+	Color selectedBorderColor = new Color(0, 30, 255);
 
 	public MainFrame() {
 		addWindowListener(new WindowAdapter() {
@@ -115,9 +124,9 @@ public class MainFrame extends JFrame {
 		controlPanel.setBackground(new Color(239, 249, 255));
 		controlPanel.setOpaque(true);
 		panel.add(controlPanel, BorderLayout.CENTER);
-		controlPanel.setLayout(new MigLayout("", "[1px,grow]", "[1px][][][grow][][][][][][][][][][][][][][]"));
+		controlPanel.setLayout(new MigLayout("", "[1px,grow]", "[1px][][][grow][][][][][][]"));
 
-		JLabel lblDashboard = new JLabel("");
+		lblDashboard = new JLabel("");
 		lblDashboard.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
@@ -129,25 +138,16 @@ public class MainFrame extends JFrame {
 		lblDashboard.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/dashboard.png")));
 		lblDashboard.setForeground(Color.DARK_GRAY);
 		lblDashboard.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
-		controlPanel.add(lblDashboard, "cell 0 1");
+		controlPanel.add(lblDashboard, "cell 0 1,growx");
 
-		JLabel lblSdn = new JLabel("");
-		lblSdn.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/network.png")));
-		lblSdn.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				mainContentPanel.removeAll();
-				mainContentPanel.add(new SDNPanel(MainFrame.this), BorderLayout.CENTER);
-				mainContentPanel.updateUI();
-			}
-		});
-
-		JLabel lblServer = new JLabel("");
+		lblServer = new JLabel("");
 		lblServer.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/server.png")));
 		lblServer.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				if (mainServerPanel == null || !mainServerPanel.serverPanel.jprogressBarDialog.isActive()) {
+					clearSelectedColor();
+					lblServer.setBorder(new LineBorder(selectedBorderColor, 1));
 					mainContentPanel.removeAll();
 					mainServerPanel = new MainServerPanel(MainFrame.this);
 					mainContentPanel.add(mainServerPanel, BorderLayout.CENTER);
@@ -157,10 +157,10 @@ public class MainFrame extends JFrame {
 		});
 		lblServer.setForeground(Color.DARK_GRAY);
 		lblServer.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
-		controlPanel.add(lblServer, "flowx,cell 0 2");
+		controlPanel.add(lblServer, "flowx,cell 0 2,growx");
 
 		JScrollPane scrollPane = new JScrollPane();
-		controlPanel.add(scrollPane, "cell 0 3 1 8,grow");
+		controlPanel.add(scrollPane, "cell 0 3 1 1,grow");
 
 		serverTree = new JTree();
 		serverTree.addMouseListener(new MouseAdapter() {
@@ -175,11 +175,13 @@ public class MainFrame extends JFrame {
 		scrollPane.setViewportView(serverTree);
 		updateServerTree();
 
-		JLabel lblInstances = new JLabel("");
+		lblInstances = new JLabel("");
 		lblInstances.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/instance.png")));
 		lblInstances.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				clearSelectedColor();
+				lblInstances.setBorder(new LineBorder(selectedBorderColor, 1));
 				mainContentPanel.removeAll();
 				mainContentPanel.add(new InstancePanel(MainFrame.this), BorderLayout.CENTER);
 				mainContentPanel.updateUI();
@@ -187,13 +189,15 @@ public class MainFrame extends JFrame {
 		});
 		lblInstances.setForeground(Color.DARK_GRAY);
 		lblInstances.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
-		controlPanel.add(lblInstances, "cell 0 11,grow");
+		controlPanel.add(lblInstances, "cell 0 4,grow");
 
-		JLabel lblKeystone = new JLabel("");
+		lblKeystone = new JLabel("");
 		lblKeystone.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/keystone.png")));
 		lblKeystone.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				clearSelectedColor();
+				lblKeystone.setBorder(new LineBorder(selectedBorderColor, 1));
 				mainContentPanel.removeAll();
 				mainContentPanel.add(new KeystonePanel(MainFrame.this), BorderLayout.CENTER);
 				mainContentPanel.updateUI();
@@ -201,13 +205,15 @@ public class MainFrame extends JFrame {
 		});
 		lblKeystone.setForeground(Color.DARK_GRAY);
 		lblKeystone.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
-		controlPanel.add(lblKeystone, "cell 0 12,grow");
+		controlPanel.add(lblKeystone, "cell 0 5,grow");
 
-		JLabel lblFlavors = new JLabel("");
+		lblFlavors = new JLabel("");
 		lblFlavors.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/flavor.png")));
 		lblFlavors.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				clearSelectedColor();
+				lblFlavors.setBorder(new LineBorder(selectedBorderColor, 1));
 				mainContentPanel.removeAll();
 				mainContentPanel.add(new FlavorPanel(MainFrame.this), BorderLayout.CENTER);
 				mainContentPanel.updateUI();
@@ -215,24 +221,15 @@ public class MainFrame extends JFrame {
 		});
 		lblFlavors.setForeground(Color.DARK_GRAY);
 		lblFlavors.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
-		controlPanel.add(lblFlavors, "cell 0 13,grow");
+		controlPanel.add(lblFlavors, "cell 0 6,grow");
 
-		JLabel lblVdi = new JLabel("");
-		lblVdi.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/vdi.png")));
-		lblVdi.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				mainContentPanel.removeAll();
-				mainContentPanel.add(new VDIPanel(MainFrame.this), BorderLayout.CENTER);
-				mainContentPanel.updateUI();
-			}
-		});
-
-		JLabel lblStorages = new JLabel("");
+		lblStorages = new JLabel("");
 		lblStorages.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/storage.png")));
 		lblStorages.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				clearSelectedColor();
+				lblStorages.setBorder(new LineBorder(selectedBorderColor, 1));
 				mainContentPanel.removeAll();
 				mainContentPanel.add(new StoragePanel(MainFrame.this), BorderLayout.CENTER);
 				mainContentPanel.updateUI();
@@ -240,19 +237,31 @@ public class MainFrame extends JFrame {
 		});
 		lblStorages.setForeground(Color.DARK_GRAY);
 		lblStorages.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
-		controlPanel.add(lblStorages, "cell 0 14,grow");
-		lblVdi.setForeground(Color.DARK_GRAY);
-		lblVdi.setFont(new Font("Dialog", Font.PLAIN, 16));
-		controlPanel.add(lblVdi, "cell 0 15");
+		controlPanel.add(lblStorages, "cell 0 7,grow");
+
+		lblSdn = new JLabel("");
+		lblSdn.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/network.png")));
+		lblSdn.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				clearSelectedColor();
+				lblSdn.setBorder(new LineBorder(selectedBorderColor, 1));
+				mainContentPanel.removeAll();
+				mainContentPanel.add(new SDNPanel(MainFrame.this), BorderLayout.CENTER);
+				mainContentPanel.updateUI();
+			}
+		});
 		lblSdn.setForeground(Color.DARK_GRAY);
 		lblSdn.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
-		controlPanel.add(lblSdn, "cell 0 16,grow");
+		controlPanel.add(lblSdn, "cell 0 8,grow");
 
-		JLabel lblSettings = new JLabel("");
+		lblSettings = new JLabel("");
 		lblSettings.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/setting.png")));
 		lblSettings.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				clearSelectedColor();
+				lblSettings.setBorder(new LineBorder(selectedBorderColor, 1));
 				mainContentPanel.removeAll();
 				mainContentPanel.add(new SettingPanel(MainFrame.this), BorderLayout.CENTER);
 				mainContentPanel.updateUI();
@@ -260,7 +269,7 @@ public class MainFrame extends JFrame {
 		});
 		lblSettings.setForeground(Color.DARK_GRAY);
 		lblSettings.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
-		controlPanel.add(lblSettings, "cell 0 17,grow");
+		controlPanel.add(lblSettings, "cell 0 9,grow");
 		splitPane.setLeftComponent(panel);
 
 		JButton btnLogout = new JButton("Logout");
@@ -306,6 +315,16 @@ public class MainFrame extends JFrame {
 
 		System.out.println("Start update thread");
 		new Thread(new TitanServerUpdateThread()).start();
+	}
+
+	protected void clearSelectedColor() {
+		lblServer.setBorder(null);
+		lblInstances.setBorder(null);
+		lblKeystone.setBorder(null);
+		lblFlavors.setBorder(null);
+		lblStorages.setBorder(null);
+		lblSdn.setBorder(null);
+		lblSettings.setBorder(null);
 	}
 
 	public void updateServerTree() {
