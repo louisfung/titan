@@ -287,9 +287,9 @@ public class MainFrame extends JFrame {
 		mainContentPanel.add(welcomePanel, BorderLayout.CENTER);
 		welcomePanel.setLayout(new BorderLayout(0, 0));
 		welcomePanel.add(mainScreenLabel, BorderLayout.CENTER);
-		if (!Titan.hideLogo) {//$hide$
+		if (!Titan.hideLogo) {
 			mainScreenLabel.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainscreen.png")));
-		}//$hide$
+		}
 
 		JPanel panel_1 = new JPanel();
 		welcomePanel.add(panel_1, BorderLayout.SOUTH);
