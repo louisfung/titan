@@ -214,8 +214,8 @@ public class ServerInfoPanel extends JPanel implements Runnable {
 		toDate.setHours(Integer.parseInt(toComboBox.getSelectedItem().toString().split(":")[0]));
 		toDate.setMinutes(Integer.parseInt(toComboBox.getSelectedItem().toString().split(":")[1]));
 		toDate.setSeconds(59);
-		System.out.println(fromDate);
-		System.out.println(toDate);
+		//		System.out.println(fromDate);
+		//		System.out.println(toDate);
 		command.parameters.add(fromDate);
 		command.parameters.add(toDate);
 		command.parameters.add(periodComboBox.getSelectedItem());
