@@ -14,6 +14,7 @@ import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 
 import net.miginfocom.swing.MigLayout;
 
@@ -31,7 +32,6 @@ import com.titanserver.Command;
 import com.titanserver.ReturnCommand;
 import com.titanserver.table.ServerDiagnostics;
 import com.toedter.calendar.JDateChooser;
-import javax.swing.JRadioButton;
 
 public class ServerInfoPanel extends JPanel implements Runnable {
 	private JDateChooser fromDateChooser;

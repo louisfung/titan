@@ -2,7 +2,6 @@ package com.titan.flavorpanel;
 
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -12,7 +11,6 @@ import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -49,15 +47,6 @@ public class FlavorPanel extends JPanel implements Runnable, MainPanel {
 	public FlavorPanel(final JFrame frame) {
 		this.frame = frame;
 		setLayout(new BorderLayout(0, 0));
-
-		JPanel panel = new JPanel();
-		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
-		flowLayout.setAlignment(FlowLayout.LEFT);
-		add(panel, BorderLayout.NORTH);
-
-		JLabel lblFlavor = new JLabel("Flavor");
-		lblFlavor.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-		panel.add(lblFlavor);
 
 		JPanel panel_1 = new JPanel();
 		add(panel_1, BorderLayout.CENTER);

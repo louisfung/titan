@@ -19,8 +19,6 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 import javax.swing.BoxLayout;
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.JButton;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -29,7 +27,6 @@ import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ListSelectionModel;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.DefaultTableModel;
@@ -128,8 +125,6 @@ public class ServerPanel extends JPanel {
 		tableServer.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane.setViewportView(tableServer);
 
-		JSearchTextField searchTextField = new JSearchTextField();
-
 		JPanel panel = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
 		flowLayout.setAlignment(FlowLayout.LEFT);
@@ -137,24 +132,6 @@ public class ServerPanel extends JPanel {
 		JSplitPane splitPane = new JSplitPane();
 		splitPane.setOrientation(JSplitPane.VERTICAL_SPLIT);
 		splitPane.setLeftComponent(scrollPane);
-		GroupLayout groupLayout = new GroupLayout(this);
-		groupLayout.setHorizontalGroup(groupLayout.createParallelGroup(Alignment.TRAILING).addGroup(
-				groupLayout
-						.createSequentialGroup()
-						.addGroup(
-								groupLayout
-										.createParallelGroup(Alignment.TRAILING)
-										.addGroup(Alignment.LEADING,
-												groupLayout.createSequentialGroup().addContainerGap().addComponent(splitPane, GroupLayout.DEFAULT_SIZE, 779, Short.MAX_VALUE))
-										.addComponent(panel, GroupLayout.DEFAULT_SIZE, 785, Short.MAX_VALUE)
-										.addGroup(
-												Alignment.LEADING,
-												groupLayout.createSequentialGroup().addContainerGap()
-														.addComponent(searchTextField, GroupLayout.PREFERRED_SIZE, 214, GroupLayout.PREFERRED_SIZE))).addContainerGap()));
-		groupLayout.setVerticalGroup(groupLayout.createParallelGroup(Alignment.LEADING).addGroup(
-				groupLayout.createSequentialGroup().addContainerGap().addComponent(searchTextField, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-						.addPreferredGap(ComponentPlacement.RELATED).addComponent(splitPane, GroupLayout.DEFAULT_SIZE, 377, Short.MAX_VALUE)
-						.addPreferredGap(ComponentPlacement.RELATED).addComponent(panel, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE)));
 
 		JPanel panel_1 = new JPanel();
 		splitPane.setRightComponent(panel_1);
@@ -354,9 +331,20 @@ public class ServerPanel extends JPanel {
 
 		JButton btnShell = new JButton("Shell");
 		panel.add(btnShell);
-		setLayout(groupLayout);
+		setLayout(new BorderLayout(0, 0));
 
 		splitPane.setDividerLocation(70);
+		add(splitPane);
+		add(panel, BorderLayout.SOUTH);
+
+		JPanel panel_4 = new JPanel();
+		FlowLayout flowLayout_1 = (FlowLayout) panel_4.getLayout();
+		flowLayout_1.setAlignment(FlowLayout.LEFT);
+		add(panel_4, BorderLayout.NORTH);
+
+		JSearchTextField searchTextField = new JSearchTextField();
+		searchTextField.setPreferredSize(new Dimension(200, 25));
+		panel_4.add(searchTextField);
 
 		Timer timer = new Timer(true);
 		TimerTask task = new TimerTask() {

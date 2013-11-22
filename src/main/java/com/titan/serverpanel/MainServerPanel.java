@@ -1,12 +1,10 @@
 package com.titan.serverpanel;
 
 import java.awt.BorderLayout;
-import java.awt.Font;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.border.EmptyBorder;
@@ -22,10 +20,6 @@ public class MainServerPanel extends JPanel implements MainPanel {
 		this.parentFrame = parentFrame;
 		setBorder(new EmptyBorder(10, 10, 0, 10));
 		setLayout(new BorderLayout(0, 0));
-
-		JLabel label = new JLabel("Servers");
-		label.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
-		add(label, BorderLayout.NORTH);
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		add(tabbedPane, BorderLayout.CENTER);

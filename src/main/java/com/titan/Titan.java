@@ -119,9 +119,11 @@ public class Titan extends JFrame {
 		lblIp.setHorizontalAlignment(SwingConstants.RIGHT);
 
 		JLabel lblNewLabel = new JLabel("");
-		if (!hideLogo) { //$hide$
+		if (hideLogo) {
+			lblNewLabel.setIcon(new ImageIcon(Titan.class.getResource("/com/titan/image/empty_logo.png")));
+		}else{
 			lblNewLabel.setIcon(new ImageIcon(Titan.class.getResource("/com/titan/image/titan_logo.png")));
-		} //$hide$
+		}
 
 		textFieldIP = new JTextField();
 		textFieldIP.addKeyListener(new KeyAdapter() {

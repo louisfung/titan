@@ -89,9 +89,11 @@ public class MainFrame extends JFrame {
 			setBounds(TitanSetting.getInstance().x, TitanSetting.getInstance().y, TitanSetting.getInstance().width, TitanSetting.getInstance().height);
 		}
 
-		if (!Titan.hideLogo) {//$hide$
+		if (Titan.hideLogo) {
 			setIconImage(new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/titan_icon.png")).getImage());
-		}//$hide$
+		} else {
+			setIconImage(new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/empty_icon.png")).getImage());
+		}
 
 		contentPane = new JPanel();
 		contentPane.setBorder(new EmptyBorder(5, 5, 5, 5));
@@ -113,11 +115,14 @@ public class MainFrame extends JFrame {
 			}
 		});
 
-		if (!Titan.hideLogo) {//$hide$
+		if (Titan.hideLogo) {
+			logoLabel.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/emptyLogo.png")));
+		} else {
 			logoLabel.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/titanLogo.png")));
-		}//$hide$
+		}
 
-		//		logoLabel.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/openstack-logo.png")));
+		// logoLabel.setIcon(new
+		// ImageIcon(MainFrame.class.getResource("/com/titan/image/openstack-logo.png")));
 		panel.add(logoLabel, BorderLayout.NORTH);
 
 		JPanel controlPanel = new JPanel();
@@ -321,6 +326,7 @@ public class MainFrame extends JFrame {
 
 	protected void clearSelectedColor() {
 		lblServer.setBorder(null);
+		lblDashboard.setBorder(null);
 		lblInstances.setBorder(null);
 		lblKeystone.setBorder(null);
 		lblFlavors.setBorder(null);

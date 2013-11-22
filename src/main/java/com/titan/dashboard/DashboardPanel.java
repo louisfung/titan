@@ -2,8 +2,9 @@ package com.titan.dashboard;
 
 import javax.swing.JPanel;
 
-import com.titan.mainframe.MainFrame;
 import net.miginfocom.swing.MigLayout;
+
+import com.titan.mainframe.MainFrame;
 
 public class DashboardPanel extends JPanel {
 	MainFrame mainFrame;

@@ -1,27 +1,26 @@
 package com.titan.instancepanel;
 
+import java.awt.BorderLayout;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Vector;
 
-import javax.swing.GroupLayout;
-import javax.swing.GroupLayout.Alignment;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
-import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.LayoutStyle.ComponentPlacement;
 import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -41,9 +40,6 @@ import com.titan.TitanCommonLib;
 import com.titan.communication.CommunicateLib;
 import com.titanserver.Command;
 import com.titanserver.ReturnCommand;
-import info.monitorenter.gui.chart.Chart2D;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
 public class InstancePanel extends JPanel implements Runnable, MainPanel {
 	JTable instanceTable;
@@ -57,9 +53,6 @@ public class InstancePanel extends JPanel implements Runnable, MainPanel {
 	public InstancePanel(JFrame frame) {
 		this.frame = frame;
 		setBorder(new EmptyBorder(10, 10, 0, 10));
-
-		JLabel lblInstances = new JLabel("Instances");
-		lblInstances.setFont(new Font("Lucida Grande", Font.PLAIN, 20));
 
 		JScrollPane scrollPane = new JScrollPane();
 
@@ -103,46 +96,9 @@ public class InstancePanel extends JPanel implements Runnable, MainPanel {
 		instanceTable.getTableHeader().addMouseListener(instanceTableSorterColumnListener);
 		scrollPane.setViewportView(instanceTable);
 
-		searchTextField.addKeyListener(new KeyAdapter() {
-			@Override
-			public void keyReleased(KeyEvent e) {
-				instanceTableModel.searchPattern = searchTextField.getText();
-				instanceTableModel.fireTableDataChanged();
-				instanceTable.updateUI();
-			}
-		});
-
 		JPanel panel = new JPanel();
 		FlowLayout flowLayout = (FlowLayout) panel.getLayout();
 		flowLayout.setAlignment(FlowLayout.LEFT);
-		GroupLayout groupLayout = new GroupLayout(this);
-		groupLayout.setHorizontalGroup(
-			groupLayout.createParallelGroup(Alignment.TRAILING)
-				.addComponent(lblInstances, GroupLayout.PREFERRED_SIZE, 652, GroupLayout.PREFERRED_SIZE)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addGap(23)
-					.addComponent(searchTextField, GroupLayout.PREFERRED_SIZE, 214, GroupLayout.PREFERRED_SIZE)
-					.addContainerGap(798, Short.MAX_VALUE))
-				.addGroup(groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(panel, GroupLayout.DEFAULT_SIZE, 1023, Short.MAX_VALUE)
-					.addContainerGap())
-				.addGroup(Alignment.LEADING, groupLayout.createSequentialGroup()
-					.addContainerGap()
-					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 1012, Short.MAX_VALUE)
-					.addGap(17))
-		);
-		groupLayout.setVerticalGroup(
-			groupLayout.createParallelGroup(Alignment.LEADING)
-				.addGroup(groupLayout.createSequentialGroup()
-					.addComponent(lblInstances)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(searchTextField, GroupLayout.PREFERRED_SIZE, 22, GroupLayout.PREFERRED_SIZE)
-					.addGap(13)
-					.addComponent(scrollPane, GroupLayout.DEFAULT_SIZE, 485, Short.MAX_VALUE)
-					.addPreferredGap(ComponentPlacement.RELATED)
-					.addComponent(panel, GroupLayout.PREFERRED_SIZE, 33, GroupLayout.PREFERRED_SIZE))
-		);
 
 		JButton btnLaunch = new JButton("Launch");
 		btnLaunch.setIcon(new ImageIcon(InstancePanel.class.getResource("/com/titan/image/famfamfam/add.png")));
@@ -453,7 +409,25 @@ public class InstancePanel extends JPanel implements Runnable, MainPanel {
 			}
 		});
 		panel.add(btnAdvance);
-		setLayout(groupLayout);
+		setLayout(new BorderLayout(0, 0));
+		add(panel, BorderLayout.SOUTH);
+		add(scrollPane);
+
+		JPanel panel_1 = new JPanel();
+		FlowLayout flowLayout_1 = (FlowLayout) panel_1.getLayout();
+		flowLayout_1.setAlignment(FlowLayout.LEFT);
+		add(panel_1, BorderLayout.NORTH);
+		searchTextField.setPreferredSize(new Dimension(200, 25));
+		panel_1.add(searchTextField);
+
+		searchTextField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				instanceTableModel.searchPattern = searchTextField.getText();
+				instanceTableModel.fireTableDataChanged();
+				instanceTable.updateUI();
+			}
+		});
 
 		refresh();
 	}
