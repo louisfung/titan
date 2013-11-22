@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
 import javax.swing.JTree;
+import javax.swing.SwingUtilities;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
@@ -90,9 +91,9 @@ public class MainFrame extends JFrame {
 		}
 
 		if (Titan.hideLogo) {
-			setIconImage(new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/titan_icon.png")).getImage());
-		} else {
 			setIconImage(new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/empty_icon.png")).getImage());
+		} else {
+			setIconImage(new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/titan_icon.png")).getImage());
 		}
 
 		contentPane = new JPanel();
@@ -155,10 +156,14 @@ public class MainFrame extends JFrame {
 				if (mainServerPanel == null || !mainServerPanel.serverPanel.jprogressBarDialog.isActive()) {
 					clearSelectedColor();
 					lblServer.setBorder(new LineBorder(selectedBorderColor, 1));
-					mainContentPanel.removeAll();
-					mainServerPanel = new MainServerPanel(MainFrame.this);
-					mainContentPanel.add(mainServerPanel, BorderLayout.CENTER);
-					mainContentPanel.updateUI();
+					SwingUtilities.invokeLater(new Runnable() {
+						public void run() {
+							mainContentPanel.removeAll();
+							mainServerPanel = new MainServerPanel(MainFrame.this);
+							mainContentPanel.add(mainServerPanel, BorderLayout.CENTER);
+							mainContentPanel.updateUI();
+						}
+					});
 				}
 			}
 		});
