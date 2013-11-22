@@ -130,6 +130,8 @@ public class MainFrame extends JFrame {
 		lblDashboard.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
+				clearSelectedColor();
+				lblDashboard.setBorder(new LineBorder(selectedBorderColor, 1));
 				mainContentPanel.removeAll();
 				mainContentPanel.add(new DashboardPanel(MainFrame.this), BorderLayout.CENTER);
 				mainContentPanel.updateUI();
@@ -138,7 +140,7 @@ public class MainFrame extends JFrame {
 		lblDashboard.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/dashboard.png")));
 		lblDashboard.setForeground(Color.DARK_GRAY);
 		lblDashboard.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
-		controlPanel.add(lblDashboard, "cell 0 1,growx");
+		controlPanel.add(lblDashboard, "cell 0 2,growx");
 
 		lblServer = new JLabel("");
 		lblServer.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/server.png")));
@@ -157,7 +159,7 @@ public class MainFrame extends JFrame {
 		});
 		lblServer.setForeground(Color.DARK_GRAY);
 		lblServer.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
-		controlPanel.add(lblServer, "flowx,cell 0 2,growx");
+		controlPanel.add(lblServer, "flowx,cell 0 1,growx");
 
 		JScrollPane scrollPane = new JScrollPane();
 		controlPanel.add(scrollPane, "cell 0 3 1 1,grow");
