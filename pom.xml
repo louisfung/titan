@@ -98,7 +98,7 @@
 		<dependency>
 			<groupId>com.titanserver</groupId>
 			<artifactId>titan-server</artifactId>
-			<version>20131012</version>
+			<version>20131123</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-cli</groupId>
