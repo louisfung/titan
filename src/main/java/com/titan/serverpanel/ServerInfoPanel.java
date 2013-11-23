@@ -246,8 +246,8 @@ public class ServerInfoPanel extends JPanel implements Runnable {
 		TimeSeries memoryDetailSeries = new TimeSeries("memory");
 		TimeSeries diskSeries = new TimeSeries("disk");
 		TimeSeries networkSeries = new TimeSeries("network");
-		System.out.println(list.get(list.size() - 1).getDate());
-		System.out.println(list.get(0).getDate());
+//		System.out.println(list.get(list.size() - 1).getDate());
+//		System.out.println(list.get(0).getDate());
 		for (int x = list.size() - 1; x >= 0; x--) {
 			try {
 				ServerDiagnostics s = list.get(x);

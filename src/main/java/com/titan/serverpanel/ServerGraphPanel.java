@@ -2,6 +2,7 @@ package com.titan.serverpanel;
 
 import java.awt.BorderLayout;
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -35,6 +36,7 @@ public class ServerGraphPanel extends JPanel {
 	int scale = 100;
 	private JTable propertyTable;
 	GenericTableModel peopertyTableModel = new GenericTableModel();
+	private JSplitPane splitPane;
 
 	/**
 	 * Create the panel.
@@ -130,11 +132,12 @@ public class ServerGraphPanel extends JPanel {
 		add(panel_2, BorderLayout.CENTER);
 		panel_2.setLayout(new BorderLayout(0, 0));
 
-		JSplitPane splitPane = new JSplitPane();
-		splitPane.setDividerLocation(500);
+		splitPane = new JSplitPane();
+		//		splitPane.setDividerLocation(getWidth() - 200);
 		panel_2.add(splitPane, BorderLayout.CENTER);
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
+		tabbedPane.setPreferredSize(new Dimension(200, 10));
 		splitPane.setRightComponent(tabbedPane);
 
 		JPanel propertyPanel = new JPanel();

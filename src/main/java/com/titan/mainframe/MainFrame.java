@@ -62,14 +62,14 @@ public class MainFrame extends JFrame {
 	public FilterTreeModel projectFilterTreeModel = new FilterTreeModel(new ServerTreeModel(serverRoot));
 	MainServerPanel mainServerPanel;
 	private JLabel lblServer;
-	private JLabel lblDashboard;
+	private JLabel lblVM;
 	private JLabel lblInstances;
 	private JLabel lblKeystone;
 	private JLabel lblFlavors;
 	private JLabel lblStorages;
 	private JLabel lblSdn;
 	private JLabel lblSettings;
-	Color selectedBorderColor = new Color(0, 30, 255);
+	Color selectedBorderColor = new Color(175, 211, 253);
 
 	public MainFrame() {
 		addWindowListener(new WindowAdapter() {
@@ -132,21 +132,21 @@ public class MainFrame extends JFrame {
 		panel.add(controlPanel, BorderLayout.CENTER);
 		controlPanel.setLayout(new MigLayout("", "[1px,grow]", "[1px][][][grow][][][][][][]"));
 
-		lblDashboard = new JLabel("");
-		lblDashboard.addMouseListener(new MouseAdapter() {
+		lblVM = new JLabel("");
+		lblVM.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
 				clearSelectedColor();
-				lblDashboard.setBorder(new LineBorder(selectedBorderColor, 1));
+				lblVM.setBorder(new LineBorder(selectedBorderColor, 1));
 				mainContentPanel.removeAll();
 				mainContentPanel.add(new DashboardPanel(MainFrame.this), BorderLayout.CENTER);
 				mainContentPanel.updateUI();
 			}
 		});
-		lblDashboard.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/dashboard.png")));
-		lblDashboard.setForeground(Color.DARK_GRAY);
-		lblDashboard.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
-		controlPanel.add(lblDashboard, "cell 0 2,growx");
+		lblVM.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/vm.png")));
+		lblVM.setForeground(Color.DARK_GRAY);
+		lblVM.setFont(new Font("Lucida Grande", Font.PLAIN, 16));
+		controlPanel.add(lblVM, "cell 0 2,growx");
 
 		lblServer = new JLabel("");
 		lblServer.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/server.png")));
@@ -331,7 +331,7 @@ public class MainFrame extends JFrame {
 
 	protected void clearSelectedColor() {
 		lblServer.setBorder(null);
-		lblDashboard.setBorder(null);
+		lblVM.setBorder(null);
 		lblInstances.setBorder(null);
 		lblKeystone.setBorder(null);
 		lblFlavors.setBorder(null);
