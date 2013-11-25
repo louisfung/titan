@@ -91,7 +91,7 @@ public class AddServerDialog extends JDialog {
 						TitanServerDefinition titanServerDefinition = new TitanServerDefinition();
 						titanServerDefinition.id = textFieldID.getText();
 						titanServerDefinition.ip = textFieldIP.getText();
-						TitanSetting.getInstance().addTitanServers(titanServerDefinition);
+						TitanSetting.getInstance().titanServers.add(titanServerDefinition);
 						TitanSetting.getInstance().save();
 						setVisible(false);
 					}

@@ -38,7 +38,6 @@ import com.titan.TitanCommonLib;
 import com.titan.TitanSetting;
 import com.titan.WelcomePanel;
 import com.titan.communication.CommunicateLib;
-import com.titan.dashboard.DashboardPanel;
 import com.titan.flavorpanel.FlavorPanel;
 import com.titan.instancepanel.InstancePanel;
 import com.titan.keystonepanel.KeystonePanel;
@@ -47,6 +46,7 @@ import com.titan.serverpanel.MainServerPanel;
 import com.titan.settingpanel.SettingPanel;
 import com.titan.storagepanel.StoragePanel;
 import com.titan.thread.TitanServerUpdateThread;
+import com.titan.vm.VMMainPanel;
 import com.titanserver.Command;
 import com.titanserver.ReturnCommand;
 import com.titanserver.structure.TitanServerDefinition;
@@ -139,7 +139,7 @@ public class MainFrame extends JFrame {
 				clearSelectedColor();
 				lblVM.setBorder(new LineBorder(selectedBorderColor, 1));
 				mainContentPanel.removeAll();
-				mainContentPanel.add(new DashboardPanel(MainFrame.this), BorderLayout.CENTER);
+				mainContentPanel.add(new VMMainPanel(MainFrame.this), BorderLayout.CENTER);
 				mainContentPanel.updateUI();
 			}
 		});

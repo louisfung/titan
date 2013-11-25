@@ -1,4 +1,4 @@
-package com.titan.dashboard;
+package com.titan.vm;
 
 import java.awt.Graphics;
 import java.awt.Image;
@@ -12,11 +12,16 @@ import com.titan.OS;
 public class VMLabel extends JLabel {
 	OS os;
 	Icon icon = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/vmIcon.png"));
+	Image noname = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/os/noname.png")).getImage();
 	Image redhat = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/os/redhat.png")).getImage();
 	Image ubuntu = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/os/ubuntu.png")).getImage();
 	Image suse = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/os/suse.png")).getImage();
 	Image centos = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/os/centos.png")).getImage();
 	Image windows = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/os/windows.png")).getImage();
+
+	Image play = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/status/play.png")).getImage();
+	Image pause = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/status/pause.png")).getImage();
+	Image stop = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/status/stop.png")).getImage();
 
 	public VMLabel() {
 		this(OS.none);
@@ -44,6 +49,9 @@ public class VMLabel extends JLabel {
 			g.drawImage(centos, (44 - centos.getWidth(null)) / 2, (44 - centos.getHeight(null)) / 2, null);
 		} else if (os == OS.windows) {
 			g.drawImage(windows, (44 - windows.getWidth(null)) / 2, (44 - windows.getHeight(null)) / 2, null);
+		} else {
+			g.drawImage(noname, (44 - noname.getWidth(null)) / 2, (44 - noname.getHeight(null)) / 2, null);
 		}
+		g.drawImage(play, (44 - play.getWidth(null)) / 2 + 45, (44 - play.getHeight(null)) / 2, null);
 	}
 }
