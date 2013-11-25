@@ -50,7 +50,7 @@ public class TitanSetting {
 			TitanSetting setting = (TitanSetting) xstream.fromXML(new FileInputStream(new File("titan.xml")));
 			return setting;
 		} catch (Exception ex) {
-			new File("gkd.xml").delete();
+			new File("titan.xml").delete();
 			TitanSetting Setting = new TitanSetting();
 			Setting.save();
 			return Setting;
