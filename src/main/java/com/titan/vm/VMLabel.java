@@ -1,6 +1,7 @@
 package com.titan.vm;
 
 import java.awt.Color;
+import java.awt.Dimension;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
@@ -15,6 +16,9 @@ import com.titan.OS;
 public class VMLabel extends JLabel {
 	OS os;
 	Icon icon = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/vmIcon.png"));
+	Image blue = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/blue.png")).getImage();
+	Image yellow = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/yellow.png")).getImage();
+	Image red = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/red.png")).getImage();
 	Image noname = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/os/noname.png")).getImage();
 	Image redhat = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/os/redhat.png")).getImage();
 	Image ubuntu = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/os/ubuntu.png")).getImage();
@@ -32,8 +36,9 @@ public class VMLabel extends JLabel {
 
 	public VMLabel(OS os) {
 		super();
-		setIcon(icon);
+		//		setIcon(icon);
 		setOS(os);
+		setPreferredSize(new Dimension(red.getWidth(null), red.getHeight(null)));
 	}
 
 	public void setOS(OS os) {
@@ -42,6 +47,14 @@ public class VMLabel extends JLabel {
 
 	public void paint(Graphics g) {
 		super.paint(g);
+		int cpu = new Random().nextInt(100);
+		if (cpu >= 80) {
+			g.drawImage(red, 0, 0, null);
+		} else if (cpu >= 60) {
+			g.drawImage(yellow, 0, 0, null);
+		} else {
+			g.drawImage(blue, 0, 0, null);
+		}
 		if (os == OS.redhat) {
 			g.drawImage(redhat, (44 - redhat.getWidth(null)) / 2, (44 - redhat.getHeight(null)) / 2, null);
 		} else if (os == OS.ubuntu) {
@@ -59,7 +72,7 @@ public class VMLabel extends JLabel {
 
 		g.setColor(Color.white);
 		g.setFont(new Font("Arial", Font.PLAIN, 24));
-		g.drawString(String.valueOf(new Random().nextInt(100)), 10, 75);
+		g.drawString(String.valueOf(cpu), 10, 75);
 		g.drawString(String.valueOf(new Random().nextInt(100)), 55, 75);
 	}
 }
