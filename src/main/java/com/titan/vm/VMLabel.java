@@ -1,5 +1,7 @@
 package com.titan.vm;
 
+import java.awt.Color;
+import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
 
@@ -53,5 +55,10 @@ public class VMLabel extends JLabel {
 			g.drawImage(noname, (44 - noname.getWidth(null)) / 2, (44 - noname.getHeight(null)) / 2, null);
 		}
 		g.drawImage(play, (44 - play.getWidth(null)) / 2 + 45, (44 - play.getHeight(null)) / 2, null);
+
+		g.setColor(Color.white);
+		g.setFont(new Font("Arial", Font.PLAIN, 24));
+		g.drawString("81", 10, 75);
+		g.drawString("81", 55, 75);
 	}
 }

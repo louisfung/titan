@@ -2,8 +2,14 @@ package com.titan.vm;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.util.Random;
+import java.util.Vector;
 
+import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JLabel;
@@ -36,6 +42,12 @@ public class VMMainPanel extends JPanel {
 	JPanel mainPanel = new JPanel();
 	JSONArray servers;
 	JLabel colLabel = new JLabel("");
+	ButtonGroup group1 = new ButtonGroup();
+	Vector<VMPanel> panels = new Vector<VMPanel>();
+	private JToggleButton ganttViewButton;
+	private JToggleButton deltailViewButton;
+	JScrollPane scrollPane = new JScrollPane();
+	VMGanttPanel vmGanttPanel;
 
 	public VMMainPanel(MainFrame mainFrame) {
 		this.mainFrame = mainFrame;
@@ -48,17 +60,38 @@ public class VMMainPanel extends JPanel {
 		JToolBar toolBar = new JToolBar();
 		panel.add(toolBar);
 
-		JToggleButton tglbtnNewToggleButton_2 = new JToggleButton("");
-		tglbtnNewToggleButton_2.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/color_swatch.png")));
-		toolBar.add(tglbtnNewToggleButton_2);
+		JToggleButton iconViewButton = new JToggleButton("");
+		iconViewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				scrollPane.setViewportView(mainPanel);
+			}
+		});
+		iconViewButton.setSelected(true);
+		iconViewButton.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/color_swatch.png")));
+		toolBar.add(iconViewButton);
+		group1.add(iconViewButton);
 
-		JToggleButton tglbtnNewToggleButton = new JToggleButton("");
-		tglbtnNewToggleButton.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/text_list_bullets.png")));
-		toolBar.add(tglbtnNewToggleButton);
+		ganttViewButton = new JToggleButton("");
+		ganttViewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (vmGanttPanel == null) {
+					vmGanttPanel = new VMGanttPanel();
+				}
+				scrollPane.setViewportView(vmGanttPanel);
+			}
+		});
+		ganttViewButton.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/text_list_bullets.png")));
+		toolBar.add(ganttViewButton);
+		group1.add(ganttViewButton);
 
-		JToggleButton tglbtnNewToggleButton_1 = new JToggleButton("");
-		tglbtnNewToggleButton_1.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/text_align_justify.png")));
-		toolBar.add(tglbtnNewToggleButton_1);
+		deltailViewButton = new JToggleButton("");
+		deltailViewButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		deltailViewButton.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/text_align_justify.png")));
+		toolBar.add(deltailViewButton);
+		group1.add(deltailViewButton);
 
 		JButton btnRefresh = new JButton("Refresh");
 		btnRefresh.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/arrow_rotate_clockwise.png")));
@@ -68,7 +101,7 @@ public class VMMainPanel extends JPanel {
 		searchTextField.setMaximumSize(new Dimension(100, 20));
 		toolBar.add(searchTextField);
 
-		slider.setMaximumSize(new Dimension(200, 20));
+		slider.setMaximumSize(new Dimension(120, 20));
 		slider.setMinimum(5);
 		slider.setMaximum(20);
 		slider.addChangeListener(new ChangeListener() {
@@ -94,16 +127,48 @@ public class VMMainPanel extends JPanel {
 				int row = 0;
 				int col = 0;
 				mainPanel.removeAll();
+				panels.clear();
 				for (int x = 0; x < servers.size(); x++) {
 					JSONObject obj = servers.getJSONObject(x);
 					VMLabel label = new VMLabel();
 					label.setOS(OS.values()[new Random().nextInt(OS.values().length)]);
 					VMPanel panel = new VMPanel(label);
+					panels.add(panel);
 					if (TitanCommonLib.getJSONString(obj, "name", "No name").length() <= 10) {
 						panel.label.setText(TitanCommonLib.getJSONString(obj, "name", "No name"));
 					} else {
 						panel.label.setText(TitanCommonLib.getJSONString(obj, "name", "No name").substring(0, 10));
 					}
+					panel.addMouseListener(new MouseListener() {
+						@Override
+						public void mouseClicked(MouseEvent e) {
+							clearAllPanelsSelection();
+							VMPanel panel = (VMPanel) e.getSource();
+							panel.setSelected(!panel.isSelected);
+						}
+
+						private void clearAllPanelsSelection() {
+							for (VMPanel panel : panels) {
+								panel.setSelected(false);
+							}
+						}
+
+						@Override
+						public void mousePressed(MouseEvent e) {
+						}
+
+						@Override
+						public void mouseReleased(MouseEvent e) {
+						}
+
+						@Override
+						public void mouseEntered(MouseEvent e) {
+						}
+
+						@Override
+						public void mouseExited(MouseEvent e) {
+						}
+					});
 					mainPanel.add(panel, "cell " + col + " " + row);
 					col++;
 					if (col == maxCol) {
@@ -122,7 +187,6 @@ public class VMMainPanel extends JPanel {
 		colLabel.setText(TitanSetting.getInstance().maxVMColumnCount + " columns");
 		toolBar.add(colLabel);
 
-		JScrollPane scrollPane = new JScrollPane();
 		add(scrollPane, BorderLayout.CENTER);
 		scrollPane.setViewportView(mainPanel);
 	}
