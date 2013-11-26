@@ -57,11 +57,11 @@ public class ddd extends JFrame {
 			@Override
 			public void mouseMoved(MouseEvent e) {
 				System.out.println("m2");
-//				for (MouseMotionListener ml : button1.getMouseMotionListeners()) {
-//					System.out.println("f");
-//					ml.mouseMoved(cloneMouseEvent(e));
-//					button1.repaint();
-//				}
+				//				for (MouseMotionListener ml : button1.getMouseMotionListeners()) {
+				//					System.out.println("f");
+				//					ml.mouseMoved(cloneMouseEvent(e));
+				//					button1.repaint();
+				//				}
 				button1.getModel().setPressed(true);
 			}
 		});

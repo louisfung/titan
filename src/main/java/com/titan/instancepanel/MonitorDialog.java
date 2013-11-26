@@ -194,7 +194,7 @@ public class MonitorDialog extends JFrame implements WindowListener, Runnable {
 			slider.setMaximum((int) player.getDuration().getSeconds());
 			slider.setValue(0);
 		} catch (Exception e) {
-//			e.printStackTrace();
+			//			e.printStackTrace();
 		}
 		return c;
 	}

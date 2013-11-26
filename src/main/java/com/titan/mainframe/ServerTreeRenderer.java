@@ -30,7 +30,7 @@ public class ServerTreeRenderer extends JLabel implements TreeCellRenderer {
 			this.setBackground(UIManager.getColor("Tree.background"));
 		}
 
-//		this.setPreferredSize(new Dimension(100, 20));
+		//		this.setPreferredSize(new Dimension(100, 20));
 		return this;
 	}
 

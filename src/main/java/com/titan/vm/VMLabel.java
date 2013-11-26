@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Font;
 import java.awt.Graphics;
 import java.awt.Image;
+import java.util.Random;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
@@ -58,7 +59,7 @@ public class VMLabel extends JLabel {
 
 		g.setColor(Color.white);
 		g.setFont(new Font("Arial", Font.PLAIN, 24));
-		g.drawString("81", 10, 75);
-		g.drawString("81", 55, 75);
+		g.drawString(String.valueOf(new Random().nextInt(100)), 10, 75);
+		g.drawString(String.valueOf(new Random().nextInt(100)), 55, 75);
 	}
 }

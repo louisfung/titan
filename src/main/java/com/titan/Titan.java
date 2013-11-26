@@ -121,7 +121,7 @@ public class Titan extends JFrame {
 		JLabel lblNewLabel = new JLabel("");
 		if (hideLogo) {
 			lblNewLabel.setIcon(new ImageIcon(Titan.class.getResource("/com/titan/image/empty_logo.png")));
-		}else{
+		} else {
 			lblNewLabel.setIcon(new ImageIcon(Titan.class.getResource("/com/titan/image/titan_logo.png")));
 		}
 

@@ -42,19 +42,19 @@ public class DownloadImageTableCellEditor implements TableCellEditor {
 	@Override
 	public void cancelCellEditing() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void addCellEditorListener(CellEditorListener l) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	@Override
 	public void removeCellEditorListener(CellEditorListener l) {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 }
