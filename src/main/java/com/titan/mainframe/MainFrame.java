@@ -178,7 +178,10 @@ public class MainFrame extends JFrame {
 		serverTree.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				((MainPanel) mainContentPanel.getComponent(0)).refresh();
+				Object obj = mainContentPanel.getComponent(0);
+				if (obj instanceof VMMainPanel) {
+					((MainPanel) obj).refresh();
+				}
 			}
 		});
 		serverTree.setModel(projectFilterTreeModel);

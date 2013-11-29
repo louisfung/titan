@@ -2,24 +2,27 @@ package com.titan.vm;
 
 import java.awt.BorderLayout;
 import java.awt.Dimension;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
-import javax.swing.Timer;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.peterswing.advancedswing.searchtextfield.JSearchTextField;
 import com.titan.TitanSetting;
+import com.titan.instancepanel.LaunchInstanceDialog;
 import com.titan.mainframe.MainFrame;
 
 public class VMMainPanel extends JPanel {
@@ -32,6 +35,7 @@ public class VMMainPanel extends JPanel {
 	private JToggleButton deltailViewButton;
 	JScrollPane scrollPane = new JScrollPane();
 	VMGanttPanel vmGanttPanel;
+	private JComboBox sortComboBox;
 
 	public VMMainPanel(MainFrame mainFrame) {
 		this.mainFrame = mainFrame;
@@ -90,8 +94,7 @@ public class VMMainPanel extends JPanel {
 		slider.setMaximum(20);
 		slider.addChangeListener(new ChangeListener() {
 			public void stateChanged(ChangeEvent e) {
-				int maxVMColumnCount = (int) slider.getValue();
-				iconPanel.init(maxVMColumnCount);
+				refresh();
 			}
 		});
 		toolBar.add(slider);
@@ -101,9 +104,129 @@ public class VMMainPanel extends JPanel {
 		colLabel.setText(TitanSetting.getInstance().maxVMColumnCount + " columns");
 		toolBar.add(colLabel);
 
+		sortComboBox = new JComboBox(new String[] { "name", "cpu", "memory", "disk" });
+		sortComboBox.setMaximumSize(new Dimension(100, 20));
+		toolBar.add(sortComboBox);
+
+		scrollPane.getVerticalScrollBar().setUnitIncrement(20);
 		add(scrollPane, BorderLayout.CENTER);
 		scrollPane.setViewportView(iconPanel);
 
+		JPanel controlPanel = new JPanel();
+		FlowLayout flowLayout = (FlowLayout) controlPanel.getLayout();
+		flowLayout.setAlignment(FlowLayout.LEFT);
+		add(controlPanel, BorderLayout.SOUTH);
+
+		JButton btnLaunch = new JButton("Launch");
+		btnLaunch.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				new LaunchInstanceDialog(VMMainPanel.this.mainFrame).setVisible(true);
+			}
+		});
+		btnLaunch.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/add.png")));
+		controlPanel.add(btnLaunch);
+
+		JButton btnStop = new JButton("Stop");
+		btnStop.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnStop.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/control_stop_blue.png")));
+		controlPanel.add(btnStop);
+
+		JButton btnDelete = new JButton("Delete");
+		btnDelete.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnDelete.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/cross.png")));
+		controlPanel.add(btnDelete);
+
+		JButton btnRemote = new JButton("Remote");
+		btnRemote.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnRemote.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/application_osx_terminal.png")));
+		controlPanel.add(btnRemote);
+
+		JButton btnPause = new JButton("Pause");
+		btnPause.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnPause.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/control_pause_blue.png")));
+		btnPause.setToolTipText("Stores the content of the VM in memory");
+		controlPanel.add(btnPause);
+
+		JButton btnUnpause = new JButton("Unpause");
+		btnUnpause.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnUnpause.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/control_play_blue.png")));
+		btnUnpause.setToolTipText("Unpause the content of the VM in memory");
+		controlPanel.add(btnUnpause);
+
+		JButton btnSuspend = new JButton("Suspend");
+		btnSuspend.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnSuspend.setToolTipText("Suspend VM to disk");
+		btnSuspend.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/disk.png")));
+		controlPanel.add(btnSuspend);
+
+		JButton btnResume = new JButton("Resume");
+		btnResume.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnResume.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/disk.png")));
+		btnResume.setToolTipText("Resume VM from disk");
+		controlPanel.add(btnResume);
+
+		JButton btnLog = new JButton("Log");
+		btnLog.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		btnLog.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/script.png")));
+		controlPanel.add(btnLog);
+
+		JButton btnCreateSnapshot = new JButton("Create snapshot");
+		btnCreateSnapshot.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		controlPanel.add(btnCreateSnapshot);
+
+		JButton btnSoftReboot = new JButton("Soft reboot");
+		btnSoftReboot.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		controlPanel.add(btnSoftReboot);
+
+		JButton btnHardReboot = new JButton("Hard reboot");
+		btnHardReboot.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		controlPanel.add(btnHardReboot);
+
+		JButton btnAdvance = new JButton("Advance");
+		btnAdvance.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		controlPanel.add(btnAdvance);
+
+	}
+
+	void refresh() {
+		int maxVMColumnCount = (int) slider.getValue();
+		iconPanel.init(maxVMColumnCount);
 	}
 
 }

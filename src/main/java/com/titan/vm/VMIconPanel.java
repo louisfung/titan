@@ -62,11 +62,11 @@ public class VMIconPanel extends JPanel implements ActionListener {
 			label.setOS(OS.values()[new Random().nextInt(OS.values().length)]);
 			VMPanel panel = new VMPanel(label);
 			panels.add(panel);
-			if (TitanCommonLib.getJSONString(obj, "name", "No name").length() <= 10) {
-				panel.label.setText(TitanCommonLib.getJSONString(obj, "name", "No name"));
-			} else {
-				panel.label.setText(TitanCommonLib.getJSONString(obj, "name", "No name").substring(0, 10));
+			String vmName = TitanCommonLib.getJSONString(obj, "name", "No name");
+			if (vmName.length() > 10) {
+				vmName = vmName.substring(0, 10);
 			}
+			panel.label.setText("<html>" + vmName + "<br>34d 10m</html>");
 			panel.addMouseListener(new MouseListener() {
 				@Override
 				public void mouseClicked(MouseEvent e) {

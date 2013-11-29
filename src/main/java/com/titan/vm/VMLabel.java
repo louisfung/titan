@@ -36,7 +36,7 @@ public class VMLabel extends JLabel {
 
 	public VMLabel(OS os) {
 		super();
-		//		setIcon(icon);
+		setIcon(icon);
 		setOS(os);
 		setPreferredSize(new Dimension(red.getWidth(null), red.getHeight(null)));
 	}
@@ -48,13 +48,13 @@ public class VMLabel extends JLabel {
 	public void paint(Graphics g) {
 		super.paint(g);
 		int cpu = new Random().nextInt(100);
-		if (cpu >= 80) {
-			g.drawImage(red, 0, 0, null);
-		} else if (cpu >= 60) {
-			g.drawImage(yellow, 0, 0, null);
-		} else {
-			g.drawImage(blue, 0, 0, null);
-		}
+//		if (cpu >= 80) {
+//			g.drawImage(red, 0, 0, null);
+//		} else if (cpu >= 60) {
+//			g.drawImage(yellow, 0, 0, null);
+//		} else {
+//			g.drawImage(blue, 0, 0, null);
+//		}
 		if (os == OS.redhat) {
 			g.drawImage(redhat, (44 - redhat.getWidth(null)) / 2, (44 - redhat.getHeight(null)) / 2, null);
 		} else if (os == OS.ubuntu) {
