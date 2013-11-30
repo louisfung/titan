@@ -28,6 +28,8 @@ import net.miginfocom.swing.MigLayout;
 
 import org.apache.commons.io.IOUtils;
 
+import com.apple.eawt.ApplicationEvent;
+import com.apple.eawt.ApplicationListener;
 import com.peterswing.CommonLib;
 import com.peterswing.FilterTreeModel;
 import com.titan.Global;
@@ -51,7 +53,7 @@ import com.titanserver.Command;
 import com.titanserver.ReturnCommand;
 import com.titanserver.structure.TitanServerDefinition;
 
-public class MainFrame extends JFrame {
+public class MainFrame extends JFrame implements ApplicationListener {
 	private JPanel contentPane;
 	JPanel mainContentPanel = new JPanel();
 	JSplitPane splitPane = new JSplitPane();
@@ -72,6 +74,11 @@ public class MainFrame extends JFrame {
 	Color selectedBorderColor = new Color(175, 211, 253);
 
 	public MainFrame() {
+		String osName = System.getProperty("os.name").toLowerCase();
+		if (osName.toLowerCase().contains("mac")) {
+			com.apple.eawt.Application macApp = com.apple.eawt.Application.getApplication();
+			macApp.addApplicationListener(this);
+		}
 		addWindowListener(new WindowAdapter() {
 			@Override
 			public void windowClosing(WindowEvent e) {
@@ -375,4 +382,45 @@ public class MainFrame extends JFrame {
 		frame.setLocationRelativeTo(null);
 		frame.setVisible(true);
 	}
+
+	@Override
+	public void handleAbout(ApplicationEvent arg0) {
+
+	}
+
+	@Override
+	public void handleOpenApplication(ApplicationEvent arg0) {
+
+	}
+
+	@Override
+	public void handleOpenFile(ApplicationEvent arg0) {
+
+	}
+
+	@Override
+	public void handlePreferences(ApplicationEvent arg0) {
+
+	}
+
+	@Override
+	public void handlePrintFile(ApplicationEvent arg0) {
+
+	}
+
+	@Override
+	public void handleQuit(ApplicationEvent arg0) {
+		TitanSetting.getInstance().x = MainFrame.this.getX();
+		TitanSetting.getInstance().y = MainFrame.this.getY();
+		TitanSetting.getInstance().width = MainFrame.this.getWidth();
+		TitanSetting.getInstance().height = MainFrame.this.getHeight();
+		TitanSetting.getInstance().save();
+		System.exit(0);
+	}
+
+	@Override
+	public void handleReOpenApplication(ApplicationEvent arg0) {
+
+	}
+
 }

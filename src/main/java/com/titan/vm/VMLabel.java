@@ -14,8 +14,11 @@ import javax.swing.JLabel;
 import com.titan.OS;
 
 public class VMLabel extends JLabel {
+	VMPanel vmPanel;
 	OS os;
 	Icon icon = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/vmIcon.png"));
+	Image normal = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/normal.png")).getImage();
+	Image gray = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/gray.png")).getImage();
 	Image blue = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/blue.png")).getImage();
 	Image yellow = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/yellow.png")).getImage();
 	Image red = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/red.png")).getImage();
@@ -30,13 +33,14 @@ public class VMLabel extends JLabel {
 	Image pause = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/status/pause.png")).getImage();
 	Image stop = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/status/stop.png")).getImage();
 
-	public VMLabel() {
-		this(OS.none);
+	public VMLabel(VMPanel vmPanel) {
+		this(vmPanel, OS.none);
 	}
 
-	public VMLabel(OS os) {
+	public VMLabel(VMPanel vmPanel, OS os) {
 		super();
-		setIcon(icon);
+		this.vmPanel = vmPanel;
+		//		setIcon(icon);
 		setOS(os);
 		setPreferredSize(new Dimension(red.getWidth(null), red.getHeight(null)));
 	}
@@ -48,13 +52,16 @@ public class VMLabel extends JLabel {
 	public void paint(Graphics g) {
 		super.paint(g);
 		int cpu = new Random().nextInt(100);
-//		if (cpu >= 80) {
-//			g.drawImage(red, 0, 0, null);
-//		} else if (cpu >= 60) {
-//			g.drawImage(yellow, 0, 0, null);
-//		} else {
-//			g.drawImage(blue, 0, 0, null);
-//		}
+		//		if (cpu >= 80) {
+		//			g.drawImage(red, 0, 0, null);
+		//		} else if (cpu >= 60) {
+		//			g.drawImage(yellow, 0, 0, null);
+		//		} else {
+		//			g.drawImage(blue, 0, 0, null);
+		//		}
+
+		g.drawImage(normal, (getWidth() - normal.getWidth(null)) / 2, (getHeight() - normal.getHeight(null)) / 2, null);
+
 		if (os == OS.redhat) {
 			g.drawImage(redhat, (44 - redhat.getWidth(null)) / 2, (44 - redhat.getHeight(null)) / 2, null);
 		} else if (os == OS.ubuntu) {

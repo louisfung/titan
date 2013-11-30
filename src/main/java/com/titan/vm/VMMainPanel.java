@@ -5,13 +5,14 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
-import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
@@ -21,12 +22,17 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.peterswing.advancedswing.searchtextfield.JSearchTextField;
+import com.titan.TitanCommonLib;
 import com.titan.TitanSetting;
+import com.titan.communication.CommunicateLib;
+import com.titan.instancepanel.InstancePanel;
 import com.titan.instancepanel.LaunchInstanceDialog;
 import com.titan.mainframe.MainFrame;
+import com.titanserver.Command;
+import com.titanserver.ReturnCommand;
 
 public class VMMainPanel extends JPanel {
-	MainFrame mainFrame;
+	MainFrame mainframe;
 	JSlider slider = new JSlider();
 	VMIconPanel iconPanel = new VMIconPanel(this);
 	JLabel colLabel = new JLabel("");
@@ -36,9 +42,10 @@ public class VMMainPanel extends JPanel {
 	JScrollPane scrollPane = new JScrollPane();
 	VMGanttPanel vmGanttPanel;
 	private JComboBox sortComboBox;
+	String selectedInstanceId = null;
 
 	public VMMainPanel(MainFrame mainFrame) {
-		this.mainFrame = mainFrame;
+		this.mainframe = mainFrame;
 		setLayout(new BorderLayout(0, 0));
 
 		JPanel panel = new JPanel();
@@ -120,7 +127,7 @@ public class VMMainPanel extends JPanel {
 		JButton btnLaunch = new JButton("Launch");
 		btnLaunch.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				new LaunchInstanceDialog(VMMainPanel.this.mainFrame).setVisible(true);
+				new LaunchInstanceDialog(VMMainPanel.this.mainframe).setVisible(true);
 			}
 		});
 		btnLaunch.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/add.png")));
@@ -129,6 +136,26 @@ public class VMMainPanel extends JPanel {
 		JButton btnStop = new JButton("Stop");
 		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if (selectedInstanceId == null) {
+					JOptionPane.showMessageDialog(VMMainPanel.this.mainframe, "Please select vm first", "Warning", JOptionPane.WARNING_MESSAGE);
+					return;
+				}
+				String instanceId = selectedInstanceId;
+				int x = JOptionPane.showConfirmDialog(VMMainPanel.this.mainframe, "Confirm to stop instance : " + instanceId + " ?", "Warning", JOptionPane.YES_NO_OPTION);
+
+				if (x == JOptionPane.YES_OPTION) {
+					Command command = new Command();
+					command.command = "from titan: nova stop";
+					HashMap<String, String> parameters = new HashMap<String, String>();
+					parameters.put("$InstanceId", instanceId);
+					command.parameters.add(parameters);
+					ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+					String returnMessage = (String) r.map.get("result");
+					if (!returnMessage.equals("")) {
+						JOptionPane.showMessageDialog(VMMainPanel.this.mainframe, returnMessage);
+					}
+					refresh();
+				}
 			}
 		});
 		btnStop.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/control_stop_blue.png")));

@@ -81,7 +81,6 @@ public class Titan extends JFrame {
 				try {
 					com.apple.eawt.Application macApp = com.apple.eawt.Application.getApplication();
 					macApp.setDockIconImage(new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/titan_icon.png")).getImage());
-					macApp.addApplicationListener(new MacAboutBoxHandler());
 				} catch (Exception e) {
 				}
 
@@ -266,6 +265,8 @@ public class Titan extends JFrame {
 				Titan.this.setVisible(false);
 				if (mainframe == null) {
 					mainframe = new MainFrame();
+					mainframe.setSize(TitanSetting.getInstance().width, TitanSetting.getInstance().height);
+					mainframe.setLocation(TitanSetting.getInstance().x, TitanSetting.getInstance().y);
 					mainframe.setVisible(true);
 				}
 			} else {
