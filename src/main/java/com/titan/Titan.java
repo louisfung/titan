@@ -1,14 +1,19 @@
 package com.titan;
 
 import java.awt.Color;
+import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
+import java.net.URI;
 
 import javax.swing.GroupLayout;
 import javax.swing.GroupLayout.Alignment;
@@ -118,6 +123,19 @@ public class Titan extends JFrame {
 		lblIp.setHorizontalAlignment(SwingConstants.RIGHT);
 
 		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setCursor(new Cursor(Cursor.HAND_CURSOR));
+		lblNewLabel.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (Desktop.isDesktopSupported()) {
+					try {
+						Desktop.getDesktop().browse(new URI("http://www.titan-engine.net"));
+					} catch (Exception e1) {
+						e1.printStackTrace();
+					}
+				}
+			}
+		});
 		if (hideLogo) {
 			lblNewLabel.setIcon(new ImageIcon(Titan.class.getResource("/com/titan/image/empty_logo.png")));
 		} else {

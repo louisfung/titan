@@ -10,6 +10,8 @@ import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.LineBorder;
 
+import net.sf.json.JSONObject;
+
 import com.titan.OS;
 
 public class VMPanel extends JPanel {
@@ -17,12 +19,12 @@ public class VMPanel extends JPanel {
 	public boolean isSelected;
 	LineBorder border = new LineBorder(new Color(0, 0, 0), 1);
 	EmptyBorder emptyBorder = new EmptyBorder(1, 1, 1, 1);
-	protected String instanceId;
+	JSONObject json;
 
-	public VMPanel(String instanceId) {
+	public VMPanel(JSONObject json) {
 		VMLabel iconLabel = new VMLabel(this);
 		iconLabel.setOS(OS.values()[new Random().nextInt(OS.values().length)]);
-		this.instanceId = instanceId;
+		this.json = json;
 		setLayout(new BorderLayout(0, 0));
 
 		add(iconLabel, BorderLayout.CENTER);
@@ -31,6 +33,7 @@ public class VMPanel extends JPanel {
 		add(label, BorderLayout.SOUTH);
 		setBorder(emptyBorder);
 	}
+	
 
 	public void setSelected(boolean selected) {
 		isSelected = selected;

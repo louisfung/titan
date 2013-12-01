@@ -21,6 +21,8 @@ import javax.swing.JToolBar;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
+import net.sf.json.JSONObject;
+
 import com.peterswing.advancedswing.searchtextfield.JSearchTextField;
 import com.titan.TitanCommonLib;
 import com.titan.TitanSetting;
@@ -42,7 +44,7 @@ public class VMMainPanel extends JPanel {
 	JScrollPane scrollPane = new JScrollPane();
 	VMGanttPanel vmGanttPanel;
 	private JComboBox sortComboBox;
-	String selectedInstanceId = null;
+	JSONObject json = null;
 
 	public VMMainPanel(MainFrame mainFrame) {
 		this.mainframe = mainFrame;
@@ -136,11 +138,11 @@ public class VMMainPanel extends JPanel {
 		JButton btnStop = new JButton("Stop");
 		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (selectedInstanceId == null) {
+				String instanceId = TitanCommonLib.getJSONString(json, "id", null);
+				if (instanceId == null) {
 					JOptionPane.showMessageDialog(VMMainPanel.this.mainframe, "Please select vm first", "Warning", JOptionPane.WARNING_MESSAGE);
 					return;
 				}
-				String instanceId = selectedInstanceId;
 				int x = JOptionPane.showConfirmDialog(VMMainPanel.this.mainframe, "Confirm to stop instance : " + instanceId + " ?", "Warning", JOptionPane.YES_NO_OPTION);
 
 				if (x == JOptionPane.YES_OPTION) {

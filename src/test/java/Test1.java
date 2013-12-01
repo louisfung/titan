@@ -9,12 +9,8 @@ import javax.swing.UIManager;
 import javax.swing.border.EmptyBorder;
 
 public class Test1 extends JFrame {
-
 	private JPanel contentPane;
 
-	/**
-	 * Launch the application.
-	 */
 	public static void main(String[] args) {
 		try {
 			UIManager.setLookAndFeel("com.peterswing.white.PeterSwingWhiteLookAndFeel");
@@ -23,24 +19,12 @@ public class Test1 extends JFrame {
 		}
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				try {
-					try {
-						UIManager.setLookAndFeel("com.peterswing.white.PeterSwingWhiteLookAndFeel");
-					} catch (Exception e) {
-						e.printStackTrace();
-					}
-					Test1 frame = new Test1();
-					frame.setVisible(true);
-				} catch (Exception e) {
-					e.printStackTrace();
-				}
+				Test1 frame = new Test1();
+				frame.setVisible(true);
 			}
 		});
 	}
 
-	/**
-	 * Create the frame.
-	 */
 	public Test1() {
 		setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		setBounds(100, 100, 450, 300);

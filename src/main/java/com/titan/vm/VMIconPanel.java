@@ -59,8 +59,9 @@ public class VMIconPanel extends JPanel implements ActionListener {
 		for (int x = 0; x < servers.size(); x++) {
 			JSONObject obj = servers.getJSONObject(x);
 			String vmName = TitanCommonLib.getJSONString(obj, "name", "No name");
-			String instanceId = TitanCommonLib.getJSONString(obj, "id", null);
-			VMPanel panel = new VMPanel(instanceId);
+			//			String instanceId = TitanCommonLib.getJSONString(obj, "id", null);
+			//			System.out.println(obj);
+			VMPanel panel = new VMPanel(obj);
 			panels.add(panel);
 
 			if (vmName.length() > 10) {
@@ -72,7 +73,7 @@ public class VMIconPanel extends JPanel implements ActionListener {
 				public void mouseClicked(MouseEvent e) {
 					clearAllPanelsSelection();
 					VMPanel panel = (VMPanel) e.getSource();
-					vmMainPanel.selectedInstanceId = panel.instanceId;
+					vmMainPanel.json = panel.json;
 					panel.setSelected(true);
 				}
 
