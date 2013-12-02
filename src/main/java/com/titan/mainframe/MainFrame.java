@@ -145,9 +145,14 @@ public class MainFrame extends JFrame implements ApplicationListener {
 			public void mouseClicked(MouseEvent e) {
 				clearSelectedColor();
 				lblVM.setBorder(new LineBorder(selectedBorderColor, 1));
-				mainContentPanel.removeAll();
-				mainContentPanel.add(new VMMainPanel(MainFrame.this), BorderLayout.CENTER);
-				mainContentPanel.updateUI();
+				lblVM.repaint();
+				SwingUtilities.invokeLater(new Runnable() {
+					public void run() {
+						mainContentPanel.removeAll();
+						mainContentPanel.add(new VMMainPanel(MainFrame.this), BorderLayout.CENTER);
+						mainContentPanel.updateUI();
+					}
+				});
 			}
 		});
 		lblVM.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/vm.png")));

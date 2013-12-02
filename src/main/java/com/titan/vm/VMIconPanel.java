@@ -4,7 +4,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.util.Random;
 import java.util.Vector;
 
 import javax.swing.JPanel;
@@ -16,7 +15,6 @@ import net.sf.json.JSONObject;
 
 import org.apache.commons.lang.StringUtils;
 
-import com.titan.OS;
 import com.titan.TitanCommonLib;
 import com.titan.TitanSetting;
 import com.titan.communication.CommunicateLib;
@@ -31,7 +29,7 @@ public class VMIconPanel extends JPanel implements ActionListener {
 	public VMIconPanel(VMMainPanel vmMainPanel) {
 		this.vmMainPanel = vmMainPanel;
 
-		Timer timer = new Timer(1000, this);
+		Timer timer = new Timer(5000, this);
 		timer.start();
 	}
 
