@@ -4,13 +4,16 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.HashMap;
 import java.util.Hashtable;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
@@ -20,11 +23,15 @@ import javax.swing.ListSelectionModel;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 
+import net.sf.json.JSONArray;
+import net.sf.json.JSONObject;
+
 import com.peterswing.GenericTableModel;
 import com.peterswing.advancedswing.jprogressbardialog.JProgressBarDialog;
 import com.peterswing.advancedswing.jtable.SortableTableModel;
 import com.peterswing.advancedswing.jtable.TableSorterColumnListener;
 import com.titan.MainPanel;
+import com.titan.TitanCommonLib;
 import com.titan.communication.CommunicateLib;
 import com.titan.settingpanel.screenpermission.AddScreenPermissionGroupDialog;
 import com.titanserver.Command;
@@ -34,6 +41,9 @@ import com.titanserver.table.InstancePermissionGroup;
 import com.titanserver.table.ScreenPermission;
 import com.titanserver.table.ScreenPermissionGroup;
 import com.titanserver.table.User;
+
+import javax.swing.ImageIcon;
+import javax.swing.JComboBox;
 
 public class SettingPanel extends JPanel implements MainPanel, Runnable {
 	JFrame frame;
@@ -58,6 +68,12 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 	SortableTableModel instancePermissionGroupTableModel = new SortableTableModel(new GenericTableModel());
 	TableSorterColumnListener instancePermissionGroupColumnListener;
 	private JTable instancePermissionGroupTable;
+
+	GenericTableModel quotaDefaultsTableModel = new GenericTableModel();
+	private JTable quotaDefaultsTable;
+
+	GenericTableModel quotaTableModel = new GenericTableModel();
+	private JTable quotaTable;
 
 	public SettingPanel(final JFrame frame) {
 		this.frame = frame;
@@ -118,12 +134,12 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 		screenGroupTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane.setViewportView(screenGroupTable);
 
-		JPanel panel_1 = new JPanel();
-		tabbedPane.addTab("Screen permission", null, panel_1, null);
-		panel_1.setLayout(new BorderLayout(0, 0));
+		JPanel screenPermissionPanel = new JPanel();
+		tabbedPane.addTab("Screen permission", null, screenPermissionPanel, null);
+		screenPermissionPanel.setLayout(new BorderLayout(0, 0));
 
 		JScrollPane scrollPane_2 = new JScrollPane();
-		panel_1.add(scrollPane_2, BorderLayout.CENTER);
+		screenPermissionPanel.add(scrollPane_2, BorderLayout.CENTER);
 
 		screenPermissionTable = new JTable();
 		screenPermissionColumnListener = new TableSorterColumnListener(screenPermissionTable, screenPermissionTableModel);
@@ -166,6 +182,49 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 		instancePermissionTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane_1.setViewportView(instancePermissionTable);
 
+		JPanel quotaDefaultsPanel = new JPanel();
+		tabbedPane.addTab("Quota defaults", null, quotaDefaultsPanel, null);
+		quotaDefaultsPanel.setLayout(new BorderLayout(0, 0));
+
+		JScrollPane scrollPane_5 = new JScrollPane();
+		quotaDefaultsPanel.add(scrollPane_5, BorderLayout.CENTER);
+
+		quotaDefaultsTable = new JTable();
+		quotaDefaultsTable.setModel(quotaDefaultsTableModel);
+		scrollPane_5.setViewportView(quotaDefaultsTable);
+
+		JPanel quotaTenantPanel = new JPanel();
+		tabbedPane.addTab("Quota for a tenant/user", null, quotaTenantPanel, null);
+		quotaTenantPanel.setLayout(new BorderLayout(0, 0));
+
+		JPanel panel_1 = new JPanel();
+		FlowLayout flowLayout_1 = (FlowLayout) panel_1.getLayout();
+		flowLayout_1.setAlignment(FlowLayout.LEFT);
+		quotaTenantPanel.add(panel_1, BorderLayout.SOUTH);
+
+		JButton changeButton = new JButton("Change");
+		changeButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+			}
+		});
+		panel_1.add(changeButton);
+
+		JButton refreshButton = new JButton("Refresh");
+		panel_1.add(refreshButton);
+		refreshButton.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				initQuotaTable();
+			}
+		});
+		refreshButton.setIcon(new ImageIcon(SettingPanel.class.getResource("/com/titan/image/famfamfam/arrow_refresh.png")));
+
+		JScrollPane scrollPane_6 = new JScrollPane();
+		quotaTenantPanel.add(scrollPane_6, BorderLayout.CENTER);
+
+		quotaTable = new JTable();
+		quotaTable.setModel(quotaTableModel);
+		scrollPane_6.setViewportView(quotaTable);
+
 		refresh();
 	}
 
@@ -193,12 +252,18 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 
 		d.jProgressBar.setString("get instance permissions");
 		initInstancePermissionTable();
+
+		d.jProgressBar.setString("get quota defaults");
+		initQuotaDefaultsTable();
+
+		d.jProgressBar.setString("get quota");
+		initQuotaTable();
 	}
 
 	private void initUserTable() {
 		Command command = new Command();
 		command.command = "get users";
-		ReturnCommand r = CommunicateLib.send(command);
+		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 		List<User> users = (List<User>) r.map.get("result");
 		GenericTableModel model = (GenericTableModel) userTableModel.model;
 		model.columnNames.clear();
@@ -267,7 +332,7 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 	private void initScreenPermissionGroupTable() {
 		Command command = new Command();
 		command.command = "get screen permission groups";
-		ReturnCommand r = CommunicateLib.send(command);
+		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 		List<ScreenPermissionGroup> screenPermissionsGroup = (List<ScreenPermissionGroup>) r.map.get("result");
 		GenericTableModel model = (GenericTableModel) screenPermissionGroupTableModel.model;
 		model.columnNames.clear();
@@ -280,7 +345,7 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 
 		command = new Command();
 		command.command = "get screen permissions";
-		r = CommunicateLib.send(command);
+		r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 		List<ScreenPermission> allScreenPermissions = (List<ScreenPermission>) r.map.get("result");
 
 		Hashtable<String, Vector<Object>> cols = new Hashtable<String, Vector<Object>>();
@@ -322,7 +387,7 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 	private void initInstancePermissionGroupTable() {
 		Command command = new Command();
 		command.command = "get instance permission groups";
-		ReturnCommand r = CommunicateLib.send(command);
+		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 		List<InstancePermissionGroup> InstancePermissionsGroup = (List<InstancePermissionGroup>) r.map.get("result");
 		GenericTableModel model = (GenericTableModel) instancePermissionGroupTableModel.model;
 		model.columnNames.clear();
@@ -335,7 +400,7 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 
 		command = new Command();
 		command.command = "get instance permissions";
-		r = CommunicateLib.send(command);
+		r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 		List<InstancePermission> addInstancePermissions = (List<InstancePermission>) r.map.get("result");
 
 		Hashtable<String, Vector<Object>> cols = new Hashtable<String, Vector<Object>>();
@@ -377,7 +442,7 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 	private void initScreenPermissionTable() {
 		Command command = new Command();
 		command.command = "get screen permissions";
-		ReturnCommand r = CommunicateLib.send(command);
+		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 		List<ScreenPermission> screenPermissions = (List<ScreenPermission>) r.map.get("result");
 		GenericTableModel model = (GenericTableModel) screenPermissionTableModel.model;
 		model.columnNames.clear();
@@ -409,7 +474,7 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 	private void initInstancePermissionTable() {
 		Command command = new Command();
 		command.command = "get instance permissions";
-		ReturnCommand r = CommunicateLib.send(command);
+		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 		List<InstancePermission> InstancePermissions = (List<InstancePermission>) r.map.get("result");
 		GenericTableModel model = (GenericTableModel) instancePermissionTableModel.model;
 		model.columnNames.clear();
@@ -438,4 +503,73 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 		centerRenderer.setHorizontalAlignment(JTextField.CENTER);
 	}
 
+	private void initQuotaDefaultsTable() {
+		Command command = new Command();
+		command.command = "from titan: nova quota-defaults";
+		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+		JSONObject quotas = ((JSONObject) JSONObject.fromObject(r.map.get("result")).get("quota_set"));
+
+		quotaDefaultsTableModel.columnNames.clear();
+		quotaDefaultsTableModel.columnNames.add("Name");
+		quotaDefaultsTableModel.columnNames.add("Description");
+
+		Vector<Object> col1 = new Vector<Object>();
+		Vector<Object> col2 = new Vector<Object>();
+		Iterator<String> keys = quotas.keys();
+		while (keys.hasNext()) {
+			String key = keys.next();
+			col1.add(key);
+			col2.add(quotas.getString(key));
+		}
+
+		quotaDefaultsTableModel.values.clear();
+		quotaDefaultsTableModel.values.add(col1);
+		quotaDefaultsTableModel.values.add(col2);
+
+		quotaDefaultsTableModel.fireTableStructureChanged();
+		quotaDefaultsTableModel.fireTableDataChanged();
+
+		quotaDefaultsTable.getColumnModel().getColumn(0).setPreferredWidth(200);
+		quotaDefaultsTable.getColumnModel().getColumn(1).setPreferredWidth(400);
+
+		DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+		rightRenderer.setHorizontalAlignment(JTextField.RIGHT);
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment(JTextField.CENTER);
+	}
+
+	private void initQuotaTable() {
+		Command command = new Command();
+		command.command = "from titan: nova quota-show";
+		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+		JSONObject quotas = ((JSONObject) JSONObject.fromObject(r.map.get("result")).get("quota_set"));
+
+		quotaTableModel.columnNames.clear();
+		quotaTableModel.columnNames.add("Name");
+		quotaTableModel.columnNames.add("Description");
+
+		Vector<Object> col1 = new Vector<Object>();
+		Vector<Object> col2 = new Vector<Object>();
+		Iterator<String> keys = quotas.keys();
+		while (keys.hasNext()) {
+			String key = keys.next();
+			col1.add(key);
+			col2.add(quotas.getString(key));
+		}
+
+		quotaTableModel.values.clear();
+		quotaTableModel.values.add(col1);
+		quotaTableModel.values.add(col2);
+
+		quotaTableModel.fireTableStructureChanged();
+		quotaTableModel.fireTableDataChanged();
+
+		quotaTable.getColumnModel().getColumn(0).setPreferredWidth(200);
+		quotaTable.getColumnModel().getColumn(1).setPreferredWidth(400);
+
+		DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+		rightRenderer.setHorizontalAlignment(JTextField.RIGHT);
+		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment(JTextField.CENTER);
+	}
 }

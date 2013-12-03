@@ -523,7 +523,7 @@ public class KeystonePanel extends JPanel implements MainPanel {
 						JOptionPane.showMessageDialog(frame, errorMessage, "Error", JOptionPane.ERROR_MESSAGE);
 						return;
 					}
-					JSONArray flavors = JSONObject.fromObject(msg).getJSONArray("tenants");
+					JSONArray tenants = JSONObject.fromObject(msg).getJSONArray("tenants");
 					GenericTableModel model = (GenericTableModel) tenantTableModel.model;
 					model.columnNames.clear();
 					model.columnNames.add("Id");
@@ -538,8 +538,8 @@ public class KeystonePanel extends JPanel implements MainPanel {
 					Vector<Object> col3 = new Vector<Object>();
 					Vector<Object> col4 = new Vector<Object>();
 
-					for (int x = 0; x < flavors.size(); x++) {
-						JSONObject obj = flavors.getJSONObject(x);
+					for (int x = 0; x < tenants.size(); x++) {
+						JSONObject obj = tenants.getJSONObject(x);
 						col1.add(obj.getString("id"));
 						col2.add(obj.getString("name"));
 						col3.add(obj.getString("description"));
