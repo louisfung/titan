@@ -44,6 +44,7 @@ import com.titanserver.table.User;
 
 import javax.swing.ImageIcon;
 import javax.swing.JComboBox;
+import javax.swing.JSplitPane;
 
 public class SettingPanel extends JPanel implements MainPanel, Runnable {
 	JFrame frame;
@@ -74,6 +75,7 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 
 	GenericTableModel quotaTableModel = new GenericTableModel();
 	private JTable quotaTable;
+	private JComboBox<String> tenantComboBox;
 
 	public SettingPanel(final JFrame frame) {
 		this.frame = frame;
@@ -182,48 +184,70 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 		instancePermissionTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane_1.setViewportView(instancePermissionTable);
 
-		JPanel quotaDefaultsPanel = new JPanel();
-		tabbedPane.addTab("Quota defaults", null, quotaDefaultsPanel, null);
-		quotaDefaultsPanel.setLayout(new BorderLayout(0, 0));
+		JPanel quotaPanel = new JPanel();
+		tabbedPane.addTab("Quota", null, quotaPanel, null);
+		quotaPanel.setLayout(new BorderLayout(0, 0));
+
+		JSplitPane splitPane = new JSplitPane();
+		splitPane.setDividerLocation(400);
+		quotaPanel.add(splitPane, BorderLayout.CENTER);
 
 		JScrollPane scrollPane_5 = new JScrollPane();
-		quotaDefaultsPanel.add(scrollPane_5, BorderLayout.CENTER);
+		splitPane.add(scrollPane_5, JSplitPane.LEFT);
 
 		quotaDefaultsTable = new JTable();
 		quotaDefaultsTable.setModel(quotaDefaultsTableModel);
 		scrollPane_5.setViewportView(quotaDefaultsTable);
 
-		JPanel quotaTenantPanel = new JPanel();
-		tabbedPane.addTab("Quota for a tenant/user", null, quotaTenantPanel, null);
-		quotaTenantPanel.setLayout(new BorderLayout(0, 0));
+		JScrollPane scrollPane_6 = new JScrollPane();
+		splitPane.add(scrollPane_6, JSplitPane.RIGHT);
+		quotaTable = new JTable();
+		quotaTable.setModel(quotaTableModel);
+		scrollPane_6.setViewportView(quotaTable);
 
 		JPanel panel_1 = new JPanel();
+		quotaPanel.add(panel_1, BorderLayout.SOUTH);
 		FlowLayout flowLayout_1 = (FlowLayout) panel_1.getLayout();
 		flowLayout_1.setAlignment(FlowLayout.LEFT);
-		quotaTenantPanel.add(panel_1, BorderLayout.SOUTH);
 
 		JButton changeButton = new JButton("Change");
 		changeButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				if (quotaTable.getSelectedRowCount() == 0) {
+					JOptionPane.showMessageDialog(frame, "Please select a quota", "Warning", JOptionPane.WARNING_MESSAGE);
+				} else {
+
+				}
 			}
 		});
 		panel_1.add(changeButton);
 
+		JPanel panel_2 = new JPanel();
+		FlowLayout flowLayout_2 = (FlowLayout) panel_2.getLayout();
+		flowLayout_2.setAlignment(FlowLayout.LEFT);
+		quotaPanel.add(panel_2, BorderLayout.NORTH);
+
+		tenantComboBox = new JComboBox<String>();
+		Command command = new Command();
+		command.command = "from titan: keystone tenant-list";
+		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+		String msg = (String) r.map.get("result");
+		JSONArray tenants = JSONObject.fromObject(msg).getJSONArray("tenants");
+		tenantComboBox.removeAllItems();
+		for (int x = 0; x < tenants.size(); x++) {
+			JSONObject obj = tenants.getJSONObject(x);
+			tenantComboBox.addItem(obj.getString("name"));
+		}
+		panel_2.add(tenantComboBox);
+
 		JButton refreshButton = new JButton("Refresh");
-		panel_1.add(refreshButton);
+		panel_2.add(refreshButton);
 		refreshButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				initQuotaTable();
 			}
 		});
 		refreshButton.setIcon(new ImageIcon(SettingPanel.class.getResource("/com/titan/image/famfamfam/arrow_refresh.png")));
-
-		JScrollPane scrollPane_6 = new JScrollPane();
-		quotaTenantPanel.add(scrollPane_6, BorderLayout.CENTER);
-
-		quotaTable = new JTable();
-		quotaTable.setModel(quotaTableModel);
-		scrollPane_6.setViewportView(quotaTable);
 
 		refresh();
 	}
