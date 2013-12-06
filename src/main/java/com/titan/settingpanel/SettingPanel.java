@@ -4,6 +4,8 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.Iterator;
@@ -11,17 +13,24 @@ import java.util.List;
 import java.util.Set;
 import java.util.Vector;
 
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JFrame;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JSplitPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.RowSorter;
+import javax.swing.SortOrder;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
+import javax.swing.table.TableModel;
+import javax.swing.table.TableRowSorter;
 
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
@@ -41,10 +50,8 @@ import com.titanserver.table.InstancePermissionGroup;
 import com.titanserver.table.ScreenPermission;
 import com.titanserver.table.ScreenPermissionGroup;
 import com.titanserver.table.User;
-
-import javax.swing.ImageIcon;
-import javax.swing.JComboBox;
-import javax.swing.JSplitPane;
+import javax.swing.JLabel;
+import javax.swing.SwingConstants;
 
 public class SettingPanel extends JPanel implements MainPanel, Runnable {
 	JFrame frame;
@@ -192,18 +199,21 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 		splitPane.setDividerLocation(400);
 		quotaPanel.add(splitPane, BorderLayout.CENTER);
 
+		JPanel panel_3 = new JPanel();
+		splitPane.add(panel_3, JSplitPane.LEFT);
+		panel_3.setLayout(new BorderLayout(0, 0));
+
 		JScrollPane scrollPane_5 = new JScrollPane();
-		splitPane.add(scrollPane_5, JSplitPane.LEFT);
+		panel_3.add(scrollPane_5, BorderLayout.CENTER);
 
 		quotaDefaultsTable = new JTable();
+		quotaDefaultsTable.setRowSorter(new TableRowSorter<TableModel>(quotaDefaultsTableModel));
 		quotaDefaultsTable.setModel(quotaDefaultsTableModel);
 		scrollPane_5.setViewportView(quotaDefaultsTable);
 
-		JScrollPane scrollPane_6 = new JScrollPane();
-		splitPane.add(scrollPane_6, JSplitPane.RIGHT);
-		quotaTable = new JTable();
-		quotaTable.setModel(quotaTableModel);
-		scrollPane_6.setViewportView(quotaTable);
+		JLabel lblDefaultValues = new JLabel("Default values");
+		lblDefaultValues.setHorizontalAlignment(SwingConstants.CENTER);
+		panel_3.add(lblDefaultValues, BorderLayout.NORTH);
 
 		JPanel panel_1 = new JPanel();
 		quotaPanel.add(panel_1, BorderLayout.SOUTH);
@@ -216,7 +226,37 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 				if (quotaTable.getSelectedRowCount() == 0) {
 					JOptionPane.showMessageDialog(frame, "Please select a quota", "Warning", JOptionPane.WARNING_MESSAGE);
 				} else {
+					String value = JOptionPane.showInputDialog(frame, "What value of \"" + quotaTable.getValueAt(quotaTable.getSelectedRow(), 0) + "\"?",
+							quotaTable.getValueAt(quotaTable.getSelectedRow(), 1));
+					System.out.println("v=" + value);
+					if (value == null) {
+						return;
+					}
 
+					Command command = new Command();
+					command.command = "from titan: nova endpoints";
+					HashMap<String, String> parameters = new HashMap<String, String>();
+					parameters.put("$Tenant_name", (String) tenantComboBox.getSelectedItem());
+					command.parameters.add(parameters);
+					ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+					JSONObject access = JSONObject.fromObject(r.map.get("result")).getJSONObject("access");
+					JSONObject token = access.getJSONObject("token");
+					JSONObject tenant = token.getJSONObject("tenant");
+					String tenantId = tenant.getString("id");
+					String tokenStr = token.getString("id");
+
+					command = new Command();
+					command.command = "from titan: nova quota-update";
+					parameters = new HashMap<String, String>();
+					parameters.put("$tenantName", (String) tenantComboBox.getSelectedItem());
+					parameters.put("$Tenant_Id", tenantId);
+					parameters.put("$Token", tokenStr);
+					parameters.put("$type", (String) quotaTable.getValueAt(quotaTable.getSelectedRow(), 0));
+					parameters.put("$value", value);
+					command.parameters.add(parameters);
+					r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+
+					refresh();
 				}
 			}
 		});
@@ -228,28 +268,66 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 		quotaPanel.add(panel_2, BorderLayout.NORTH);
 
 		tenantComboBox = new JComboBox<String>();
-		Command command = new Command();
-		command.command = "from titan: keystone tenant-list";
-		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-		String msg = (String) r.map.get("result");
-		JSONArray tenants = JSONObject.fromObject(msg).getJSONArray("tenants");
-		tenantComboBox.removeAllItems();
-		for (int x = 0; x < tenants.size(); x++) {
-			JSONObject obj = tenants.getJSONObject(x);
-			tenantComboBox.addItem(obj.getString("name"));
-		}
+		tenantComboBox.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				if (tenantComboBox.getItemCount() > 0) {
+					initQuotaDefaultsTable();
+					initQuotaTable();
+				}
+			}
+		});
+
 		panel_2.add(tenantComboBox);
 
 		JButton refreshButton = new JButton("Refresh");
 		panel_2.add(refreshButton);
 		refreshButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				initQuotaTable();
+				refreshQuotaCombo();
+				refresh();
 			}
 		});
 		refreshButton.setIcon(new ImageIcon(SettingPanel.class.getResource("/com/titan/image/famfamfam/arrow_refresh.png")));
 
+		JPanel panel_4 = new JPanel();
+		splitPane.add(panel_4, JSplitPane.RIGHT);
+		panel_4.setLayout(new BorderLayout(0, 0));
+
+		JScrollPane scrollPane_6 = new JScrollPane();
+		panel_4.add(scrollPane_6, BorderLayout.CENTER);
+		quotaTable = new JTable();
+		quotaTable.setRowSorter(new TableRowSorter<TableModel>(quotaTableModel));
+		quotaTable.setModel(quotaTableModel);
+		scrollPane_6.setViewportView(quotaTable);
+
+		JLabel lblCurrentValues = new JLabel("Current values");
+		lblCurrentValues.setHorizontalAlignment(SwingConstants.CENTER);
+		panel_4.add(lblCurrentValues, BorderLayout.NORTH);
+
+		refreshQuotaCombo();
 		refresh();
+	}
+
+	protected void refreshQuotaCombo() {
+		String selectedItem = (String) tenantComboBox.getSelectedItem();
+		Command command = new Command();
+		command.command = "from titan: keystone tenant-list";
+		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+		String msg = (String) r.map.get("result");
+		JSONArray tenants = JSONObject.fromObject(msg).getJSONArray("tenants");
+		ArrayList<String> list = new ArrayList<String>();
+		for (int x = 0; x < tenants.size(); x++) {
+			JSONObject obj = tenants.getJSONObject(x);
+			list.add(obj.getString("name"));
+		}
+		Collections.sort(list);
+		tenantComboBox.removeAllItems();
+		for (String s : list) {
+			tenantComboBox.addItem(s);
+		}
+		if (selectedItem != null) {
+			tenantComboBox.setSelectedItem(selectedItem);
+		}
 	}
 
 	@Override
@@ -529,8 +607,23 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 
 	private void initQuotaDefaultsTable() {
 		Command command = new Command();
-		command.command = "from titan: nova quota-defaults";
+		command.command = "from titan: nova endpoints";
+		HashMap<String, String> parameters = new HashMap<String, String>();
+		parameters.put("$Tenant_name", (String) tenantComboBox.getSelectedItem());
+		command.parameters.add(parameters);
 		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+		JSONObject access = JSONObject.fromObject(r.map.get("result")).getJSONObject("access");
+		JSONObject token = access.getJSONObject("token");
+		JSONObject tenant = token.getJSONObject("tenant");
+		String tenantId = tenant.getString("id");
+		String tokenStr = token.getString("id");
+
+		command = new Command();
+		command.command = "from titan: nova quota-defaults";
+		parameters.put("$tenantName", (String) tenantComboBox.getSelectedItem());
+		parameters.put("$Tenant_Id", tenantId);
+		parameters.put("$Token", tokenStr);
+		r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 		JSONObject quotas = ((JSONObject) JSONObject.fromObject(r.map.get("result")).get("quota_set"));
 
 		quotaDefaultsTableModel.columnNames.clear();
@@ -560,12 +653,33 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 		rightRenderer.setHorizontalAlignment(JTextField.RIGHT);
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 		centerRenderer.setHorizontalAlignment(JTextField.CENTER);
+
+		List<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
+		sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
+		quotaDefaultsTable.getRowSorter().setSortKeys(sortKeys);
 	}
 
 	private void initQuotaTable() {
 		Command command = new Command();
-		command.command = "from titan: nova quota-show";
+		command.command = "from titan: nova endpoints";
+		HashMap<String, String> parameters = new HashMap<String, String>();
+		parameters.put("$Tenant_name", (String) tenantComboBox.getSelectedItem());
+		command.parameters.add(parameters);
 		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+		JSONObject access = JSONObject.fromObject(r.map.get("result")).getJSONObject("access");
+		JSONObject token = access.getJSONObject("token");
+		JSONObject tenant = token.getJSONObject("tenant");
+		String tenantId = tenant.getString("id");
+		String tokenStr = token.getString("id");
+
+		command = new Command();
+		command.command = "from titan: nova quota-show";
+		parameters = new HashMap<String, String>();
+		parameters.put("$tenantName", (String) tenantComboBox.getSelectedItem());
+		parameters.put("$Tenant_Id", tenantId);
+		parameters.put("$Token", tokenStr);
+		command.parameters.add(parameters);
+		r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 		JSONObject quotas = ((JSONObject) JSONObject.fromObject(r.map.get("result")).get("quota_set"));
 
 		quotaTableModel.columnNames.clear();
@@ -595,5 +709,9 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 		rightRenderer.setHorizontalAlignment(JTextField.RIGHT);
 		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
 		centerRenderer.setHorizontalAlignment(JTextField.CENTER);
+
+		List<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
+		sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
+		quotaTable.getRowSorter().setSortKeys(sortKeys);
 	}
 }
