@@ -3,11 +3,13 @@ package com.titan.vm;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.Font;
+import java.awt.FontMetrics;
 import java.awt.Graphics;
+import java.awt.Graphics2D;
 import java.awt.Image;
+import java.awt.RenderingHints;
 import java.util.Random;
 
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JLabel;
 
@@ -19,6 +21,7 @@ public class VMLabel extends JLabel {
 	OS os;
 	//	Icon icon = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/vmIcon.png"));
 	Image normal = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/normal.png")).getImage();
+
 	Image gray = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/gray.png")).getImage();
 	Image blue = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/blue.png")).getImage();
 	Image yellow = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/yellow.png")).getImage();
@@ -39,6 +42,9 @@ public class VMLabel extends JLabel {
 	Image high = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/high.png")).getImage();
 
 	Image shutoff = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/shutoff.png")).getImage();
+	Image tick = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/tick.png")).getImage();
+	Color normalTextColor = new Color(0, 162, 222);
+	Color grayTextColor = new Color(193, 193, 193);
 
 	public VMLabel(VMPanel vmPanel) {
 		this(vmPanel, OS.none);
@@ -47,10 +53,9 @@ public class VMLabel extends JLabel {
 	public VMLabel(VMPanel vmPanel, OS os) {
 		super();
 		this.vmPanel = vmPanel;
-		//		setIcon(icon);
 		setOS(os);
 		setPreferredSize(new Dimension(red.getWidth(null), red.getHeight(null)));
-		//		setOpaque(false);
+		setOpaque(false);
 	}
 
 	public void setOS(OS os) {
@@ -60,46 +65,69 @@ public class VMLabel extends JLabel {
 	public void paint(Graphics g) {
 		super.paint(g);
 		int cpu = new Random().nextInt(100);
-		//		if (cpu >= 80) {
-		//			g.drawImage(red, 0, 0, null);
-		//		} else if (cpu >= 60) {
-		//			g.drawImage(yellow, 0, 0, null);
-		//		} else {
-		//			g.drawImage(blue, 0, 0, null);
-		//		}
-
-		//		g.drawImage(normal, (getWidth() - normal.getWidth(null)) / 2, (getHeight() - normal.getHeight(null)) / 2, null);
+		int memory = new Random().nextInt(100);
 		String status = TitanCommonLib.getJSONString(vmPanel.json, "status", "SHUTOFF");
+		g.drawImage(normal, 0, 0, null);
 		if (status.equals("SHUTOFF")) {
-			g.drawImage(shutoff, 0, 0, getWidth(), getHeight(), null);
-		} else {
-			if (cpu >= 80) {
-				g.drawImage(high, 0, 0, getWidth(), getHeight(), null);
-			} else if (cpu >= 60) {
-				g.drawImage(middle, 0, 0, getWidth(), getHeight(), null);
-			} else {
-				g.drawImage(low, 0, 0, getWidth(), getHeight(), null);
-			}
-			int offsetY = 5;
+			int offsetY = 4;
+			int col1OffsetX = 6;
+			int col2OffsetX = 51;
 			if (os == OS.redhat) {
-				g.drawImage(redhat, (44 - redhat.getWidth(null)) / 2, (44 - redhat.getHeight(null)) / 2 + offsetY, null);
+				g.drawImage(redhat, (44 - redhat.getWidth(null)) / 2 + col1OffsetX, (44 - redhat.getHeight(null)) / 2 + offsetY, null);
 			} else if (os == OS.ubuntu) {
-				g.drawImage(ubuntu, (44 - ubuntu.getWidth(null)) / 2, (44 - ubuntu.getHeight(null)) / 2 + offsetY, null);
+				g.drawImage(ubuntu, (44 - ubuntu.getWidth(null)) / 2 + col1OffsetX, (44 - ubuntu.getHeight(null)) / 2 + offsetY, null);
 			} else if (os == OS.suse) {
-				g.drawImage(suse, (44 - suse.getWidth(null)) / 2, (44 - suse.getHeight(null)) / 2 + offsetY, null);
+				g.drawImage(suse, (44 - suse.getWidth(null)) / 2 + col1OffsetX, (44 - suse.getHeight(null)) / 2 + offsetY, null);
 			} else if (os == OS.centos) {
-				g.drawImage(centos, (44 - centos.getWidth(null)) / 2, (44 - centos.getHeight(null)) / 2 + offsetY, null);
+				g.drawImage(centos, (44 - centos.getWidth(null)) / 2 + col1OffsetX, (44 - centos.getHeight(null)) / 2 + offsetY, null);
 			} else if (os == OS.windows) {
-				g.drawImage(windows, (44 - windows.getWidth(null)) / 2, (44 - windows.getHeight(null)) / 2 + offsetY, null);
+				g.drawImage(windows, (44 - windows.getWidth(null)) / 2 + col1OffsetX, (44 - windows.getHeight(null)) / 2 + offsetY, null);
 			} else {
-				g.drawImage(noname, (44 - noname.getWidth(null)) / 2, (44 - noname.getHeight(null)) / 2 + offsetY, null);
+				g.drawImage(noname, (44 - noname.getWidth(null)) / 2 + col1OffsetX, (44 - noname.getHeight(null)) / 2 + offsetY, null);
 			}
-			g.drawImage(play, (44 - play.getWidth(null)) / 2 + 45, (44 - play.getHeight(null)) / 2 + offsetY, null);
-			g.setColor(Color.white);
-			g.setFont(new Font("Arial", Font.PLAIN, 24));
-			g.drawString(String.valueOf(cpu), 10, 80);
-			g.drawString(String.valueOf(new Random().nextInt(100)), 55, 80);
+			g.drawImage(stop, 57, 7, null);
+			g.setColor(grayTextColor);
+			Font font = new Font("Arial", Font.PLAIN, 24);
+			g.setFont(font);
+			FontMetrics metrics = g.getFontMetrics(font);
+			int cpuFontWidth = metrics.stringWidth("0");
+			int memoryFontWidth = metrics.stringWidth("0");
+			Graphics2D g2 = (Graphics2D) g;
+			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+			g.drawString("0", (44 - cpuFontWidth) / 2 + col1OffsetX, 77);
+			g.drawString("0", (44 - memoryFontWidth) / 2 + col2OffsetX, 77);
+		} else {
+			int offsetY = 4;
+			int col1OffsetX = 6;
+			int col2OffsetX = 51;
+			if (os == OS.redhat) {
+				g.drawImage(redhat, (44 - redhat.getWidth(null)) / 2 + col1OffsetX, (44 - redhat.getHeight(null)) / 2 + offsetY, null);
+			} else if (os == OS.ubuntu) {
+				g.drawImage(ubuntu, (44 - ubuntu.getWidth(null)) / 2 + col1OffsetX, (44 - ubuntu.getHeight(null)) / 2 + offsetY, null);
+			} else if (os == OS.suse) {
+				g.drawImage(suse, (44 - suse.getWidth(null)) / 2 + col1OffsetX, (44 - suse.getHeight(null)) / 2 + offsetY, null);
+			} else if (os == OS.centos) {
+				g.drawImage(centos, (44 - centos.getWidth(null)) / 2 + col1OffsetX, (44 - centos.getHeight(null)) / 2 + offsetY, null);
+			} else if (os == OS.windows) {
+				g.drawImage(windows, (44 - windows.getWidth(null)) / 2 + col1OffsetX, (44 - windows.getHeight(null)) / 2 + offsetY, null);
+			} else {
+				g.drawImage(noname, (44 - noname.getWidth(null)) / 2 + col1OffsetX, (44 - noname.getHeight(null)) / 2 + offsetY, null);
+			}
+			g.drawImage(play, 57, 7, null);
+			g.setColor(normalTextColor);
+			Font font = new Font("Arial", Font.PLAIN, 24);
+			g.setFont(font);
+			FontMetrics metrics = g.getFontMetrics(font);
+			int cpuFontWidth = metrics.stringWidth(String.valueOf(cpu));
+			int memoryFontWidth = metrics.stringWidth(String.valueOf(memory));
+			Graphics2D g2 = (Graphics2D) g;
+			g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
+			g.drawString(String.valueOf(cpu), (44 - cpuFontWidth) / 2 + col1OffsetX, 77);
+			g.drawString(String.valueOf(memory), (44 - memoryFontWidth) / 2 + col2OffsetX, 77);
 		}
 
+		if (vmPanel.clicked) {
+			g.drawImage(tick, 70, 0, null);
+		}
 	}
 }
