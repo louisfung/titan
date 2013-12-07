@@ -2,6 +2,7 @@ package com.titan.vm;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.util.Vector;
@@ -21,7 +22,7 @@ import com.titan.communication.CommunicateLib;
 import com.titanserver.Command;
 import com.titanserver.ReturnCommand;
 
-public class VMIconPanel extends JPanel implements ActionListener {
+public class VMIconPanel extends JPanel implements Runnable {
 	JSONArray servers;
 	VMMainPanel vmMainPanel;
 	Vector<VMPanel> panels = new Vector<VMPanel>();
@@ -29,8 +30,7 @@ public class VMIconPanel extends JPanel implements ActionListener {
 	public VMIconPanel(VMMainPanel vmMainPanel) {
 		this.vmMainPanel = vmMainPanel;
 
-		Timer timer = new Timer(5000, this);
-		timer.start();
+		//		new Thread(this).start();
 	}
 
 	public void init(int maxVMColumnCount) {
@@ -65,36 +65,13 @@ public class VMIconPanel extends JPanel implements ActionListener {
 			if (vmName.length() > 10) {
 				vmName = vmName.substring(0, 10);
 			}
-			panel.label.setText("<html>" + vmName + "<br>34d 10m</html>");
-			panel.addMouseListener(new MouseListener() {
+			panel.addMouseListener(new MouseAdapter() {
 				@Override
-				public void mouseClicked(MouseEvent e) {
+				public void mousePressed(MouseEvent e) {
 					clearAllPanelsSelection();
 					VMPanel panel = (VMPanel) e.getSource();
 					vmMainPanel.selectedVM = panel.json;
 					panel.setSelected(true);
-				}
-
-				private void clearAllPanelsSelection() {
-					for (VMPanel panel : panels) {
-						panel.setSelected(false);
-					}
-				}
-
-				@Override
-				public void mousePressed(MouseEvent e) {
-				}
-
-				@Override
-				public void mouseReleased(MouseEvent e) {
-				}
-
-				@Override
-				public void mouseEntered(MouseEvent e) {
-				}
-
-				@Override
-				public void mouseExited(MouseEvent e) {
 				}
 			});
 			add(panel, "cell " + col + " " + row);
@@ -107,8 +84,13 @@ public class VMIconPanel extends JPanel implements ActionListener {
 		updateUI();
 	}
 
-	@Override
-	public void actionPerformed(ActionEvent e) {
+	private void clearAllPanelsSelection() {
+		for (VMPanel panel : panels) {
+			panel.setSelected(false);
+		}
+	}
+
+	public void run() {
 		Command command = new Command();
 		command.command = "from titan: nova list";
 		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
@@ -123,6 +105,11 @@ public class VMIconPanel extends JPanel implements ActionListener {
 			}
 		}
 		this.repaint();
+		try {
+			Thread.sleep(1000);
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
 	}
 
 }

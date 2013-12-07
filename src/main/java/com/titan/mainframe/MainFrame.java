@@ -116,7 +116,7 @@ public class MainFrame extends JFrame implements ApplicationListener {
 		JLabel logoLabel = new JLabel();
 		logoLabel.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mousePressed(MouseEvent e) {
 				mainContentPanel.removeAll();
 				mainContentPanel.add(welcomePanel, BorderLayout.CENTER);
 				mainContentPanel.updateUI();
@@ -142,7 +142,7 @@ public class MainFrame extends JFrame implements ApplicationListener {
 		lblVM = new JLabel("");
 		lblVM.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mousePressed(MouseEvent e) {
 				clearSelectedColor();
 				lblVM.setBorder(new LineBorder(selectedBorderColor, 1));
 				lblVM.repaint();
@@ -164,7 +164,7 @@ public class MainFrame extends JFrame implements ApplicationListener {
 		lblServer.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/server.png")));
 		lblServer.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mousePressed(MouseEvent e) {
 				if (mainServerPanel == null || !mainServerPanel.serverPanel.jprogressBarDialog.isActive()) {
 					clearSelectedColor();
 					lblServer.setBorder(new LineBorder(selectedBorderColor, 1));
@@ -206,7 +206,7 @@ public class MainFrame extends JFrame implements ApplicationListener {
 		lblInstances.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/instance.png")));
 		lblInstances.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mousePressed(MouseEvent e) {
 				clearSelectedColor();
 				lblInstances.setBorder(new LineBorder(selectedBorderColor, 1));
 				mainContentPanel.removeAll();
@@ -222,7 +222,7 @@ public class MainFrame extends JFrame implements ApplicationListener {
 		lblKeystone.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/keystone.png")));
 		lblKeystone.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mousePressed(MouseEvent e) {
 				clearSelectedColor();
 				lblKeystone.setBorder(new LineBorder(selectedBorderColor, 1));
 				mainContentPanel.removeAll();
@@ -238,7 +238,7 @@ public class MainFrame extends JFrame implements ApplicationListener {
 		lblFlavors.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/flavor.png")));
 		lblFlavors.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mousePressed(MouseEvent e) {
 				clearSelectedColor();
 				lblFlavors.setBorder(new LineBorder(selectedBorderColor, 1));
 				mainContentPanel.removeAll();
@@ -254,7 +254,7 @@ public class MainFrame extends JFrame implements ApplicationListener {
 		lblStorages.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/storage.png")));
 		lblStorages.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mousePressed(MouseEvent e) {
 				clearSelectedColor();
 				lblStorages.setBorder(new LineBorder(selectedBorderColor, 1));
 				mainContentPanel.removeAll();
@@ -270,7 +270,7 @@ public class MainFrame extends JFrame implements ApplicationListener {
 		lblSdn.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/network.png")));
 		lblSdn.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mousePressed(MouseEvent e) {
 				clearSelectedColor();
 				lblSdn.setBorder(new LineBorder(selectedBorderColor, 1));
 				mainContentPanel.removeAll();
@@ -286,7 +286,7 @@ public class MainFrame extends JFrame implements ApplicationListener {
 		lblSettings.setIcon(new ImageIcon(MainFrame.class.getResource("/com/titan/image/mainmenu/setting.png")));
 		lblSettings.addMouseListener(new MouseAdapter() {
 			@Override
-			public void mouseClicked(MouseEvent e) {
+			public void mousePressed(MouseEvent e) {
 				clearSelectedColor();
 				lblSettings.setBorder(new LineBorder(selectedBorderColor, 1));
 				mainContentPanel.removeAll();
