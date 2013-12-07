@@ -71,7 +71,7 @@ public class VMIconPanel extends JPanel implements ActionListener {
 				public void mouseClicked(MouseEvent e) {
 					clearAllPanelsSelection();
 					VMPanel panel = (VMPanel) e.getSource();
-					vmMainPanel.json = panel.json;
+					vmMainPanel.selectedVM = panel.json;
 					panel.setSelected(true);
 				}
 
@@ -109,6 +109,19 @@ public class VMIconPanel extends JPanel implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
+		Command command = new Command();
+		command.command = "from titan: nova list";
+		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+		servers = JSONObject.fromObject(r.map.get("result")).getJSONArray("servers");
+		for (int x = 0; x < servers.size(); x++) {
+			JSONObject obj = servers.getJSONObject(x);
+			String instanceId = TitanCommonLib.getJSONString(obj, "id", null);
+			for (VMPanel vmPanel : panels) {
+				if (instanceId.equals(TitanCommonLib.getJSONString(vmPanel.json, "id", null))) {
+					vmPanel.json = obj;
+				}
+			}
+		}
 		this.repaint();
 	}
 

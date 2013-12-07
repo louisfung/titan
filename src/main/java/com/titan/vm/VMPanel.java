@@ -22,9 +22,9 @@ public class VMPanel extends JPanel {
 	JSONObject json;
 
 	public VMPanel(JSONObject json) {
+		this.json = json;
 		VMLabel iconLabel = new VMLabel(this);
 		iconLabel.setOS(OS.values()[new Random().nextInt(OS.values().length)]);
-		this.json = json;
 		setLayout(new BorderLayout(0, 0));
 
 		add(iconLabel, BorderLayout.CENTER);

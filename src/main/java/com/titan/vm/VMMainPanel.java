@@ -23,12 +23,14 @@ import javax.swing.event.ChangeListener;
 
 import net.sf.json.JSONObject;
 
+import com.peterswing.advancedswing.jprogressbardialog.JProgressBarDialog;
 import com.peterswing.advancedswing.searchtextfield.JSearchTextField;
 import com.titan.TitanCommonLib;
 import com.titan.TitanSetting;
 import com.titan.communication.CommunicateLib;
 import com.titan.instancepanel.InstancePanel;
 import com.titan.instancepanel.LaunchInstanceDialog;
+import com.titan.instancepanel.MonitorDialog;
 import com.titan.mainframe.MainFrame;
 import com.titanserver.Command;
 import com.titanserver.ReturnCommand;
@@ -44,9 +46,9 @@ public class VMMainPanel extends JPanel {
 	JScrollPane scrollPane = new JScrollPane();
 	VMGanttPanel vmGanttPanel;
 	private JComboBox sortComboBox;
-	JSONObject json = null;
+	JSONObject selectedVM = null;
 
-	public VMMainPanel(MainFrame mainFrame) {
+	public VMMainPanel(final MainFrame mainFrame) {
 		this.mainframe = mainFrame;
 		setLayout(new BorderLayout(0, 0));
 
@@ -138,7 +140,7 @@ public class VMMainPanel extends JPanel {
 		JButton btnStop = new JButton("Stop");
 		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String instanceId = TitanCommonLib.getJSONString(json, "id", null);
+				String instanceId = TitanCommonLib.getJSONString(selectedVM, "id", null);
 				if (instanceId == null) {
 					JOptionPane.showMessageDialog(VMMainPanel.this.mainframe, "Please select vm first", "Warning", JOptionPane.WARNING_MESSAGE);
 					return;
@@ -174,6 +176,10 @@ public class VMMainPanel extends JPanel {
 		JButton btnRemote = new JButton("Remote");
 		btnRemote.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String instanceName = TitanCommonLib.getJSONString(selectedVM, "OS-EXT-SRV-ATTR:instance_name", null);
+				System.out.println(selectedVM);
+				MonitorDialog monitorDialog = new MonitorDialog(instanceName);
+				monitorDialog.setVisible(true);
 			}
 		});
 		btnRemote.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/application_osx_terminal.png")));
@@ -233,6 +239,17 @@ public class VMMainPanel extends JPanel {
 		JButton btnSoftReboot = new JButton("Soft reboot");
 		btnSoftReboot.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String instanceId = TitanCommonLib.getJSONString(selectedVM, "id", null);
+				int x = JOptionPane.showConfirmDialog(mainFrame, "Confirm to soft reboot instance : " + instanceId + " ?", "Warning", JOptionPane.YES_NO_OPTION);
+
+				if (x == JOptionPane.YES_OPTION) {
+					Command command = new Command();
+					HashMap<String, String> parameters = new HashMap<String, String>();
+					parameters.put("$InstanceId", instanceId);
+					command.parameters.add(parameters);
+					command.command = "from titan: nova soft-reboot";
+					ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+				}
 			}
 		});
 		controlPanel.add(btnSoftReboot);
@@ -240,6 +257,17 @@ public class VMMainPanel extends JPanel {
 		JButton btnHardReboot = new JButton("Hard reboot");
 		btnHardReboot.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				String instanceId = TitanCommonLib.getJSONString(selectedVM, "id", null);
+				int x = JOptionPane.showConfirmDialog(mainFrame, "Confirm to hard reboot instance : " + instanceId + " ?", "Warning", JOptionPane.YES_NO_OPTION);
+
+				if (x == JOptionPane.YES_OPTION) {
+					Command command = new Command();
+					HashMap<String, String> parameters = new HashMap<String, String>();
+					parameters.put("$InstanceId", instanceId);
+					command.parameters.add(parameters);
+					command.command = "from titan: nova hard-reboot";
+					ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+				}
 			}
 		});
 		controlPanel.add(btnHardReboot);
