@@ -57,7 +57,7 @@ public class VMPanel extends JPanel {
 	}
 
 	public void setSelected(boolean selected) {
-		selected = selected;
+		this.selected = selected;
 		repaint();
 	}
 
