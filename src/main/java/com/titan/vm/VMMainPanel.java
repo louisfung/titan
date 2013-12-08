@@ -35,6 +35,7 @@ import com.titan.instancepanel.ViewInstanceDialog;
 import com.titan.mainframe.MainFrame;
 import com.titanserver.Command;
 import com.titanserver.ReturnCommand;
+import javax.swing.JTable;
 
 public class VMMainPanel extends JPanel {
 	MainFrame mainframe;
@@ -48,6 +49,7 @@ public class VMMainPanel extends JPanel {
 	VMGanttPanel vmGanttPanel;
 	private JComboBox sortComboBox;
 	JSONObject selectedVM = null;
+	private JTable table;
 
 	public VMMainPanel(final MainFrame mainFrame) {
 		this.mainframe = mainFrame;
@@ -346,6 +348,16 @@ public class VMMainPanel extends JPanel {
 			}
 		});
 		controlPanel.add(btnAdvance);
+		
+		JPanel propertyPanel = new JPanel();
+		add(propertyPanel, BorderLayout.EAST);
+		propertyPanel.setLayout(new BorderLayout(0, 0));
+		
+		JScrollPane scrollPane_1 = new JScrollPane();
+		propertyPanel.add(scrollPane_1, BorderLayout.CENTER);
+		
+		table = new JTable();
+		scrollPane_1.setViewportView(table);
 
 	}
 
