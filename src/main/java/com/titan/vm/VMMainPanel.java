@@ -35,8 +35,6 @@ import com.titan.instancepanel.ViewInstanceDialog;
 import com.titan.mainframe.MainFrame;
 import com.titanserver.Command;
 import com.titanserver.ReturnCommand;
-import java.awt.event.ComponentAdapter;
-import java.awt.event.ComponentEvent;
 
 public class VMMainPanel extends JPanel {
 	MainFrame mainframe;
@@ -50,8 +48,9 @@ public class VMMainPanel extends JPanel {
 	VMGanttPanel vmGanttPanel;
 	private JComboBox sortComboBox;
 	JSONObject selectedVM = null;
-	private JTable table;
+	private JTable propertyTable;
 	private JSplitPane splitPane;
+	PropertyTableModel propertyTableModel = new PropertyTableModel();
 
 	public VMMainPanel(final MainFrame mainFrame) {
 		this.mainframe = mainFrame;
@@ -353,11 +352,12 @@ public class VMMainPanel extends JPanel {
 		JPanel propertyPanel = new JPanel();
 		propertyPanel.setLayout(new BorderLayout(0, 0));
 
-		JScrollPane scrollPane_1 = new JScrollPane();
-		propertyPanel.add(scrollPane_1, BorderLayout.CENTER);
+		JScrollPane propertyScrollPane = new JScrollPane();
+		propertyPanel.add(propertyScrollPane, BorderLayout.CENTER);
 
-		table = new JTable();
-		scrollPane_1.setViewportView(table);
+		propertyTable = new JTable();
+		propertyTable.setModel(propertyTableModel);
+		propertyScrollPane.setViewportView(propertyTable);
 
 		splitPane = new JSplitPane();
 		splitPane.setOneTouchExpandable(true);
@@ -365,6 +365,62 @@ public class VMMainPanel extends JPanel {
 		splitPane.add(scrollPane, JSplitPane.LEFT);
 		splitPane.add(propertyPanel, JSplitPane.RIGHT);
 		splitPane.setResizeWeight(0.8d);
+
+		initPropertyTableModel();
+	}
+
+	private void initPropertyTableModel() {
+		propertyTableModel.data.add(new Property("instance", "", "", false));
+		propertyTableModel.data.add(new Property("instance", "id", "", true));
+		propertyTableModel.data.add(new Property("instance", "status", "", true));
+		propertyTableModel.data.add(new Property("instance", "updated", "", true));
+		propertyTableModel.data.add(new Property("instance", "hostId", "", true));
+		propertyTableModel.data.add(new Property("instance", "OS-EXT-SRV-ATTR:host", "", true));
+		propertyTableModel.data.add(new Property("instance", "addresses", "", true));
+		propertyTableModel.data.add(new Property("instance", "links", "", true));
+		propertyTableModel.data.add(new Property("instance", "image", "", true));
+		propertyTableModel.data.add(new Property("instance", "OS-EXT-STS:vm_state", "", true));
+		propertyTableModel.data.add(new Property("instance", "OS-EXT-SRV-ATTR:instance_name", "", true));
+		propertyTableModel.data.add(new Property("instance", "OS-SRV-USG:launched_at", "", true));
+		propertyTableModel.data.add(new Property("instance", "OS-EXT-SRV-ATTR:hypervisor_hostname", "", true));
+		propertyTableModel.data.add(new Property("instance", "flavor", "", true));
+		propertyTableModel.data.add(new Property("instance", "OS-EXT-AZ:availability_zone", "", true));
+		propertyTableModel.data.add(new Property("instance", "user_id", "", true));
+		propertyTableModel.data.add(new Property("instance", "name", "", true));
+		propertyTableModel.data.add(new Property("instance", "created", "", true));
+		propertyTableModel.data.add(new Property("instance", "tenant_id", "", true));
+		propertyTableModel.data.add(new Property("instance", "OS-DCF:diskConfig", "", true));
+		propertyTableModel.data.add(new Property("instance", "os-extended-volumes:volumes_attached", "", true));
+		propertyTableModel.data.add(new Property("instance", "accessIPv4", "", true));
+		propertyTableModel.data.add(new Property("instance", "accessIPv6", "", true));
+		propertyTableModel.data.add(new Property("instance", "OS-EXT-STS:power_state", "", true));
+		propertyTableModel.data.add(new Property("instance", "config_drive", "", true));
+		propertyTableModel.data.add(new Property("instance", "metadata", "", true));
+
+		propertyTableModel.data.add(new Property("diagnostics", "", "", false));
+		propertyTableModel.data.add(new Property("diagnostics", "cpu0_time", "", true));
+		propertyTableModel.data.add(new Property("diagnostics", "hdd_errors", "", true));
+		propertyTableModel.data.add(new Property("diagnostics", "hdd_read", "", true));
+		propertyTableModel.data.add(new Property("diagnostics", "hdd_read_req", "", true));
+		propertyTableModel.data.add(new Property("diagnostics", "hdd_write", "", true));
+		propertyTableModel.data.add(new Property("diagnostics", "hdd_write_req", "", true));
+		propertyTableModel.data.add(new Property("diagnostics", "memory", "", true));
+		propertyTableModel.data.add(new Property("diagnostics", "vda_errors", "", true));
+		propertyTableModel.data.add(new Property("diagnostics", "vda_read", "", true));
+		propertyTableModel.data.add(new Property("diagnostics", "vda_read_req", "", true));
+		propertyTableModel.data.add(new Property("diagnostics", "vda_write", "", true));
+		propertyTableModel.data.add(new Property("diagnostics", "vda_write_req", "", true));
+		propertyTableModel.data.add(new Property("diagnostics", "vnet1_rx", "", true));
+		propertyTableModel.data.add(new Property("diagnostics", "vnet1_rx_drop", "", true));
+		propertyTableModel.data.add(new Property("diagnostics", "vnet1_rx_errors", "", true));
+		propertyTableModel.data.add(new Property("diagnostics", "vnet1_rx_packets", "", true));
+		propertyTableModel.data.add(new Property("diagnostics", "vnet1_tx", "", true));
+		propertyTableModel.data.add(new Property("diagnostics", "vnet1_tx_drop", "", true));
+		propertyTableModel.data.add(new Property("diagnostics", "vnet1_tx_errors", "", true));
+		propertyTableModel.data.add(new Property("diagnostics", "vnet1_tx_packets", "", true));
+
+		propertyTableModel.data.add(new Property("network", "", "", true));
+		propertyTableModel.fireTableStructureChanged();
 	}
 
 	void refresh() {
