@@ -34,21 +34,22 @@ public class PropertyTableModel extends DefaultTableModel {
 	}
 
 	public Object getValueAt(final int row, int column) {
-		if (data.get(row).isData) {
-			if (column == 0) {
-				return "";
-			} else if (column == 1) {
-				return data.get(row).name;
-			} else {
-				return data.get(row).value;
-			}
-		} else {
-			if (column == 0) {
-				return "+";
-			} else {
-				return data.get(row).type;
-			}
-		}
+		//		if (data.get(row).isData) {
+		//			if (column == 0) {
+		//				return "";
+		//			} else if (column == 1) {
+		//				return data.get(row).name;
+		//			} else {
+		//				return data.get(row).value;
+		//			}
+		//		} else {
+		//			if (column == 0) {
+		//				return "+";
+		//			} else {
+		//				return data.get(row).type;
+		//			}
+		//		}
+		return data.get(row);
 	}
 
 	public boolean isCellEditable(int row, int column) {

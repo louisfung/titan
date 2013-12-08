@@ -357,6 +357,8 @@ public class VMMainPanel extends JPanel {
 
 		propertyTable = new JTable();
 		propertyTable.setModel(propertyTableModel);
+		propertyTable.setDefaultRenderer(Property.class, new PropertyTableCellRenderer());
+		propertyTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		propertyScrollPane.setViewportView(propertyTable);
 
 		splitPane = new JSplitPane();
@@ -364,9 +366,12 @@ public class VMMainPanel extends JPanel {
 		add(splitPane, BorderLayout.CENTER);
 		splitPane.add(scrollPane, JSplitPane.LEFT);
 		splitPane.add(propertyPanel, JSplitPane.RIGHT);
-		splitPane.setResizeWeight(0.8d);
+		splitPane.setResizeWeight(0.7d);
 
 		initPropertyTableModel();
+		propertyTable.getColumnModel().getColumn(0).setPreferredWidth(20);
+		propertyTable.getColumnModel().getColumn(1).setPreferredWidth(200);
+		propertyTable.getColumnModel().getColumn(2).setPreferredWidth(200);
 	}
 
 	private void initPropertyTableModel() {
