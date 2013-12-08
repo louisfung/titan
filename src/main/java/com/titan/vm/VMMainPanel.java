@@ -16,6 +16,8 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
+import javax.swing.JSplitPane;
+import javax.swing.JTable;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import javax.swing.event.ChangeEvent;
@@ -23,19 +25,18 @@ import javax.swing.event.ChangeListener;
 
 import net.sf.json.JSONObject;
 
-import com.peterswing.advancedswing.jprogressbardialog.JProgressBarDialog;
 import com.peterswing.advancedswing.searchtextfield.JSearchTextField;
 import com.titan.TitanCommonLib;
 import com.titan.TitanSetting;
 import com.titan.communication.CommunicateLib;
-import com.titan.instancepanel.InstancePanel;
 import com.titan.instancepanel.LaunchInstanceDialog;
 import com.titan.instancepanel.MonitorDialog;
 import com.titan.instancepanel.ViewInstanceDialog;
 import com.titan.mainframe.MainFrame;
 import com.titanserver.Command;
 import com.titanserver.ReturnCommand;
-import javax.swing.JTable;
+import java.awt.event.ComponentAdapter;
+import java.awt.event.ComponentEvent;
 
 public class VMMainPanel extends JPanel {
 	MainFrame mainframe;
@@ -50,6 +51,7 @@ public class VMMainPanel extends JPanel {
 	private JComboBox sortComboBox;
 	JSONObject selectedVM = null;
 	private JTable table;
+	private JSplitPane splitPane;
 
 	public VMMainPanel(final MainFrame mainFrame) {
 		this.mainframe = mainFrame;
@@ -123,7 +125,6 @@ public class VMMainPanel extends JPanel {
 		toolBar.add(sortComboBox);
 
 		scrollPane.getVerticalScrollBar().setUnitIncrement(20);
-		add(scrollPane, BorderLayout.CENTER);
 		scrollPane.setViewportView(iconPanel);
 
 		JPanel controlPanel = new JPanel();
@@ -348,17 +349,22 @@ public class VMMainPanel extends JPanel {
 			}
 		});
 		controlPanel.add(btnAdvance);
-		
+
 		JPanel propertyPanel = new JPanel();
-		add(propertyPanel, BorderLayout.EAST);
 		propertyPanel.setLayout(new BorderLayout(0, 0));
-		
+
 		JScrollPane scrollPane_1 = new JScrollPane();
 		propertyPanel.add(scrollPane_1, BorderLayout.CENTER);
-		
+
 		table = new JTable();
 		scrollPane_1.setViewportView(table);
 
+		splitPane = new JSplitPane();
+		splitPane.setOneTouchExpandable(true);
+		add(splitPane, BorderLayout.CENTER);
+		splitPane.add(scrollPane, JSplitPane.LEFT);
+		splitPane.add(propertyPanel, JSplitPane.RIGHT);
+		splitPane.setResizeWeight(0.8d);
 	}
 
 	void refresh() {
