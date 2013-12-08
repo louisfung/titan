@@ -14,7 +14,8 @@ import javax.swing.table.TableCellRenderer;
 
 public class PropertyTableCellRenderer extends JPanel implements TableCellRenderer {
 	JLabel jLabel = new JLabel();
-	Icon addIcon = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/famfamfam/add.png"));
+	Icon collapse = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/famfamfam/collapse.png"));
+	Icon expand = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/famfamfam/expand.png"));
 
 	public PropertyTableCellRenderer() {
 		this.setLayout(new BorderLayout());
@@ -40,7 +41,7 @@ public class PropertyTableCellRenderer extends JPanel implements TableCellRender
 			jLabel.setFont(new Font("Arial", Font.BOLD, 12));
 			if (column == 0) {
 				jLabel.setText(null);
-				jLabel.setIcon(addIcon);
+				jLabel.setIcon(collapse);
 			} else if (column == 1) {
 				jLabel.setText(property.type);
 				jLabel.setIcon(null);

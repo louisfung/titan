@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 import java.util.HashMap;
 
 import javax.swing.ButtonGroup;
@@ -20,8 +22,10 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
+import javax.swing.RowFilter;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.table.TableRowSorter;
 
 import net.sf.json.JSONObject;
 
@@ -35,6 +39,8 @@ import com.titan.instancepanel.ViewInstanceDialog;
 import com.titan.mainframe.MainFrame;
 import com.titanserver.Command;
 import com.titanserver.ReturnCommand;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 
 public class VMMainPanel extends JPanel {
 	MainFrame mainframe;
@@ -51,6 +57,8 @@ public class VMMainPanel extends JPanel {
 	private JTable propertyTable;
 	private JSplitPane splitPane;
 	PropertyTableModel propertyTableModel = new PropertyTableModel();
+	private JSearchTextField searchPropertyTextField;
+	TableRowSorter<PropertyTableModel> propertyTableRowSorter;
 
 	public VMMainPanel(final MainFrame mainFrame) {
 		this.mainframe = mainFrame;
@@ -356,9 +364,38 @@ public class VMMainPanel extends JPanel {
 		propertyPanel.add(propertyScrollPane, BorderLayout.CENTER);
 
 		propertyTable = new JTable();
+		propertyTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				Property property = (Property) propertyTable.getValueAt(propertyTable.getSelectedRow(), 0);
+				if (property.isData) {
+
+				} else {
+					property.expand = !property.expand;
+					propertyTableModel.fireTableStructureChanged();
+				}
+			}
+		});
 		propertyTable.setModel(propertyTableModel);
 		propertyTable.setDefaultRenderer(Property.class, new PropertyTableCellRenderer());
 		propertyTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
+		propertyTableRowSorter = new TableRowSorter<PropertyTableModel>(propertyTableModel);
+		propertyTable.setRowSorter(propertyTableRowSorter);
+		RowFilter<PropertyTableModel, Integer> filter = new RowFilter<PropertyTableModel, Integer>() {
+			@Override
+			public boolean include(javax.swing.RowFilter.Entry<? extends PropertyTableModel, ? extends Integer> entry) {
+				PropertyTableModel model = entry.getModel();
+				Property property = (Property) model.getValueAt(entry.getIdentifier(), 0);
+				if (searchPropertyTextField.getText().trim().equals("")) {
+					return true;
+				} else if (property.name.toLowerCase().contains(searchPropertyTextField.getText().trim().toLowerCase())) {
+					return true;
+				} else {
+					return false;
+				}
+			}
+		};
+			propertyTableRowSorter.setRowFilter(filter);
 		propertyScrollPane.setViewportView(propertyTable);
 
 		splitPane = new JSplitPane();
@@ -366,6 +403,22 @@ public class VMMainPanel extends JPanel {
 		add(splitPane, BorderLayout.CENTER);
 		splitPane.add(scrollPane, JSplitPane.LEFT);
 		splitPane.add(propertyPanel, JSplitPane.RIGHT);
+
+		JPanel panel_1 = new JPanel();
+		FlowLayout flowLayout_1 = (FlowLayout) panel_1.getLayout();
+		flowLayout_1.setAlignment(FlowLayout.LEFT);
+		propertyPanel.add(panel_1, BorderLayout.NORTH);
+
+		searchPropertyTextField = new JSearchTextField();
+		searchPropertyTextField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+//				propertyTableModel.filter(searchPropertyTextField.getText());
+				propertyTableModel.fireTableStructureChanged();
+			}
+		});
+		searchPropertyTextField.setPreferredSize(new Dimension(80, 20));
+		panel_1.add(searchPropertyTextField);
 		splitPane.setResizeWeight(0.7d);
 
 		initPropertyTableModel();
@@ -376,61 +429,64 @@ public class VMMainPanel extends JPanel {
 
 	private void initPropertyTableModel() {
 		propertyTableModel.data.add(new Property("instance", "", "", false));
-		propertyTableModel.data.add(new Property("instance", "id", "", true));
-		propertyTableModel.data.add(new Property("instance", "status", "", true));
-		propertyTableModel.data.add(new Property("instance", "updated", "", true));
-		propertyTableModel.data.add(new Property("instance", "hostId", "", true));
-		propertyTableModel.data.add(new Property("instance", "OS-EXT-SRV-ATTR:host", "", true));
-		propertyTableModel.data.add(new Property("instance", "addresses", "", true));
-		propertyTableModel.data.add(new Property("instance", "links", "", true));
-		propertyTableModel.data.add(new Property("instance", "image", "", true));
-		propertyTableModel.data.add(new Property("instance", "OS-EXT-STS:vm_state", "", true));
-		propertyTableModel.data.add(new Property("instance", "OS-EXT-SRV-ATTR:instance_name", "", true));
-		propertyTableModel.data.add(new Property("instance", "OS-SRV-USG:launched_at", "", true));
-		propertyTableModel.data.add(new Property("instance", "OS-EXT-SRV-ATTR:hypervisor_hostname", "", true));
-		propertyTableModel.data.add(new Property("instance", "flavor", "", true));
-		propertyTableModel.data.add(new Property("instance", "OS-EXT-AZ:availability_zone", "", true));
-		propertyTableModel.data.add(new Property("instance", "user_id", "", true));
-		propertyTableModel.data.add(new Property("instance", "name", "", true));
-		propertyTableModel.data.add(new Property("instance", "created", "", true));
-		propertyTableModel.data.add(new Property("instance", "tenant_id", "", true));
-		propertyTableModel.data.add(new Property("instance", "OS-DCF:diskConfig", "", true));
-		propertyTableModel.data.add(new Property("instance", "os-extended-volumes:volumes_attached", "", true));
-		propertyTableModel.data.add(new Property("instance", "accessIPv4", "", true));
-		propertyTableModel.data.add(new Property("instance", "accessIPv6", "", true));
-		propertyTableModel.data.add(new Property("instance", "OS-EXT-STS:power_state", "", true));
-		propertyTableModel.data.add(new Property("instance", "config_drive", "", true));
-		propertyTableModel.data.add(new Property("instance", "metadata", "", true));
+		propertyTableModel.data.add(new Property("instance", "id", ""));
+		propertyTableModel.data.add(new Property("instance", "status", ""));
+		propertyTableModel.data.add(new Property("instance", "updated", ""));
+		propertyTableModel.data.add(new Property("instance", "hostId", ""));
+		propertyTableModel.data.add(new Property("instance", "OS-EXT-SRV-ATTR:host", ""));
+		propertyTableModel.data.add(new Property("instance", "addresses", ""));
+		propertyTableModel.data.add(new Property("instance", "links", ""));
+		propertyTableModel.data.add(new Property("instance", "image", ""));
+		propertyTableModel.data.add(new Property("instance", "OS-EXT-STS:vm_state", ""));
+		propertyTableModel.data.add(new Property("instance", "OS-EXT-SRV-ATTR:instance_name", ""));
+		propertyTableModel.data.add(new Property("instance", "OS-SRV-USG:launched_at", ""));
+		propertyTableModel.data.add(new Property("instance", "OS-EXT-SRV-ATTR:hypervisor_hostname", ""));
+		propertyTableModel.data.add(new Property("instance", "flavor", ""));
+		propertyTableModel.data.add(new Property("instance", "OS-EXT-AZ:availability_zone", ""));
+		propertyTableModel.data.add(new Property("instance", "user_id", ""));
+		propertyTableModel.data.add(new Property("instance", "name", ""));
+		propertyTableModel.data.add(new Property("instance", "created", ""));
+		propertyTableModel.data.add(new Property("instance", "tenant_id", ""));
+		propertyTableModel.data.add(new Property("instance", "OS-DCF:diskConfig", ""));
+		propertyTableModel.data.add(new Property("instance", "os-extended-volumes:volumes_attached", ""));
+		propertyTableModel.data.add(new Property("instance", "accessIPv4", ""));
+		propertyTableModel.data.add(new Property("instance", "accessIPv6", ""));
+		propertyTableModel.data.add(new Property("instance", "OS-EXT-STS:power_state", ""));
+		propertyTableModel.data.add(new Property("instance", "config_drive", ""));
+		propertyTableModel.data.add(new Property("instance", "metadata", ""));
 
 		propertyTableModel.data.add(new Property("diagnostics", "", "", false));
-		propertyTableModel.data.add(new Property("diagnostics", "cpu0_time", "", true));
-		propertyTableModel.data.add(new Property("diagnostics", "hdd_errors", "", true));
-		propertyTableModel.data.add(new Property("diagnostics", "hdd_read", "", true));
-		propertyTableModel.data.add(new Property("diagnostics", "hdd_read_req", "", true));
-		propertyTableModel.data.add(new Property("diagnostics", "hdd_write", "", true));
-		propertyTableModel.data.add(new Property("diagnostics", "hdd_write_req", "", true));
-		propertyTableModel.data.add(new Property("diagnostics", "memory", "", true));
-		propertyTableModel.data.add(new Property("diagnostics", "vda_errors", "", true));
-		propertyTableModel.data.add(new Property("diagnostics", "vda_read", "", true));
-		propertyTableModel.data.add(new Property("diagnostics", "vda_read_req", "", true));
-		propertyTableModel.data.add(new Property("diagnostics", "vda_write", "", true));
-		propertyTableModel.data.add(new Property("diagnostics", "vda_write_req", "", true));
-		propertyTableModel.data.add(new Property("diagnostics", "vnet1_rx", "", true));
-		propertyTableModel.data.add(new Property("diagnostics", "vnet1_rx_drop", "", true));
-		propertyTableModel.data.add(new Property("diagnostics", "vnet1_rx_errors", "", true));
-		propertyTableModel.data.add(new Property("diagnostics", "vnet1_rx_packets", "", true));
-		propertyTableModel.data.add(new Property("diagnostics", "vnet1_tx", "", true));
-		propertyTableModel.data.add(new Property("diagnostics", "vnet1_tx_drop", "", true));
-		propertyTableModel.data.add(new Property("diagnostics", "vnet1_tx_errors", "", true));
-		propertyTableModel.data.add(new Property("diagnostics", "vnet1_tx_packets", "", true));
+		propertyTableModel.data.add(new Property("diagnostics", "cpu0_time", ""));
+		propertyTableModel.data.add(new Property("diagnostics", "hdd_errors", ""));
+		propertyTableModel.data.add(new Property("diagnostics", "hdd_read", ""));
+		propertyTableModel.data.add(new Property("diagnostics", "hdd_read_req", ""));
+		propertyTableModel.data.add(new Property("diagnostics", "hdd_write", ""));
+		propertyTableModel.data.add(new Property("diagnostics", "hdd_write_req", ""));
+		propertyTableModel.data.add(new Property("diagnostics", "memory", ""));
+		propertyTableModel.data.add(new Property("diagnostics", "vda_errors", ""));
+		propertyTableModel.data.add(new Property("diagnostics", "vda_read", ""));
+		propertyTableModel.data.add(new Property("diagnostics", "vda_read_req", ""));
+		propertyTableModel.data.add(new Property("diagnostics", "vda_write", ""));
+		propertyTableModel.data.add(new Property("diagnostics", "vda_write_req", ""));
+		propertyTableModel.data.add(new Property("diagnostics", "vnet1_rx", ""));
+		propertyTableModel.data.add(new Property("diagnostics", "vnet1_rx_drop", ""));
+		propertyTableModel.data.add(new Property("diagnostics", "vnet1_rx_errors", ""));
+		propertyTableModel.data.add(new Property("diagnostics", "vnet1_rx_packets", ""));
+		propertyTableModel.data.add(new Property("diagnostics", "vnet1_tx", ""));
+		propertyTableModel.data.add(new Property("diagnostics", "vnet1_tx_drop", ""));
+		propertyTableModel.data.add(new Property("diagnostics", "vnet1_tx_errors", ""));
+		propertyTableModel.data.add(new Property("diagnostics", "vnet1_tx_packets", ""));
 
-		propertyTableModel.data.add(new Property("network", "", "", true));
 		propertyTableModel.fireTableStructureChanged();
 	}
 
 	void refresh() {
 		int maxVMColumnCount = (int) slider.getValue();
 		iconPanel.init(maxVMColumnCount);
+	}
+
+	public void updatePropertyTable() {
+
 	}
 
 }

@@ -49,7 +49,11 @@ public class PropertyTableModel extends DefaultTableModel {
 		//				return data.get(row).type;
 		//			}
 		//		}
-		return data.get(row);
+		if (row < getRowCount()) {
+			return data.get(row);
+		} else {
+			return null;
+		}
 	}
 
 	public boolean isCellEditable(int row, int column) {
@@ -57,7 +61,25 @@ public class PropertyTableModel extends DefaultTableModel {
 	}
 
 	public Class getColumnClass(int columnIndex) {
-		return getValueAt(0, columnIndex).getClass();
+		try {
+			return getValueAt(0, columnIndex).getClass();
+		} catch (Exception ex) {
+			return Object.class;
+		}
 	}
+
+//	public void filter(String text) {
+//		for (Property property : data) {
+//			if (property.isData) {
+//				if (property.name.toLowerCase().contains(text.trim().toLowerCase())) {
+//					property.isVisible = true;
+//				} else {
+//					property.isVisible = false;
+//				}
+//			} else {
+//				property.isVisible = false;
+//			}
+//		}
+//	}
 
 }
