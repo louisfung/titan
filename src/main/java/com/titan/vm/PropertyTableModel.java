@@ -12,14 +12,14 @@ public class PropertyTableModel extends DefaultTableModel {
 	}
 
 	public String getColumnName(int column) {
-		return columnNames[column];
+		if (column == 0) {
+			return "";
+		}
+		return columnNames[column - 1];
 	}
 
 	public int getColumnCount() {
-		if (columnNames == null) {
-			return 0;
-		}
-		return columnNames.length;
+		return 3;
 	}
 
 	public int getRowCount() {
@@ -36,12 +36,18 @@ public class PropertyTableModel extends DefaultTableModel {
 	public Object getValueAt(final int row, int column) {
 		if (data.get(row).isData) {
 			if (column == 0) {
+				return "";
+			} else if (column == 1) {
 				return data.get(row).name;
 			} else {
 				return data.get(row).value;
 			}
 		} else {
-			return data.get(row).type;
+			if (column == 0) {
+				return "+";
+			} else {
+				return data.get(row).type;
+			}
 		}
 	}
 
