@@ -388,14 +388,21 @@ public class VMMainPanel extends JPanel {
 				Property property = (Property) model.getValueAt(entry.getIdentifier(), 0);
 				if (searchPropertyTextField.getText().trim().equals("")) {
 					return true;
-				} else if (property.name.toLowerCase().contains(searchPropertyTextField.getText().trim().toLowerCase())) {
+				} else if (property.isData && property.name.toLowerCase().contains(searchPropertyTextField.getText().trim().toLowerCase())) {
 					return true;
+				} else if (!property.isData) {
+					for (Property p : model.data) {
+						if (p.isData && property.type.equals(p.type) && p.name.toLowerCase().contains(searchPropertyTextField.getText().trim().toLowerCase())) {
+							return true;
+						}
+					}
+					return false;
 				} else {
 					return false;
 				}
 			}
 		};
-			propertyTableRowSorter.setRowFilter(filter);
+		propertyTableRowSorter.setRowFilter(filter);
 		propertyScrollPane.setViewportView(propertyTable);
 
 		splitPane = new JSplitPane();
@@ -413,7 +420,7 @@ public class VMMainPanel extends JPanel {
 		searchPropertyTextField.addKeyListener(new KeyAdapter() {
 			@Override
 			public void keyReleased(KeyEvent e) {
-//				propertyTableModel.filter(searchPropertyTextField.getText());
+				//				propertyTableModel.filter(searchPropertyTextField.getText());
 				propertyTableModel.fireTableStructureChanged();
 			}
 		});
