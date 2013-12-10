@@ -68,18 +68,27 @@ public class PropertyTableModel extends DefaultTableModel {
 		}
 	}
 
-//	public void filter(String text) {
-//		for (Property property : data) {
-//			if (property.isData) {
-//				if (property.name.toLowerCase().contains(text.trim().toLowerCase())) {
-//					property.isVisible = true;
-//				} else {
-//					property.isVisible = false;
-//				}
-//			} else {
-//				property.isVisible = false;
-//			}
-//		}
-//	}
+	//	public void filter(String text) {
+	//		for (Property property : data) {
+	//			if (property.isData) {
+	//				if (property.name.toLowerCase().contains(text.trim().toLowerCase())) {
+	//					property.isVisible = true;
+	//				} else {
+	//					property.isVisible = false;
+	//				}
+	//			} else {
+	//				property.isVisible = false;
+	//			}
+	//		}
+	//	}
+
+	public void changeValue(String property, String value) {
+		for (Property p : data) {
+			if (p.name.equals(property)) {
+				p.value = value;
+			}
+		}
+		fireTableDataChanged();
+	}
 
 }
