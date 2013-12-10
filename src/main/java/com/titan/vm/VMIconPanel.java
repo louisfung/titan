@@ -64,6 +64,7 @@ public class VMIconPanel extends JPanel implements Runnable {
 					vmMainPanel.selectedVM = panel.json;
 					panel.setClicked(!panel.clicked);
 					panel.setSelected(true);
+					vmMainPanel.updatePropertyTable();
 				}
 			});
 			add(panel, "cell " + col + " " + row);

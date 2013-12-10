@@ -493,7 +493,7 @@ public class VMMainPanel extends JPanel {
 	}
 
 	public void updatePropertyTable() {
-
+		System.out.println(TitanCommonLib.getJSONString(selectedVM, "name", ""));
 	}
 
 }
