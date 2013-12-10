@@ -17,7 +17,7 @@ import com.titan.OS;
 import com.titan.TitanCommonLib;
 
 public class VMLabel extends JLabel {
-	VMPanel vmPanel;
+	VMIcon vmPanel;
 	OS os;
 	//	Icon icon = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/vmIcon.png"));
 	Image normal = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/normal.png")).getImage();
@@ -46,11 +46,11 @@ public class VMLabel extends JLabel {
 	Color normalTextColor = new Color(0, 162, 222);
 	Color grayTextColor = new Color(193, 193, 193);
 
-	public VMLabel(VMPanel vmPanel) {
+	public VMLabel(VMIcon vmPanel) {
 		this(vmPanel, OS.none);
 	}
 
-	public VMLabel(VMPanel vmPanel, OS os) {
+	public VMLabel(VMIcon vmPanel, OS os) {
 		super();
 		this.vmPanel = vmPanel;
 		setOS(os);

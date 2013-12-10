@@ -18,10 +18,10 @@ import com.titan.communication.CommunicateLib;
 import com.titanserver.Command;
 import com.titanserver.ReturnCommand;
 
-public class VMIconPanel extends JPanel implements Runnable {
+public class VMIconPanel extends JPanel implements Runnable, VMPanel {
 	JSONArray servers;
 	VMMainPanel vmMainPanel;
-	Vector<VMPanel> panels = new Vector<VMPanel>();
+	Vector<VMIcon> panels = new Vector<VMIcon>();
 
 	public VMIconPanel(VMMainPanel vmMainPanel) {
 		this.vmMainPanel = vmMainPanel;
@@ -53,43 +53,43 @@ public class VMIconPanel extends JPanel implements Runnable {
 		int col = 0;
 		removeAll();
 		panels.clear();
-		//		synchronized (panels) {
-		for (int x = 0; x < servers.size(); x++) {
-			JSONObject obj = servers.getJSONObject(x);
-			String name = TitanCommonLib.getJSONString(obj, "name", null);
-			if (searchPattern == null || searchPattern.equals("") || name.toLowerCase().contains(searchPattern.toLowerCase())) {
-				//			System.out.println(obj);
-				VMPanel panel = new VMPanel(obj);
-				panels.add(panel);
-				panel.addMouseListener(new MouseAdapter() {
-					@Override
-					public void mousePressed(MouseEvent e) {
-						clearAllPanelsSelection();
-						VMPanel panel = (VMPanel) e.getSource();
-						vmMainPanel.selectedVM = panel.json;
-						panel.setClicked(!panel.clicked);
-						panel.setSelected(true);
-						//						vmMainPanel.updatePropertyTable();
-						if (vmMainPanel.isUpdatePropertyTableThreadRunning) {
-							vmMainPanel.isUpdatePropertyTableThreadTrigger = true;
+		synchronized (panels) {
+			for (int x = 0; x < servers.size(); x++) {
+				JSONObject obj = servers.getJSONObject(x);
+				String name = TitanCommonLib.getJSONString(obj, "name", null);
+				if (searchPattern == null || searchPattern.equals("") || name.toLowerCase().contains(searchPattern.toLowerCase())) {
+					//			System.out.println(obj);
+					VMIcon panel = new VMIcon(obj);
+					panels.add(panel);
+					panel.addMouseListener(new MouseAdapter() {
+						@Override
+						public void mousePressed(MouseEvent e) {
+							clearAllPanelsSelection();
+							VMIcon panel = (VMIcon) e.getSource();
+							vmMainPanel.selectedVM = panel.json;
+							panel.setClicked(!panel.clicked);
+							panel.setSelected(true);
+							//						vmMainPanel.updatePropertyTable();
+							if (vmMainPanel.isUpdatePropertyTableThreadRunning) {
+								vmMainPanel.isUpdatePropertyTableThreadTrigger = true;
+							}
+							new Thread(vmMainPanel).start();
 						}
-						new Thread(vmMainPanel).start();
+					});
+					add(panel, "cell " + col + " " + row);
+					col++;
+					if (col == maxCol) {
+						col = 0;
+						row++;
 					}
-				});
-				add(panel, "cell " + col + " " + row);
-				col++;
-				if (col == maxCol) {
-					col = 0;
-					row++;
 				}
 			}
 		}
-		//		}
 		updateUI();
 	}
 
 	private void clearAllPanelsSelection() {
-		for (VMPanel panel : panels) {
+		for (VMIcon panel : panels) {
 			panel.setSelected(false);
 		}
 	}
@@ -103,14 +103,14 @@ public class VMIconPanel extends JPanel implements Runnable {
 			for (int x = 0; x < servers.size(); x++) {
 				JSONObject obj = servers.getJSONObject(x);
 				String instanceId = TitanCommonLib.getJSONString(obj, "id", null);
-				//				synchronized (panels) {
-				for (VMPanel vmPanel : panels) {
-					if (instanceId.equals(TitanCommonLib.getJSONString(vmPanel.json, "id", null))) {
-						vmPanel.json = obj;
-						vmPanel.repaint();
+				synchronized (panels) {
+					for (VMIcon vmPanel : panels) {
+						if (instanceId.equals(TitanCommonLib.getJSONString(vmPanel.json, "id", null))) {
+							vmPanel.json = obj;
+							vmPanel.repaint();
+						}
 					}
 				}
-				//				}
 			}
 			try {
 				Thread.sleep(100);
@@ -120,4 +120,17 @@ public class VMIconPanel extends JPanel implements Runnable {
 		}
 	}
 
+	@Override
+	public Vector<String> getSelectedVM() {
+		Vector<String> r = new Vector<String>();
+		for (VMIcon vmPanel : panels) {
+			if (vmPanel.clicked) {
+				String instanceId = TitanCommonLib.getJSONString(vmPanel.json, "id", null);
+				if (instanceId != null) {
+					r.add(instanceId);
+				}
+			}
+		}
+		return r;
+	}
 }

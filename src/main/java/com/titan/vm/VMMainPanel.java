@@ -10,6 +10,7 @@ import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
+import java.util.Vector;
 
 import javax.swing.ButtonGroup;
 import javax.swing.ImageIcon;
@@ -173,18 +174,20 @@ public class VMMainPanel extends JPanel implements Runnable {
 		JButton btnStop = new JButton("Stop");
 		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String instanceId = TitanCommonLib.getJSONString(selectedVM, "id", null);
-				if (instanceId == null) {
+				VMPanel vmPanel = iconPanel;
+				Vector<String> instanceIds = vmPanel.getSelectedVM();
+				//				String instanceId = TitanCommonLib.getJSONString(selectedVM, "id", null);
+				if (instanceIds.size() == 0) {
 					JOptionPane.showMessageDialog(VMMainPanel.this.mainframe, "Please select vm first", "Warning", JOptionPane.WARNING_MESSAGE);
 					return;
 				}
-				int x = JOptionPane.showConfirmDialog(VMMainPanel.this.mainframe, "Confirm to stop instance : " + instanceId + " ?", "Warning", JOptionPane.YES_NO_OPTION);
+				int x = JOptionPane.showConfirmDialog(VMMainPanel.this.mainframe, "Confirm to stop instance : " + instanceIds + " ?", "Warning", JOptionPane.YES_NO_OPTION);
 
 				if (x == JOptionPane.YES_OPTION) {
 					Command command = new Command();
 					command.command = "from titan: nova stop";
 					HashMap<String, String> parameters = new HashMap<String, String>();
-					parameters.put("$InstanceId", instanceId);
+					//					parameters.put("$InstanceId", instanceId);
 					command.parameters.add(parameters);
 					ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 					String returnMessage = (String) r.map.get("result");
