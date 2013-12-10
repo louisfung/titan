@@ -5,6 +5,8 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyAdapter;
+import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.HashMap;
@@ -16,6 +18,7 @@ import javax.swing.JComboBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JRadioButton;
 import javax.swing.JScrollPane;
 import javax.swing.JSlider;
 import javax.swing.JSplitPane;
@@ -39,15 +42,14 @@ import com.titan.instancepanel.ViewInstanceDialog;
 import com.titan.mainframe.MainFrame;
 import com.titanserver.Command;
 import com.titanserver.ReturnCommand;
-import java.awt.event.KeyAdapter;
-import java.awt.event.KeyEvent;
 
-public class VMMainPanel extends JPanel {
+public class VMMainPanel extends JPanel implements Runnable {
 	MainFrame mainframe;
 	JSlider slider = new JSlider();
 	VMIconPanel iconPanel = new VMIconPanel(this);
 	JLabel colLabel = new JLabel("");
 	ButtonGroup group1 = new ButtonGroup();
+	ButtonGroup chartButtonGroup = new ButtonGroup();
 	private JToggleButton ganttViewButton;
 	private JToggleButton deltailViewButton;
 	JScrollPane scrollPane = new JScrollPane();
@@ -59,6 +61,11 @@ public class VMMainPanel extends JPanel {
 	PropertyTableModel propertyTableModel = new PropertyTableModel();
 	private JSearchTextField searchPropertyTextField;
 	TableRowSorter<PropertyTableModel> propertyTableRowSorter;
+	private JRadioButton chartRadioButton;
+	private JRadioButton numberRadioButton;
+	private JSearchTextField searchTextField;
+	boolean isUpdatePropertyTableThreadRunning = false;
+	boolean isUpdatePropertyTableThreadTrigger = false;
 
 	public VMMainPanel(final MainFrame mainFrame) {
 		this.mainframe = mainFrame;
@@ -108,7 +115,13 @@ public class VMMainPanel extends JPanel {
 		btnRefresh.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/arrow_rotate_clockwise.png")));
 		toolBar.add(btnRefresh);
 
-		JSearchTextField searchTextField = new JSearchTextField();
+		searchTextField = new JSearchTextField();
+		searchTextField.addKeyListener(new KeyAdapter() {
+			@Override
+			public void keyReleased(KeyEvent e) {
+				refresh();
+			}
+		});
 		searchTextField.setMaximumSize(new Dimension(100, 20));
 		toolBar.add(searchTextField);
 
@@ -130,6 +143,15 @@ public class VMMainPanel extends JPanel {
 		sortComboBox = new JComboBox(new String[] { "name", "cpu", "memory", "disk" });
 		sortComboBox.setMaximumSize(new Dimension(100, 20));
 		toolBar.add(sortComboBox);
+
+		chartRadioButton = new JRadioButton("Chart");
+		chartButtonGroup.add(chartRadioButton);
+		chartRadioButton.setSelected(true);
+		toolBar.add(chartRadioButton);
+
+		numberRadioButton = new JRadioButton("Number");
+		chartButtonGroup.add(numberRadioButton);
+		toolBar.add(numberRadioButton);
 
 		scrollPane.getVerticalScrollBar().setUnitIncrement(20);
 		scrollPane.setViewportView(iconPanel);
@@ -489,29 +511,40 @@ public class VMMainPanel extends JPanel {
 
 	void refresh() {
 		int maxVMColumnCount = (int) slider.getValue();
-		iconPanel.init(maxVMColumnCount);
+		iconPanel.init(searchTextField.getText(), maxVMColumnCount);
 	}
 
-	public void updatePropertyTable() {
-		for (Property p : propertyTableModel.data) {
-			propertyTableModel.changeValue(p.name, TitanCommonLib.getJSONString(selectedVM, p.name, null));
-		}
-
-		Command command = new Command();
-		command.command = "from titan: nova diagnostics";
-		HashMap<String, String> parameters = new HashMap<String, String>();
-		parameters.put("$InstanceId", TitanCommonLib.getJSONString(selectedVM, "id", null));
-		command.parameters.add(parameters);
-		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-		String json = (String) r.map.get("result");
-		JSONObject jsonObject = JSONObject.fromObject(json);
-
-		for (Property p : propertyTableModel.data) {
-			String value = TitanCommonLib.getJSONString(jsonObject, p.name, null);
-			if (value != null) {
-				propertyTableModel.changeValue(p.name, value);
+	@Override
+	public void run() {
+		try {
+			isUpdatePropertyTableThreadTrigger = false;
+			isUpdatePropertyTableThreadRunning = true;
+			for (Property p : propertyTableModel.data) {
+				propertyTableModel.changeValue(p.name, TitanCommonLib.getJSONString(selectedVM, p.name, null));
 			}
+
+			Command command = new Command();
+			command.command = "from titan: nova diagnostics";
+			HashMap<String, String> parameters = new HashMap<String, String>();
+			parameters.put("$InstanceId", TitanCommonLib.getJSONString(selectedVM, "id", null));
+			command.parameters.add(parameters);
+			ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+			String json = (String) r.map.get("result");
+			JSONObject jsonObject = JSONObject.fromObject(json);
+
+			for (Property p : propertyTableModel.data) {
+				if (isUpdatePropertyTableThreadTrigger) {
+					isUpdatePropertyTableThreadRunning = false;
+					return;
+				}
+				String value = TitanCommonLib.getJSONString(jsonObject, p.name, null);
+				if (value != null) {
+					propertyTableModel.changeValue(p.name, value);
+				}
+			}
+		} catch (Exception ex) {
 		}
+		isUpdatePropertyTableThreadRunning = false;
 	}
 
 }

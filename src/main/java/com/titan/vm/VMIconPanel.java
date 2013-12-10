@@ -29,7 +29,10 @@ public class VMIconPanel extends JPanel implements Runnable {
 		new Thread(this).start();
 	}
 
-	public void init(int maxVMColumnCount) {
+	public void init(String searchPattern, int maxVMColumnCount) {
+		if (searchPattern != null) {
+			searchPattern = searchPattern.trim();
+		}
 		TitanSetting.getInstance().maxVMColumnCount = maxVMColumnCount;
 		TitanSetting.getInstance().save();
 		Command command = new Command();
@@ -48,32 +51,40 @@ public class VMIconPanel extends JPanel implements Runnable {
 		vmMainPanel.iconPanel.setLayout(new MigLayout("", colStr, rowStr));
 		int row = 0;
 		int col = 0;
-		vmMainPanel.iconPanel.removeAll();
+		removeAll();
 		panels.clear();
+		//		synchronized (panels) {
 		for (int x = 0; x < servers.size(); x++) {
 			JSONObject obj = servers.getJSONObject(x);
-			//			String instanceId = TitanCommonLib.getJSONString(obj, "id", null);
-			//			System.out.println(obj);
-			VMPanel panel = new VMPanel(obj);
-			panels.add(panel);
-			panel.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mousePressed(MouseEvent e) {
-					clearAllPanelsSelection();
-					VMPanel panel = (VMPanel) e.getSource();
-					vmMainPanel.selectedVM = panel.json;
-					panel.setClicked(!panel.clicked);
-					panel.setSelected(true);
-					vmMainPanel.updatePropertyTable();
+			String name = TitanCommonLib.getJSONString(obj, "name", null);
+			if (searchPattern == null || searchPattern.equals("") || name.toLowerCase().contains(searchPattern.toLowerCase())) {
+				//			System.out.println(obj);
+				VMPanel panel = new VMPanel(obj);
+				panels.add(panel);
+				panel.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mousePressed(MouseEvent e) {
+						clearAllPanelsSelection();
+						VMPanel panel = (VMPanel) e.getSource();
+						vmMainPanel.selectedVM = panel.json;
+						panel.setClicked(!panel.clicked);
+						panel.setSelected(true);
+						//						vmMainPanel.updatePropertyTable();
+						if (vmMainPanel.isUpdatePropertyTableThreadRunning) {
+							vmMainPanel.isUpdatePropertyTableThreadTrigger = true;
+						}
+						new Thread(vmMainPanel).start();
+					}
+				});
+				add(panel, "cell " + col + " " + row);
+				col++;
+				if (col == maxCol) {
+					col = 0;
+					row++;
 				}
-			});
-			add(panel, "cell " + col + " " + row);
-			col++;
-			if (col == maxCol) {
-				col = 0;
-				row++;
 			}
 		}
+		//		}
 		updateUI();
 	}
 
@@ -92,12 +103,14 @@ public class VMIconPanel extends JPanel implements Runnable {
 			for (int x = 0; x < servers.size(); x++) {
 				JSONObject obj = servers.getJSONObject(x);
 				String instanceId = TitanCommonLib.getJSONString(obj, "id", null);
+				//				synchronized (panels) {
 				for (VMPanel vmPanel : panels) {
 					if (instanceId.equals(TitanCommonLib.getJSONString(vmPanel.json, "id", null))) {
 						vmPanel.json = obj;
 						vmPanel.repaint();
 					}
 				}
+				//				}
 			}
 			try {
 				Thread.sleep(100);
