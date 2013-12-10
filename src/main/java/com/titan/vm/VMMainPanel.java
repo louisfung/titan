@@ -496,6 +496,22 @@ public class VMMainPanel extends JPanel {
 		for (Property p : propertyTableModel.data) {
 			propertyTableModel.changeValue(p.name, TitanCommonLib.getJSONString(selectedVM, p.name, null));
 		}
+
+		Command command = new Command();
+		command.command = "from titan: nova diagnostics";
+		HashMap<String, String> parameters = new HashMap<String, String>();
+		parameters.put("$InstanceId", TitanCommonLib.getJSONString(selectedVM, "id", null));
+		command.parameters.add(parameters);
+		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+		String json = (String) r.map.get("result");
+		JSONObject jsonObject = JSONObject.fromObject(json);
+
+		for (Property p : propertyTableModel.data) {
+			String value = TitanCommonLib.getJSONString(jsonObject, p.name, null);
+			if (value != null) {
+				propertyTableModel.changeValue(p.name, value);
+			}
+		}
 	}
 
 }
