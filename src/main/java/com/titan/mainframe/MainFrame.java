@@ -190,10 +190,10 @@ public class MainFrame extends JFrame implements ApplicationListener {
 		serverTree.addMouseListener(new MouseAdapter() {
 			@Override
 			public void mouseClicked(MouseEvent e) {
-				Object obj = mainContentPanel.getComponent(0);
-				if (obj instanceof VMMainPanel) {
-					((MainPanel) obj).refresh();
-				}
+//				Object obj = mainContentPanel.getComponent(0);
+//				if (obj instanceof VMMainPanel) {
+//					((MainPanel) obj).refresh();
+//				}
 			}
 		});
 		serverTree.setModel(projectFilterTreeModel);
