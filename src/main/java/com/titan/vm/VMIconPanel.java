@@ -121,14 +121,14 @@ public class VMIconPanel extends JPanel implements Runnable, VMPanel {
 	}
 
 	@Override
-	public Vector<String> getSelectedVM() {
-		Vector<String> r = new Vector<String>();
+	public Vector<JSONObject> getSelectedVM() {
+		Vector<JSONObject> r = new Vector<JSONObject>();
 		for (VMIcon vmPanel : panels) {
 			if (vmPanel.clicked) {
-				String instanceId = TitanCommonLib.getJSONString(vmPanel.json, "id", null);
-				if (instanceId != null) {
-					r.add(instanceId);
-				}
+				//				String instanceId = TitanCommonLib.getJSONString(vmPanel.json, "id", null);
+				//				if (instanceId != null) {
+				r.add(vmPanel.json);
+				//				}
 			}
 		}
 		return r;

@@ -41,6 +41,7 @@ import com.titan.instancepanel.LaunchInstanceDialog;
 import com.titan.instancepanel.MonitorDialog;
 import com.titan.instancepanel.ViewInstanceDialog;
 import com.titan.mainframe.MainFrame;
+import com.titan.vm.vmdialog.VMDialog;
 import com.titanserver.Command;
 import com.titanserver.ReturnCommand;
 
@@ -175,27 +176,41 @@ public class VMMainPanel extends JPanel implements Runnable {
 		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				VMPanel vmPanel = iconPanel;
-				Vector<String> instanceIds = vmPanel.getSelectedVM();
-				//				String instanceId = TitanCommonLib.getJSONString(selectedVM, "id", null);
-				if (instanceIds.size() == 0) {
+				Vector<JSONObject> vms = vmPanel.getSelectedVM();
+
+				if (vms.size() == 0) {
 					JOptionPane.showMessageDialog(VMMainPanel.this.mainframe, "Please select vm first", "Warning", JOptionPane.WARNING_MESSAGE);
 					return;
 				}
-				int x = JOptionPane.showConfirmDialog(VMMainPanel.this.mainframe, "Confirm to stop instance : " + instanceIds + " ?", "Warning", JOptionPane.YES_NO_OPTION);
-
-				if (x == JOptionPane.YES_OPTION) {
-					Command command = new Command();
-					command.command = "from titan: nova stop";
-					HashMap<String, String> parameters = new HashMap<String, String>();
-					//					parameters.put("$InstanceId", instanceId);
-					command.parameters.add(parameters);
-					ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-					String returnMessage = (String) r.map.get("result");
-					if (!returnMessage.equals("")) {
-						JOptionPane.showMessageDialog(VMMainPanel.this.mainframe, returnMessage);
-					}
-					refresh();
+				final VMDialog vmDialog = new VMDialog(mainframe);
+				vmDialog.vmDialogTableModel.data.clear();
+				for (JSONObject json : vms) {
+					String instanceId = TitanCommonLib.getJSONString(json, "id", null);
+					String name = TitanCommonLib.getJSONString(json, "name", null);
+					String vmType = "unknown";
+					vmDialog.vmDialogTableModel.add(instanceId, name, vmType);
 				}
+				vmDialog.thread = new Thread() {
+					public void run() {
+						for (int x = 0; x < vmDialog.vmDialogTableModel.getRowCount(); x++) {
+							if (vmDialog.stopTrigger) {
+								break;
+							}
+							Command command = new Command();
+							command.command = "from titan: nova stop";
+							HashMap<String, String> parameters = new HashMap<String, String>();
+							String instanceId = (String) vmDialog.vmDialogTableModel.getValueAt(x, 0);
+							parameters.put("$InstanceId", instanceId);
+							command.parameters.add(parameters);
+							ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+							String returnMessage = (String) r.map.get("result");
+							//							if (!returnMessage.equals("")) {
+							//								JOptionPane.showMessageDialog(VMMainPanel.this.mainframe, returnMessage);
+							//							}
+						}
+						refresh();
+					}
+				};
 			}
 		});
 		btnStop.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/control_stop_blue.png")));
