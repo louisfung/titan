@@ -228,7 +228,6 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 				} else {
 					String value = JOptionPane.showInputDialog(frame, "What value of \"" + quotaTable.getValueAt(quotaTable.getSelectedRow(), 0) + "\"?",
 							quotaTable.getValueAt(quotaTable.getSelectedRow(), 1));
-					System.out.println("v=" + value);
 					if (value == null) {
 						return;
 					}
@@ -606,112 +605,120 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 	}
 
 	private void initQuotaDefaultsTable() {
-		Command command = new Command();
-		command.command = "from titan: nova endpoints";
-		HashMap<String, String> parameters = new HashMap<String, String>();
-		parameters.put("$Tenant_name", (String) tenantComboBox.getSelectedItem());
-		command.parameters.add(parameters);
-		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-		JSONObject access = JSONObject.fromObject(r.map.get("result")).getJSONObject("access");
-		JSONObject token = access.getJSONObject("token");
-		JSONObject tenant = token.getJSONObject("tenant");
-		String tenantId = tenant.getString("id");
-		String tokenStr = token.getString("id");
+		try {
+			Command command = new Command();
+			command.command = "from titan: nova endpoints";
+			HashMap<String, String> parameters = new HashMap<String, String>();
+			parameters.put("$Tenant_name", (String) tenantComboBox.getSelectedItem());
+			command.parameters.add(parameters);
+			ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+			JSONObject access = JSONObject.fromObject(r.map.get("result")).getJSONObject("access");
+			JSONObject token = access.getJSONObject("token");
+			JSONObject tenant = token.getJSONObject("tenant");
+			String tenantId = tenant.getString("id");
+			String tokenStr = token.getString("id");
 
-		command = new Command();
-		command.command = "from titan: nova quota-defaults";
-		parameters.put("$tenantName", (String) tenantComboBox.getSelectedItem());
-		parameters.put("$Tenant_Id", tenantId);
-		parameters.put("$Token", tokenStr);
-		r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-		JSONObject quotas = ((JSONObject) JSONObject.fromObject(r.map.get("result")).get("quota_set"));
+			command = new Command();
+			command.command = "from titan: nova quota-defaults";
+			parameters.put("$tenantName", (String) tenantComboBox.getSelectedItem());
+			parameters.put("$Tenant_Id", tenantId);
+			parameters.put("$Token", tokenStr);
+			r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+			JSONObject quotas = ((JSONObject) JSONObject.fromObject(r.map.get("result")).get("quota_set"));
 
-		quotaDefaultsTableModel.columnNames.clear();
-		quotaDefaultsTableModel.columnNames.add("Name");
-		quotaDefaultsTableModel.columnNames.add("Description");
+			quotaDefaultsTableModel.columnNames.clear();
+			quotaDefaultsTableModel.columnNames.add("Name");
+			quotaDefaultsTableModel.columnNames.add("Description");
 
-		Vector<Object> col1 = new Vector<Object>();
-		Vector<Object> col2 = new Vector<Object>();
-		Iterator<String> keys = quotas.keys();
-		while (keys.hasNext()) {
-			String key = keys.next();
-			col1.add(key);
-			col2.add(quotas.getString(key));
+			Vector<Object> col1 = new Vector<Object>();
+			Vector<Object> col2 = new Vector<Object>();
+			Iterator<String> keys = quotas.keys();
+			while (keys.hasNext()) {
+				String key = keys.next();
+				col1.add(key);
+				col2.add(quotas.getString(key));
+			}
+
+			quotaDefaultsTableModel.values.clear();
+			quotaDefaultsTableModel.values.add(col1);
+			quotaDefaultsTableModel.values.add(col2);
+
+			quotaDefaultsTableModel.fireTableStructureChanged();
+			quotaDefaultsTableModel.fireTableDataChanged();
+
+			quotaDefaultsTable.getColumnModel().getColumn(0).setPreferredWidth(200);
+			quotaDefaultsTable.getColumnModel().getColumn(1).setPreferredWidth(400);
+
+			DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+			rightRenderer.setHorizontalAlignment(JTextField.RIGHT);
+			DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+			centerRenderer.setHorizontalAlignment(JTextField.CENTER);
+
+			List<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
+			sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
+			quotaDefaultsTable.getRowSorter().setSortKeys(sortKeys);
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
-
-		quotaDefaultsTableModel.values.clear();
-		quotaDefaultsTableModel.values.add(col1);
-		quotaDefaultsTableModel.values.add(col2);
-
-		quotaDefaultsTableModel.fireTableStructureChanged();
-		quotaDefaultsTableModel.fireTableDataChanged();
-
-		quotaDefaultsTable.getColumnModel().getColumn(0).setPreferredWidth(200);
-		quotaDefaultsTable.getColumnModel().getColumn(1).setPreferredWidth(400);
-
-		DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
-		rightRenderer.setHorizontalAlignment(JTextField.RIGHT);
-		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-		centerRenderer.setHorizontalAlignment(JTextField.CENTER);
-
-		List<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
-		sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
-		quotaDefaultsTable.getRowSorter().setSortKeys(sortKeys);
 	}
 
 	private void initQuotaTable() {
-		Command command = new Command();
-		command.command = "from titan: nova endpoints";
-		HashMap<String, String> parameters = new HashMap<String, String>();
-		parameters.put("$Tenant_name", (String) tenantComboBox.getSelectedItem());
-		command.parameters.add(parameters);
-		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-		JSONObject access = JSONObject.fromObject(r.map.get("result")).getJSONObject("access");
-		JSONObject token = access.getJSONObject("token");
-		JSONObject tenant = token.getJSONObject("tenant");
-		String tenantId = tenant.getString("id");
-		String tokenStr = token.getString("id");
+		try {
+			Command command = new Command();
+			command.command = "from titan: nova endpoints";
+			HashMap<String, String> parameters = new HashMap<String, String>();
+			parameters.put("$Tenant_name", (String) tenantComboBox.getSelectedItem());
+			command.parameters.add(parameters);
+			ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+			JSONObject access = JSONObject.fromObject(r.map.get("result")).getJSONObject("access");
+			JSONObject token = access.getJSONObject("token");
+			JSONObject tenant = token.getJSONObject("tenant");
+			String tenantId = tenant.getString("id");
+			String tokenStr = token.getString("id");
 
-		command = new Command();
-		command.command = "from titan: nova quota-show";
-		parameters = new HashMap<String, String>();
-		parameters.put("$tenantName", (String) tenantComboBox.getSelectedItem());
-		parameters.put("$Tenant_Id", tenantId);
-		parameters.put("$Token", tokenStr);
-		command.parameters.add(parameters);
-		r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-		JSONObject quotas = ((JSONObject) JSONObject.fromObject(r.map.get("result")).get("quota_set"));
+			command = new Command();
+			command.command = "from titan: nova quota-show";
+			parameters = new HashMap<String, String>();
+			parameters.put("$tenantName", (String) tenantComboBox.getSelectedItem());
+			parameters.put("$Tenant_Id", tenantId);
+			parameters.put("$Token", tokenStr);
+			command.parameters.add(parameters);
+			r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+			JSONObject quotas = ((JSONObject) JSONObject.fromObject(r.map.get("result")).get("quota_set"));
 
-		quotaTableModel.columnNames.clear();
-		quotaTableModel.columnNames.add("Name");
-		quotaTableModel.columnNames.add("Description");
+			quotaTableModel.columnNames.clear();
+			quotaTableModel.columnNames.add("Name");
+			quotaTableModel.columnNames.add("Description");
 
-		Vector<Object> col1 = new Vector<Object>();
-		Vector<Object> col2 = new Vector<Object>();
-		Iterator<String> keys = quotas.keys();
-		while (keys.hasNext()) {
-			String key = keys.next();
-			col1.add(key);
-			col2.add(quotas.getString(key));
+			Vector<Object> col1 = new Vector<Object>();
+			Vector<Object> col2 = new Vector<Object>();
+			Iterator<String> keys = quotas.keys();
+			while (keys.hasNext()) {
+				String key = keys.next();
+				col1.add(key);
+				col2.add(quotas.getString(key));
+			}
+
+			quotaTableModel.values.clear();
+			quotaTableModel.values.add(col1);
+			quotaTableModel.values.add(col2);
+
+			quotaTableModel.fireTableStructureChanged();
+			quotaTableModel.fireTableDataChanged();
+
+			quotaTable.getColumnModel().getColumn(0).setPreferredWidth(200);
+			quotaTable.getColumnModel().getColumn(1).setPreferredWidth(400);
+
+			DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
+			rightRenderer.setHorizontalAlignment(JTextField.RIGHT);
+			DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
+			centerRenderer.setHorizontalAlignment(JTextField.CENTER);
+
+			List<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
+			sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
+			quotaTable.getRowSorter().setSortKeys(sortKeys);
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
-
-		quotaTableModel.values.clear();
-		quotaTableModel.values.add(col1);
-		quotaTableModel.values.add(col2);
-
-		quotaTableModel.fireTableStructureChanged();
-		quotaTableModel.fireTableDataChanged();
-
-		quotaTable.getColumnModel().getColumn(0).setPreferredWidth(200);
-		quotaTable.getColumnModel().getColumn(1).setPreferredWidth(400);
-
-		DefaultTableCellRenderer rightRenderer = new DefaultTableCellRenderer();
-		rightRenderer.setHorizontalAlignment(JTextField.RIGHT);
-		DefaultTableCellRenderer centerRenderer = new DefaultTableCellRenderer();
-		centerRenderer.setHorizontalAlignment(JTextField.CENTER);
-
-		List<RowSorter.SortKey> sortKeys = new ArrayList<RowSorter.SortKey>();
-		sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
-		quotaTable.getRowSorter().setSortKeys(sortKeys);
 	}
 }
