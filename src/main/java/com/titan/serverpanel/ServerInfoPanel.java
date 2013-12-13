@@ -197,86 +197,89 @@ public class ServerInfoPanel extends JPanel implements Runnable {
 	@Override
 	public void run() {
 		//		while (true) {
-
 		if (isRunning) {
 			return;
 		}
-		isRunning = true;
-		updateLabel.setIcon(new ImageIcon(ServerInfoPanel.class.getResource("/com/titan/image/ajax-loader.gif")));
-		updateLabel.setText("Updating charts");
-		Command command = new Command();
-		command.command = "getServerDiagnostics";
-		Date fromDate = fromDateChooser.getDate();
-		fromDate.setHours(Integer.parseInt(fromComboBox.getSelectedItem().toString().split(":")[0]));
-		fromDate.setMinutes(Integer.parseInt(fromComboBox.getSelectedItem().toString().split(":")[1]));
-		fromDate.setSeconds(0);
-		Date toDate = toDateChooser.getDate();
-		toDate.setHours(Integer.parseInt(toComboBox.getSelectedItem().toString().split(":")[0]));
-		toDate.setMinutes(Integer.parseInt(toComboBox.getSelectedItem().toString().split(":")[1]));
-		toDate.setSeconds(59);
-		//		System.out.println(fromDate);
-		//		System.out.println(toDate);
-		command.parameters.add(fromDate);
-		command.parameters.add(toDate);
-		command.parameters.add(periodComboBox.getSelectedItem());
-		if (rdbtnAvg.isSelected()) {
-			command.parameters.add("avg");
-		} else if (rdbtnMin.isSelected()) {
-			command.parameters.add("min");
-		} else {
-			command.parameters.add("max");
-		}
-		command.parameters.add(periodComboBox.getSelectedItem());
-		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-		List<ServerDiagnostics> list = (List<ServerDiagnostics>) r.map.get("result");
-
-		//			int step = (int) Math.pow(10, String.valueOf(list.size()).length() - 2);
-		//			if (step < 1) {
-		//				step = 1;
-		//			}
-		//			step = 1;
-
-		//			cpuSeries.clear();
-		//			memorySeries.clear();
-		//			diskSeries.clear();
-		//			networkSeries.clear();
-		TimeSeries cpuSeries = new TimeSeries("cpu");
-		TimeSeries cpuDetailSeries = new TimeSeries("cpu");
-		TimeSeries memorySeries = new TimeSeries("memory");
-		TimeSeries memoryDetailSeries = new TimeSeries("memory");
-		TimeSeries diskSeries = new TimeSeries("disk");
-		TimeSeries networkSeries = new TimeSeries("network");
-		//		System.out.println(list.get(list.size() - 1).getDate());
-		//		System.out.println(list.get(0).getDate());
-		for (int x = list.size() - 1; x >= 0; x--) {
-			try {
-				ServerDiagnostics s = list.get(x);
-				Minute second = new Minute(s.getDate());
-				cpuSeries.add(second, s.getCpu());
-				cpuDetailSeries.add(second, s.getCpu());
-				memorySeries.add(second, s.getMemory());
-				memoryDetailSeries.add(second, s.getMemory());
-				diskSeries.add(second, s.getDisk());
-				networkSeries.add(second, s.getNetwork());
-			} catch (Exception ex) {
-			}
-		}
-		cpuDataset.removeAllSeries();
-		cpuDataset.addSeries(cpuSeries);
-		cpuDetailDataset.removeAllSeries();
-		cpuDetailDataset.addSeries(cpuDetailSeries);
-		memoryDataset.removeAllSeries();
-		memoryDataset.addSeries(memorySeries);
-		memoryDetailDataset.removeAllSeries();
-		memoryDetailDataset.addSeries(memoryDetailSeries);
-		diskDataset.removeAllSeries();
-		diskDataset.addSeries(diskSeries);
-		networkDataset.removeAllSeries();
-		networkDataset.addSeries(networkSeries);
 		try {
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+			isRunning = true;
+			updateLabel.setIcon(new ImageIcon(ServerInfoPanel.class.getResource("/com/titan/image/ajax-loader.gif")));
+			updateLabel.setText("Updating charts");
+			Command command = new Command();
+			command.command = "getServerDiagnostics";
+			Date fromDate = fromDateChooser.getDate();
+			fromDate.setHours(Integer.parseInt(fromComboBox.getSelectedItem().toString().split(":")[0]));
+			fromDate.setMinutes(Integer.parseInt(fromComboBox.getSelectedItem().toString().split(":")[1]));
+			fromDate.setSeconds(0);
+			Date toDate = toDateChooser.getDate();
+			toDate.setHours(Integer.parseInt(toComboBox.getSelectedItem().toString().split(":")[0]));
+			toDate.setMinutes(Integer.parseInt(toComboBox.getSelectedItem().toString().split(":")[1]));
+			toDate.setSeconds(59);
+			//		System.out.println(fromDate);
+			//		System.out.println(toDate);
+			command.parameters.add(fromDate);
+			command.parameters.add(toDate);
+			command.parameters.add(periodComboBox.getSelectedItem());
+			if (rdbtnAvg.isSelected()) {
+				command.parameters.add("avg");
+			} else if (rdbtnMin.isSelected()) {
+				command.parameters.add("min");
+			} else {
+				command.parameters.add("max");
+			}
+			command.parameters.add(periodComboBox.getSelectedItem());
+			ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+			List<ServerDiagnostics> list = (List<ServerDiagnostics>) r.map.get("result");
+
+			//			int step = (int) Math.pow(10, String.valueOf(list.size()).length() - 2);
+			//			if (step < 1) {
+			//				step = 1;
+			//			}
+			//			step = 1;
+
+			//			cpuSeries.clear();
+			//			memorySeries.clear();
+			//			diskSeries.clear();
+			//			networkSeries.clear();
+			TimeSeries cpuSeries = new TimeSeries("cpu");
+			TimeSeries cpuDetailSeries = new TimeSeries("cpu");
+			TimeSeries memorySeries = new TimeSeries("memory");
+			TimeSeries memoryDetailSeries = new TimeSeries("memory");
+			TimeSeries diskSeries = new TimeSeries("disk");
+			TimeSeries networkSeries = new TimeSeries("network");
+			//		System.out.println(list.get(list.size() - 1).getDate());
+			//		System.out.println(list.get(0).getDate());
+			for (int x = list.size() - 1; x >= 0; x--) {
+				try {
+					ServerDiagnostics s = list.get(x);
+					Minute second = new Minute(s.getDate());
+					cpuSeries.add(second, s.getCpu());
+					cpuDetailSeries.add(second, s.getCpu());
+					memorySeries.add(second, s.getMemory());
+					memoryDetailSeries.add(second, s.getMemory());
+					diskSeries.add(second, s.getDisk());
+					networkSeries.add(second, s.getNetwork());
+				} catch (Exception ex) {
+				}
+			}
+			cpuDataset.removeAllSeries();
+			cpuDataset.addSeries(cpuSeries);
+			cpuDetailDataset.removeAllSeries();
+			cpuDetailDataset.addSeries(cpuDetailSeries);
+			memoryDataset.removeAllSeries();
+			memoryDataset.addSeries(memorySeries);
+			memoryDetailDataset.removeAllSeries();
+			memoryDetailDataset.addSeries(memoryDetailSeries);
+			diskDataset.removeAllSeries();
+			diskDataset.addSeries(diskSeries);
+			networkDataset.removeAllSeries();
+			networkDataset.addSeries(networkSeries);
+			try {
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		} catch (Exception ex) {
+			ex.printStackTrace();
 		}
 		isRunning = false;
 

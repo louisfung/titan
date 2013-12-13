@@ -5,21 +5,18 @@ import java.util.Vector;
 import javax.swing.table.DefaultTableModel;
 
 public class VMDialogTableModel extends DefaultTableModel {
-	String columnNames[] = { "Id", "Name", "Type" };
+	String columnNames[] = { "Id", "Name", "Type", "Status" };
 	public Vector<Data> data = new Vector<Data>();
 
 	public VMDialogTableModel() {
 	}
 
 	public String getColumnName(int column) {
-		if (column == 0) {
-			return "";
-		}
-		return columnNames[column - 1];
+		return columnNames[column];
 	}
 
 	public int getColumnCount() {
-		return 3;
+		return columnNames.length;
 	}
 
 	public int getRowCount() {
@@ -38,8 +35,12 @@ public class VMDialogTableModel extends DefaultTableModel {
 			return data.get(row).instanceId;
 		} else if (column == 1) {
 			return data.get(row).name;
-		} else {
+		} else if (column == 2) {
 			return data.get(row).vmType;
+		} else if (column == 3) {
+			return data.get(row).status;
+		} else {
+			return null;
 		}
 	}
 
@@ -68,5 +69,16 @@ public class VMDialogTableModel extends DefaultTableModel {
 		public String instanceId;
 		public String name;
 		public String vmType;
+		public String status;
+	}
+
+	public void updateStatus(String instanceId, String status) {
+		for (Data d : data) {
+			if (d.instanceId.equals(instanceId)) {
+				d.status = status;
+				fireTableDataChanged();
+				return;
+			}
+		}
 	}
 }

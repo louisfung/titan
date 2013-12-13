@@ -441,6 +441,7 @@ public class VMMainPanel extends JPanel implements Runnable {
 							HashMap<String, String> parameters = new HashMap<String, String>();
 							String instanceId = (String) vmDialog.vmDialogTableModel.getValueAt(x, 0);
 							parameters.put("$InstanceId", instanceId);
+							vmDialog.vmDialogTableModel.updateStatus(instanceId, "running");
 							System.out.println(instanceId);
 							command.parameters.add(parameters);
 							ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
@@ -448,6 +449,8 @@ public class VMMainPanel extends JPanel implements Runnable {
 							//							if (!returnMessage.equals("")) {
 							//								JOptionPane.showMessageDialog(VMMainPanel.this.mainframe, returnMessage);
 							//							}
+
+							vmDialog.vmDialogTableModel.updateStatus(instanceId, "done");
 						}
 						refresh();
 					}

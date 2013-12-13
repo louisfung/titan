@@ -16,6 +16,7 @@ public class PropertyTableCellRenderer extends JPanel implements TableCellRender
 	JLabel jLabel = new JLabel();
 	Icon collapse = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/famfamfam/collapse.png"));
 	Icon expand = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/famfamfam/expand.png"));
+	Color backgrounColor = new Color(253, 253, 253);
 
 	public PropertyTableCellRenderer() {
 		this.setLayout(new BorderLayout());

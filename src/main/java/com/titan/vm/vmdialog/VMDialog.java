@@ -10,6 +10,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.border.EmptyBorder;
 
+import com.peterswing.CommonLib;
 import com.titan.mainframe.MainFrame;
 
 import java.awt.event.ActionListener;
@@ -25,7 +26,7 @@ public class VMDialog extends JDialog {
 
 	public VMDialog(MainFrame mainframe) {
 		super(mainframe, true);
-		setBounds(100, 100, 450, 300);
+		setBounds(100, 100, 700, 400);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -49,7 +50,6 @@ public class VMDialog extends JDialog {
 					public void actionPerformed(ActionEvent e) {
 						thread.start();
 						isCancel = false;
-						setVisible(false);
 					}
 				});
 				okButton.setActionCommand("OK");
@@ -69,5 +69,6 @@ public class VMDialog extends JDialog {
 				buttonPane.add(cancelButton);
 			}
 		}
+		CommonLib.centerDialog(this);
 	}
 }
