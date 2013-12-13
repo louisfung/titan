@@ -220,6 +220,7 @@ public class VMMainPanel extends JPanel implements Runnable {
 		JButton btnDelete = new JButton("Delete");
 		btnDelete.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
+				action("from titan: nova delete");
 			}
 		});
 		btnDelete.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/cross.png")));
@@ -415,47 +416,7 @@ public class VMMainPanel extends JPanel implements Runnable {
 		JButton btnHardReboot = new JButton("Hard reboot");
 		btnHardReboot.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				VMPanel vmPanel = iconPanel;
-				Vector<JSONObject> vms = vmPanel.getSelectedVM();
-
-				if (vms.size() == 0) {
-					JOptionPane.showMessageDialog(VMMainPanel.this.mainframe, "Please select vm first", "Warning", JOptionPane.WARNING_MESSAGE);
-					return;
-				}
-				final VMDialog vmDialog = new VMDialog(mainframe);
-				vmDialog.vmDialogTableModel.data.clear();
-				for (JSONObject json : vms) {
-					String instanceId = TitanCommonLib.getJSONString(json, "id", null);
-					String name = TitanCommonLib.getJSONString(json, "name", null);
-					String vmType = "unknown";
-					vmDialog.vmDialogTableModel.add(instanceId, name, vmType);
-				}
-				vmDialog.thread = new Thread() {
-					public void run() {
-						for (int x = 0; x < vmDialog.vmDialogTableModel.getRowCount(); x++) {
-							if (vmDialog.stopTrigger) {
-								break;
-							}
-							Command command = new Command();
-							command.command = "from titan: nova hard-reboot";
-							HashMap<String, String> parameters = new HashMap<String, String>();
-							String instanceId = (String) vmDialog.vmDialogTableModel.getValueAt(x, 0);
-							parameters.put("$InstanceId", instanceId);
-							vmDialog.vmDialogTableModel.updateStatus(instanceId, "running");
-							System.out.println(instanceId);
-							command.parameters.add(parameters);
-							ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-							String returnMessage = (String) r.map.get("result");
-							//							if (!returnMessage.equals("")) {
-							//								JOptionPane.showMessageDialog(VMMainPanel.this.mainframe, returnMessage);
-							//							}
-
-							vmDialog.vmDialogTableModel.updateStatus(instanceId, "done");
-						}
-						refresh();
-					}
-				};
-				vmDialog.setVisible(true);
+				action("from titan: nova hard-reboot");
 			}
 		});
 		controlPanel.add(btnHardReboot);
@@ -600,6 +561,45 @@ public class VMMainPanel extends JPanel implements Runnable {
 	void refresh() {
 		int maxVMColumnCount = (int) slider.getValue();
 		iconPanel.init(searchTextField.getText(), maxVMColumnCount);
+	}
+
+	void action(final String command) {
+		VMPanel vmPanel = iconPanel;
+		Vector<JSONObject> vms = vmPanel.getSelectedVM();
+
+		if (vms.size() == 0) {
+			JOptionPane.showMessageDialog(VMMainPanel.this.mainframe, "Please select vm first", "Warning", JOptionPane.WARNING_MESSAGE);
+			return;
+		}
+		final VMDialog vmDialog = new VMDialog(mainframe);
+		vmDialog.vmDialogTableModel.data.clear();
+		for (JSONObject json : vms) {
+			String instanceId = TitanCommonLib.getJSONString(json, "id", null);
+			String name = TitanCommonLib.getJSONString(json, "name", null);
+			String vmType = "unknown";
+			vmDialog.vmDialogTableModel.add(instanceId, name, vmType);
+		}
+		vmDialog.thread = new Thread() {
+			public void run() {
+				for (int x = 0; x < vmDialog.vmDialogTableModel.getRowCount(); x++) {
+					if (vmDialog.stopTrigger) {
+						break;
+					}
+					Command cmd = new Command();
+					cmd.command = command;
+					HashMap<String, String> parameters = new HashMap<String, String>();
+					String instanceId = (String) vmDialog.vmDialogTableModel.getValueAt(x, 0);
+					parameters.put("$InstanceId", instanceId);
+					vmDialog.vmDialogTableModel.updateStatus(instanceId, "running");
+					cmd.parameters.add(parameters);
+					ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), cmd);
+					String returnMessage = (String) r.map.get("result");
+					vmDialog.vmDialogTableModel.updateStatus(instanceId, "done");
+				}
+				refresh();
+			}
+		};
+		vmDialog.setVisible(true);
 	}
 
 	@Override
