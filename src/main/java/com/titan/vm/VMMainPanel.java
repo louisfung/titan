@@ -175,43 +175,7 @@ public class VMMainPanel extends JPanel implements Runnable {
 		JButton btnStop = new JButton("Stop");
 		btnStop.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				VMPanel vmPanel = iconPanel;
-				Vector<JSONObject> vms = vmPanel.getSelectedVM();
-
-				if (vms.size() == 0) {
-					JOptionPane.showMessageDialog(VMMainPanel.this.mainframe, "Please select vm first", "Warning", JOptionPane.WARNING_MESSAGE);
-					return;
-				}
-				final VMDialog vmDialog = new VMDialog(mainframe);
-				vmDialog.vmDialogTableModel.data.clear();
-				for (JSONObject json : vms) {
-					String instanceId = TitanCommonLib.getJSONString(json, "id", null);
-					String name = TitanCommonLib.getJSONString(json, "name", null);
-					String vmType = "unknown";
-					vmDialog.vmDialogTableModel.add(instanceId, name, vmType);
-				}
-				vmDialog.thread = new Thread() {
-					public void run() {
-						for (int x = 0; x < vmDialog.vmDialogTableModel.getRowCount(); x++) {
-							if (vmDialog.stopTrigger) {
-								break;
-							}
-							Command command = new Command();
-							command.command = "from titan: nova stop";
-							HashMap<String, String> parameters = new HashMap<String, String>();
-							String instanceId = (String) vmDialog.vmDialogTableModel.getValueAt(x, 0);
-							parameters.put("$InstanceId", instanceId);
-							command.parameters.add(parameters);
-							ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-							String returnMessage = (String) r.map.get("result");
-							//							if (!returnMessage.equals("")) {
-							//								JOptionPane.showMessageDialog(VMMainPanel.this.mainframe, returnMessage);
-							//							}
-						}
-						refresh();
-					}
-				};
-				vmDialog.setVisible(true);
+				action("from titan: nova stop");
 			}
 		});
 		btnStop.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/control_stop_blue.png")));
@@ -241,22 +205,7 @@ public class VMMainPanel extends JPanel implements Runnable {
 		JButton btnPause = new JButton("Pause");
 		btnPause.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String instanceId = TitanCommonLib.getJSONString(selectedVM, "id", null);
-				int x = JOptionPane.showConfirmDialog(mainframe, "Confirm to pause instance : " + instanceId + " ?", "Warning", JOptionPane.YES_NO_OPTION);
-
-				if (x == JOptionPane.YES_OPTION) {
-					Command command = new Command();
-					command.command = "from titan: nova pause";
-					HashMap<String, String> parameters = new HashMap<String, String>();
-					parameters.put("$InstanceId", instanceId);
-					command.parameters.add(parameters);
-					ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-					String returnMessage = (String) r.map.get("result");
-					if (!returnMessage.equals("")) {
-						JOptionPane.showMessageDialog(mainframe, returnMessage);
-					}
-					refresh();
-				}
+				action("from titan: nova pause");
 			}
 		});
 		btnPause.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/control_pause_blue.png")));
@@ -266,22 +215,7 @@ public class VMMainPanel extends JPanel implements Runnable {
 		JButton btnUnpause = new JButton("Unpause");
 		btnUnpause.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String instanceId = TitanCommonLib.getJSONString(selectedVM, "id", null);
-				int x = JOptionPane.showConfirmDialog(mainframe, "Confirm to unpause instance : " + instanceId + " ?", "Warning", JOptionPane.YES_NO_OPTION);
-
-				if (x == JOptionPane.YES_OPTION) {
-					Command command = new Command();
-					command.command = "from titan: nova unpause";
-					HashMap<String, String> parameters = new HashMap<String, String>();
-					parameters.put("$InstanceId", instanceId);
-					command.parameters.add(parameters);
-					ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-					String returnMessage = (String) r.map.get("result");
-					if (!returnMessage.equals("")) {
-						JOptionPane.showMessageDialog(mainframe, returnMessage);
-					}
-					refresh();
-				}
+				action("from titan: nova unpause");
 			}
 		});
 		btnUnpause.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/control_play_blue.png")));
@@ -291,22 +225,7 @@ public class VMMainPanel extends JPanel implements Runnable {
 		JButton btnSuspend = new JButton("Suspend");
 		btnSuspend.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String instanceId = TitanCommonLib.getJSONString(selectedVM, "id", null);
-				int x = JOptionPane.showConfirmDialog(mainframe, "Confirm to suspend instance : " + instanceId + " ?", "Warning", JOptionPane.YES_NO_OPTION);
-
-				if (x == JOptionPane.YES_OPTION) {
-					Command command = new Command();
-					command.command = "from titan: nova suspend";
-					HashMap<String, String> parameters = new HashMap<String, String>();
-					parameters.put("$InstanceId", instanceId);
-					command.parameters.add(parameters);
-					ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-					String returnMessage = (String) r.map.get("result");
-					if (!returnMessage.equals("")) {
-						JOptionPane.showMessageDialog(mainframe, returnMessage);
-					}
-					refresh();
-				}
+				action("from titan: nova suspend");
 			}
 		});
 		btnSuspend.setToolTipText("Suspend VM to disk");
@@ -316,22 +235,7 @@ public class VMMainPanel extends JPanel implements Runnable {
 		JButton btnResume = new JButton("Resume");
 		btnResume.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String instanceId = TitanCommonLib.getJSONString(selectedVM, "id", null);
-				int x = JOptionPane.showConfirmDialog(mainframe, "Confirm to resume instance : " + instanceId + " ?", "Warning", JOptionPane.YES_NO_OPTION);
-
-				if (x == JOptionPane.YES_OPTION) {
-					Command command = new Command();
-					command.command = "from titan: nova resume";
-					HashMap<String, String> parameters = new HashMap<String, String>();
-					parameters.put("$InstanceId", instanceId);
-					command.parameters.add(parameters);
-					ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-					String returnMessage = (String) r.map.get("result");
-					if (!returnMessage.equals("")) {
-						JOptionPane.showMessageDialog(mainframe, returnMessage);
-					}
-					refresh();
-				}
+				action("from titan: nova resume");
 			}
 		});
 		btnResume.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/disk.png")));
@@ -359,56 +263,7 @@ public class VMMainPanel extends JPanel implements Runnable {
 		JButton btnSoftReboot = new JButton("Soft reboot");
 		btnSoftReboot.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				//				String instanceId = TitanCommonLib.getJSONString(selectedVM, "id", null);
-				//				int x = JOptionPane.showConfirmDialog(mainFrame, "Confirm to soft reboot instance : " + instanceId + " ?", "Warning", JOptionPane.YES_NO_OPTION);
-				//
-				//				if (x == JOptionPane.YES_OPTION) {
-				//					Command command = new Command();
-				//					HashMap<String, String> parameters = new HashMap<String, String>();
-				//					parameters.put("$InstanceId", instanceId);
-				//					command.parameters.add(parameters);
-				//					command.command = "from titan: nova soft-reboot";
-				//					ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-				//				}
-
-				VMPanel vmPanel = iconPanel;
-				Vector<JSONObject> vms = vmPanel.getSelectedVM();
-
-				if (vms.size() == 0) {
-					JOptionPane.showMessageDialog(VMMainPanel.this.mainframe, "Please select vm first", "Warning", JOptionPane.WARNING_MESSAGE);
-					return;
-				}
-				final VMDialog vmDialog = new VMDialog(mainframe);
-				vmDialog.vmDialogTableModel.data.clear();
-				for (JSONObject json : vms) {
-					String instanceId = TitanCommonLib.getJSONString(json, "id", null);
-					String name = TitanCommonLib.getJSONString(json, "name", null);
-					String vmType = "unknown";
-					vmDialog.vmDialogTableModel.add(instanceId, name, vmType);
-				}
-				vmDialog.thread = new Thread() {
-					public void run() {
-						for (int x = 0; x < vmDialog.vmDialogTableModel.getRowCount(); x++) {
-							if (vmDialog.stopTrigger) {
-								break;
-							}
-							Command command = new Command();
-							command.command = "from titan: nova soft-reboot";
-							HashMap<String, String> parameters = new HashMap<String, String>();
-							String instanceId = (String) vmDialog.vmDialogTableModel.getValueAt(x, 0);
-							parameters.put("$InstanceId", instanceId);
-							System.out.println(instanceId);
-							command.parameters.add(parameters);
-							ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-							String returnMessage = (String) r.map.get("result");
-							//							if (!returnMessage.equals("")) {
-							//								JOptionPane.showMessageDialog(VMMainPanel.this.mainframe, returnMessage);
-							//							}
-						}
-						refresh();
-					}
-				};
-				vmDialog.setVisible(true);
+				action("from titan: nova soft-reboot");
 			}
 		});
 		controlPanel.add(btnSoftReboot);
