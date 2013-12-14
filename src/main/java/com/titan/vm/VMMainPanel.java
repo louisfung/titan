@@ -114,6 +114,12 @@ public class VMMainPanel extends JPanel implements Runnable {
 		group1.add(deltailViewButton);
 
 		JButton btnRefresh = new JButton("Refresh");
+		btnRefresh.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				int maxVMColumnCount = (int) slider.getValue();
+				iconPanel.init(searchTextField.getText(), maxVMColumnCount);
+			}
+		});
 		btnRefresh.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/arrow_rotate_clockwise.png")));
 		toolBar.add(btnRefresh);
 
@@ -194,7 +200,6 @@ public class VMMainPanel extends JPanel implements Runnable {
 		btnRemote.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				String instanceName = TitanCommonLib.getJSONString(selectedVM, "OS-EXT-SRV-ATTR:instance_name", null);
-				System.out.println(selectedVM);
 				MonitorDialog monitorDialog = new MonitorDialog(instanceName);
 				monitorDialog.setVisible(true);
 			}

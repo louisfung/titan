@@ -28,6 +28,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 
 import com.peter.tightvncpanel.TightVNC;
+import com.peterswing.CommonLib;
 import com.titan.TitanCommonLib;
 import com.titan.communication.CommunicateLib;
 import com.titan.communication.ProxySocketServer;
@@ -53,7 +54,7 @@ public class MonitorDialog extends JFrame implements WindowListener, Runnable {
 
 	public MonitorDialog(String instanceName) {
 		setTitle(instanceName);
-		setBounds(100, 100, 732, 542);
+		setBounds(100, 100, 800, 542);
 		getContentPane().setLayout(new BorderLayout());
 		contentPanel.setBorder(new EmptyBorder(5, 5, 5, 5));
 		getContentPane().add(contentPanel, BorderLayout.CENTER);
@@ -180,7 +181,7 @@ public class MonitorDialog extends JFrame implements WindowListener, Runnable {
 		} else {
 			System.err.println("Can add video component");
 		}
-
+		CommonLib.centerDialog(this);
 		new Thread(this).start();
 	}
 
