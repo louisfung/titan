@@ -39,6 +39,7 @@ import com.titan.SimpleTableDialog;
 import com.titan.TitanCommonLib;
 import com.titan.communication.CommunicateLib;
 import com.titanserver.Command;
+import com.titanserver.HttpResult;
 import com.titanserver.ReturnCommand;
 
 public class InstancePanel extends JPanel implements Runnable, MainPanel {
@@ -125,7 +126,8 @@ public class InstancePanel extends JPanel implements Runnable, MainPanel {
 						parameters.put("$InstanceId", instanceId);
 						command.parameters.add(parameters);
 						ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-						String returnMessage = (String) r.map.get("result");
+						HttpResult httpResult = (HttpResult) r.map.get("result");
+						String returnMessage = httpResult.content;
 						if (!returnMessage.equals("")) {
 							JOptionPane.showMessageDialog(InstancePanel.this.frame, returnMessage);
 						}
@@ -164,7 +166,8 @@ public class InstancePanel extends JPanel implements Runnable, MainPanel {
 						parameters.put("$InstanceId", instanceId);
 						command.parameters.add(parameters);
 						ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-						String returnMessage = (String) r.map.get("result");
+						HttpResult httpResult = (HttpResult) r.map.get("result");
+						String returnMessage = httpResult.content;
 						if (returnMessage != null) {
 							JOptionPane.showMessageDialog(InstancePanel.this.frame, returnMessage);
 						} else {
@@ -182,7 +185,8 @@ public class InstancePanel extends JPanel implements Runnable, MainPanel {
 										Command command = new Command();
 										command.command = "from titan: nova list";
 										ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-										JSONArray servers = JSONObject.fromObject(r.map.get("result")).getJSONArray("servers");
+										HttpResult httpResult = (HttpResult) r.map.get("result");
+										JSONArray servers = JSONObject.fromObject(httpResult.content).getJSONArray("servers");
 
 										newRowCount = servers.size();
 										try {
@@ -220,7 +224,8 @@ public class InstancePanel extends JPanel implements Runnable, MainPanel {
 						parameters.put("$InstanceId", instanceId);
 						command.parameters.add(parameters);
 						ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-						String returnMessage = (String) r.map.get("result");
+						HttpResult httpResult = (HttpResult) r.map.get("result");
+						String returnMessage = httpResult.content;
 						if (!returnMessage.equals("")) {
 							JOptionPane.showMessageDialog(InstancePanel.this.frame, returnMessage);
 						}
@@ -245,7 +250,8 @@ public class InstancePanel extends JPanel implements Runnable, MainPanel {
 						parameters.put("$InstanceId", instanceId);
 						command.parameters.add(parameters);
 						ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-						String returnMessage = (String) r.map.get("result");
+						HttpResult httpResult = (HttpResult) r.map.get("result");
+						String returnMessage = httpResult.content;
 						if (!returnMessage.equals("")) {
 							JOptionPane.showMessageDialog(InstancePanel.this.frame, returnMessage);
 						}
@@ -272,7 +278,8 @@ public class InstancePanel extends JPanel implements Runnable, MainPanel {
 						parameters.put("$InstanceId", instanceId);
 						command.parameters.add(parameters);
 						ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-						String returnMessage = (String) r.map.get("result");
+						HttpResult httpResult = (HttpResult) r.map.get("result");
+						String returnMessage = httpResult.content;
 						if (!returnMessage.equals("")) {
 							JOptionPane.showMessageDialog(InstancePanel.this.frame, returnMessage);
 						}
@@ -299,7 +306,8 @@ public class InstancePanel extends JPanel implements Runnable, MainPanel {
 						parameters.put("$InstanceId", instanceId);
 						command.parameters.add(parameters);
 						ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-						String returnMessage = (String) r.map.get("result");
+						HttpResult httpResult = (HttpResult) r.map.get("result");
+						String returnMessage = httpResult.content;
 						if (!returnMessage.equals("")) {
 							JOptionPane.showMessageDialog(InstancePanel.this.frame, returnMessage);
 						}
@@ -445,7 +453,8 @@ public class InstancePanel extends JPanel implements Runnable, MainPanel {
 		Command command = new Command();
 		command.command = "from titan: nova list";
 		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-		JSONArray servers = JSONObject.fromObject(r.map.get("result")).getJSONArray("servers");
+		HttpResult httpResult = (HttpResult) r.map.get("result");
+		JSONArray servers = JSONObject.fromObject(httpResult.content).getJSONArray("servers");
 		instanceTableModel.columnNames.clear();
 		instanceTableModel.columnNames.add("Name");
 		instanceTableModel.columnNames.add("status");

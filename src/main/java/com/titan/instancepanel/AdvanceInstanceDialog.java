@@ -19,6 +19,7 @@ import com.peterswing.advancedswing.enhancedtextarea.EnhancedTextArea;
 import com.titan.TitanCommonLib;
 import com.titan.communication.CommunicateLib;
 import com.titanserver.Command;
+import com.titanserver.HttpResult;
 import com.titanserver.ReturnCommand;
 
 public class AdvanceInstanceDialog extends JDialog {
@@ -53,7 +54,8 @@ public class AdvanceInstanceDialog extends JDialog {
 					parameters.put("commandStr", textField.getText());
 					command.parameters.add(parameters);
 					ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-					enhancedTextArea.setText(enhancedTextArea.getText() + "\n" + r.map.get("result"));
+					HttpResult httpResult = (HttpResult) r.map.get("result");
+					enhancedTextArea.setText(enhancedTextArea.getText() + "\n" + httpResult.content);
 				}
 			});
 			contentPanel.add(btnRun, "cell 1 0");

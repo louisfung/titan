@@ -17,6 +17,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JComboBox;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -27,6 +28,7 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.RowSorter;
 import javax.swing.SortOrder;
+import javax.swing.SwingConstants;
 import javax.swing.border.EmptyBorder;
 import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableModel;
@@ -44,14 +46,13 @@ import com.titan.TitanCommonLib;
 import com.titan.communication.CommunicateLib;
 import com.titan.settingpanel.screenpermission.AddScreenPermissionGroupDialog;
 import com.titanserver.Command;
+import com.titanserver.HttpResult;
 import com.titanserver.ReturnCommand;
 import com.titanserver.table.InstancePermission;
 import com.titanserver.table.InstancePermissionGroup;
 import com.titanserver.table.ScreenPermission;
 import com.titanserver.table.ScreenPermissionGroup;
 import com.titanserver.table.User;
-import javax.swing.JLabel;
-import javax.swing.SwingConstants;
 
 public class SettingPanel extends JPanel implements MainPanel, Runnable {
 	JFrame frame;
@@ -238,7 +239,8 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 					parameters.put("$Tenant_name", (String) tenantComboBox.getSelectedItem());
 					command.parameters.add(parameters);
 					ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-					JSONObject access = JSONObject.fromObject(r.map.get("result")).getJSONObject("access");
+					HttpResult httpResult = (HttpResult) r.map.get("result");
+					JSONObject access = JSONObject.fromObject(httpResult.content).getJSONObject("access");
 					JSONObject token = access.getJSONObject("token");
 					JSONObject tenant = token.getJSONObject("tenant");
 					String tenantId = tenant.getString("id");
@@ -312,7 +314,8 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 		Command command = new Command();
 		command.command = "from titan: keystone tenant-list";
 		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-		String msg = (String) r.map.get("result");
+		HttpResult httpResult = (HttpResult) r.map.get("result");
+		String msg = (String) httpResult.content;
 		JSONArray tenants = JSONObject.fromObject(msg).getJSONArray("tenants");
 		ArrayList<String> list = new ArrayList<String>();
 		for (int x = 0; x < tenants.size(); x++) {
@@ -612,7 +615,8 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 			parameters.put("$Tenant_name", (String) tenantComboBox.getSelectedItem());
 			command.parameters.add(parameters);
 			ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-			JSONObject access = JSONObject.fromObject(r.map.get("result")).getJSONObject("access");
+			HttpResult httpResult = (HttpResult) r.map.get("result");
+			JSONObject access = JSONObject.fromObject(httpResult.content).getJSONObject("access");
 			JSONObject token = access.getJSONObject("token");
 			JSONObject tenant = token.getJSONObject("tenant");
 			String tenantId = tenant.getString("id");
@@ -624,7 +628,8 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 			parameters.put("$Tenant_Id", tenantId);
 			parameters.put("$Token", tokenStr);
 			r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-			JSONObject quotas = ((JSONObject) JSONObject.fromObject(r.map.get("result")).get("quota_set"));
+			httpResult = (HttpResult) r.map.get("result");
+			JSONObject quotas = ((JSONObject) JSONObject.fromObject(httpResult.content).get("quota_set"));
 
 			quotaDefaultsTableModel.columnNames.clear();
 			quotaDefaultsTableModel.columnNames.add("Name");
@@ -658,7 +663,9 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 			sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
 			quotaDefaultsTable.getRowSorter().setSortKeys(sortKeys);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			quotaDefaultsTableModel.columnNames.clear();
+			quotaDefaultsTableModel.values.clear();
+			quotaDefaultsTableModel.fireTableStructureChanged();
 		}
 	}
 
@@ -670,7 +677,8 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 			parameters.put("$Tenant_name", (String) tenantComboBox.getSelectedItem());
 			command.parameters.add(parameters);
 			ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-			JSONObject access = JSONObject.fromObject(r.map.get("result")).getJSONObject("access");
+			HttpResult httpResult = (HttpResult) r.map.get("result");
+			JSONObject access = JSONObject.fromObject(httpResult.content).getJSONObject("access");
 			JSONObject token = access.getJSONObject("token");
 			JSONObject tenant = token.getJSONObject("tenant");
 			String tenantId = tenant.getString("id");
@@ -684,7 +692,8 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 			parameters.put("$Token", tokenStr);
 			command.parameters.add(parameters);
 			r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-			JSONObject quotas = ((JSONObject) JSONObject.fromObject(r.map.get("result")).get("quota_set"));
+			httpResult = (HttpResult) r.map.get("result");
+			JSONObject quotas = ((JSONObject) JSONObject.fromObject(httpResult.content).get("quota_set"));
 
 			quotaTableModel.columnNames.clear();
 			quotaTableModel.columnNames.add("Name");
@@ -718,7 +727,9 @@ public class SettingPanel extends JPanel implements MainPanel, Runnable {
 			sortKeys.add(new RowSorter.SortKey(0, SortOrder.ASCENDING));
 			quotaTable.getRowSorter().setSortKeys(sortKeys);
 		} catch (Exception ex) {
-			ex.printStackTrace();
+			quotaTableModel.columnNames.clear();
+			quotaTableModel.values.clear();
+			quotaTableModel.fireTableStructureChanged();
 		}
 	}
 }

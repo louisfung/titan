@@ -35,6 +35,7 @@ import com.peterswing.CommonLib;
 import com.titan.TitanCommonLib;
 import com.titan.communication.CommunicateLib;
 import com.titanserver.Command;
+import com.titanserver.HttpResult;
 import com.titanserver.ReturnCommand;
 
 public class CreateVolumeDialog extends JDialog {
@@ -142,9 +143,9 @@ public class CreateVolumeDialog extends JDialog {
 						parameters.put("$volumeType", (String) volumeTypeComboBox.getSelectedItem());
 						command.parameters.add(parameters);
 						ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-						System.out.println(r.map.get("result"));
+						HttpResult httpResult = (HttpResult) r.map.get("result");
 						try {
-							JSONObject j = JSONObject.fromObject(r.map.get("result")).getJSONObject("volume");
+							JSONObject j = JSONObject.fromObject(httpResult.content).getJSONObject("volume");
 							if (j.isNullObject()) {
 								throw new Exception();
 							}

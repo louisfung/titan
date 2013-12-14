@@ -39,6 +39,7 @@ import com.titan.TitanCommonLib;
 import com.titan.communication.CommunicateLib;
 import com.titan.storagepanel.DownloadImageDialog;
 import com.titanserver.Command;
+import com.titanserver.HttpResult;
 import com.titanserver.ReturnCommand;
 
 public class LaunchInstanceDialog extends JDialog {
@@ -176,9 +177,9 @@ public class LaunchInstanceDialog extends JDialog {
 							parameters.put("$imageRef", (String) imageTable.getValueAt(imageTable.getSelectedRow(), 0));
 							command.parameters.add(parameters);
 							ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-							System.out.println(r.map.get("result"));
-							if (r.map.get("result").toString().contains("overLimit")) {
-								JSONObject result = JSONObject.fromObject(r.map.get("result")).getJSONObject("overLimit");
+							HttpResult httpResult = (HttpResult) r.map.get("result");
+							if (httpResult.content.contains("overLimit")) {
+								JSONObject result = JSONObject.fromObject(httpResult.content).getJSONObject("overLimit");
 								JOptionPane.showMessageDialog(frame, result.getString("message"), "Error", JOptionPane.ERROR_MESSAGE);
 								return;
 							}
@@ -212,7 +213,8 @@ public class LaunchInstanceDialog extends JDialog {
 		Command command = new Command();
 		command.command = "from titan: nova flavor-list";
 		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-		JSONArray flavors = JSONObject.fromObject(r.map.get("result")).getJSONArray("flavors");
+		HttpResult httpResult = (HttpResult) r.map.get("result");
+		JSONArray flavors = JSONObject.fromObject(httpResult.content).getJSONArray("flavors");
 		flavorTableModel.columnNames.clear();
 		flavorTableModel.columnNames.add("Id");
 		flavorTableModel.columnNames.add("Name");
@@ -267,7 +269,8 @@ public class LaunchInstanceDialog extends JDialog {
 		Command command = new Command();
 		command.command = "from titan: glance image-list";
 		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-		JSONArray images = JSONObject.fromObject(r.map.get("result")).getJSONArray("images");
+		HttpResult httpResult = (HttpResult) r.map.get("result");
+		JSONArray images = JSONObject.fromObject(httpResult.content).getJSONArray("images");
 		imageTableModel.columnNames.clear();
 		imageTableModel.columnNames.add("Id");
 		imageTableModel.columnNames.add("Name");

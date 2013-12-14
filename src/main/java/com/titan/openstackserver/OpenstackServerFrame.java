@@ -18,6 +18,7 @@ import com.peterswing.GenericTableModel;
 import com.peterswing.advancedswing.jprogressbardialog.JProgressBarDialog;
 import com.titan.communication.CommunicateLib;
 import com.titanserver.Command;
+import com.titanserver.HttpResult;
 import com.titanserver.ReturnCommand;
 
 public class OpenstackServerFrame extends JDialog implements Runnable {
@@ -191,7 +192,8 @@ public class OpenstackServerFrame extends JDialog implements Runnable {
 		command.command = "from titan: nova endpoints";
 		ReturnCommand r = CommunicateLib.send(command);
 		System.out.println("-------------------------------------------------------------");
-		JSONObject endpoints = JSONObject.fromObject(r.map.get("result"));
+		HttpResult httpResult = (HttpResult) r.map.get("result");
+		JSONObject endpoints = JSONObject.fromObject(httpResult.content);
 		Vector<Object> col1 = new Vector<Object>();
 		Vector<Object> col2 = new Vector<Object>();
 		Vector<Object> col3 = new Vector<Object>();
@@ -270,7 +272,7 @@ public class OpenstackServerFrame extends JDialog implements Runnable {
 		command.command = "from titan: nova flavor-list";
 		r = CommunicateLib.send(command);
 		System.out.println("-------------------------------------------------------------");
-		JSONObject flavorList = JSONObject.fromObject(r.map.get("result"));
+		JSONObject flavorList = JSONObject.fromObject(httpResult.content);
 		JSONArray arr = flavorList.getJSONArray("flavors");
 		Vector<Object> id = new Vector<Object>();
 		Vector<Object> names = new Vector<Object>();
@@ -317,7 +319,7 @@ public class OpenstackServerFrame extends JDialog implements Runnable {
 		r = CommunicateLib.send(command);
 		System.out.println(r.map.get("result"));
 		System.out.println("-------------------------------------------------------------");
-		JSONObject agentList = JSONObject.fromObject(r.map.get("result"));
+		JSONObject agentList = JSONObject.fromObject(httpResult.content);
 
 		d.jProgressBar.setString("nova aggregate-list");
 		command = new Command();
@@ -325,7 +327,7 @@ public class OpenstackServerFrame extends JDialog implements Runnable {
 		r = CommunicateLib.send(command);
 		System.out.println(r.map.get("result"));
 		System.out.println("-------------------------------------------------------------");
-		JSONObject aggregateList = JSONObject.fromObject(r.map.get("result"));
+		JSONObject aggregateList = JSONObject.fromObject(httpResult.content);
 
 		d.jProgressBar.setString("nova cloudpipe-list");
 		command = new Command();
@@ -333,7 +335,7 @@ public class OpenstackServerFrame extends JDialog implements Runnable {
 		r = CommunicateLib.send(command);
 		System.out.println(r.map.get("result"));
 		System.out.println("-------------------------------------------------------------");
-		JSONObject cloudpipeList = JSONObject.fromObject(r.map.get("result"));
+		JSONObject cloudpipeList = JSONObject.fromObject(httpResult.content);
 
 		d.jProgressBar.setString("nova host-list");
 		command = new Command();
@@ -341,7 +343,7 @@ public class OpenstackServerFrame extends JDialog implements Runnable {
 		r = CommunicateLib.send(command);
 		System.out.println(r.map.get("result"));
 		System.out.println("-------------------------------------------------------------");
-		JSONObject hostList = JSONObject.fromObject(r.map.get("result"));
+		JSONObject hostList = JSONObject.fromObject(httpResult.content);
 
 		d.jProgressBar.setString("nova hypervisor-list");
 		command = new Command();
@@ -349,7 +351,7 @@ public class OpenstackServerFrame extends JDialog implements Runnable {
 		r = CommunicateLib.send(command);
 		System.out.println(r.map.get("result"));
 		System.out.println("-------------------------------------------------------------");
-		JSONObject hypervisorList = JSONObject.fromObject(r.map.get("result"));
+		JSONObject hypervisorList = JSONObject.fromObject(httpResult.content);
 		arr = hypervisorList.getJSONArray("hypervisors");
 		Vector<Object> hypervisorId = new Vector<Object>();
 		Vector<Object> hypervisorHost = new Vector<Object>();
@@ -369,7 +371,7 @@ public class OpenstackServerFrame extends JDialog implements Runnable {
 		r = CommunicateLib.send(command);
 		System.out.println(r.map.get("result"));
 		System.out.println("-------------------------------------------------------------");
-		JSONObject imageList = JSONObject.fromObject(r.map.get("result"));
+		JSONObject imageList = JSONObject.fromObject(httpResult.content);
 		arr = imageList.getJSONArray("images");
 		col1 = new Vector<Object>();
 		col2 = new Vector<Object>();

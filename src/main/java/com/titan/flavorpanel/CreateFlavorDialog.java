@@ -23,6 +23,7 @@ import net.sf.json.JSONObject;
 import com.titan.TitanCommonLib;
 import com.titan.communication.CommunicateLib;
 import com.titanserver.Command;
+import com.titanserver.HttpResult;
 import com.titanserver.ReturnCommand;
 
 public class CreateFlavorDialog extends JDialog {
@@ -130,14 +131,15 @@ public class CreateFlavorDialog extends JDialog {
 						parameters.put("$swap", swapTextField.getText());
 						command.parameters.add(parameters);
 						ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+						HttpResult httpResult = (HttpResult) r.map.get("result");
 						try {
-							JSONObject j = JSONObject.fromObject(r.map.get("result")).getJSONObject("flavor");
+							JSONObject j = JSONObject.fromObject(httpResult.content).getJSONObject("flavor");
 							if (j.isNullObject()) {
 								throw new Exception();
 							}
 							setVisible(false);
 						} catch (Exception ex) {
-							JOptionPane.showMessageDialog(frame, r.map.get("result"), "Error", JOptionPane.ERROR_MESSAGE);
+							JOptionPane.showMessageDialog(frame, httpResult.content, "Error", JOptionPane.ERROR_MESSAGE);
 						}
 					}
 				});

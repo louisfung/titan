@@ -34,6 +34,7 @@ import com.titan.SimpleTableDialog;
 import com.titan.TitanCommonLib;
 import com.titan.communication.CommunicateLib;
 import com.titanserver.Command;
+import com.titanserver.HttpResult;
 import com.titanserver.ReturnCommand;
 
 public class FlavorPanel extends JPanel implements Runnable, MainPanel {
@@ -149,7 +150,8 @@ public class FlavorPanel extends JPanel implements Runnable, MainPanel {
 		Command command = new Command();
 		command.command = "from titan: nova flavor-list";
 		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-		JSONArray flavors = JSONObject.fromObject(r.map.get("result")).getJSONArray("flavors");
+		HttpResult httpResult = (HttpResult) r.map.get("result");
+		JSONArray flavors = JSONObject.fromObject(httpResult.content).getJSONArray("flavors");
 		flavorTableModel.columnNames.clear();
 		flavorTableModel.columnNames.add("Id");
 		flavorTableModel.columnNames.add("Name");

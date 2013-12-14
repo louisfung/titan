@@ -33,6 +33,7 @@ import com.titan.TitanCommonLib;
 import com.titan.communication.CommunicateLib;
 import com.titan.keystonepanel.KeystonePanel;
 import com.titanserver.Command;
+import com.titanserver.HttpResult;
 import com.titanserver.ReturnCommand;
 
 public class StoragePanel extends JPanel implements Runnable, MainPanel {
@@ -67,6 +68,10 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 
 		JTabbedPane tabbedPane = new JTabbedPane(JTabbedPane.TOP);
 		panel_1.add(tabbedPane, BorderLayout.CENTER);
+
+		JPanel imagePanel = new JPanel();
+		tabbedPane.addTab("Image", null, imagePanel, null);
+		imagePanel.setLayout(new BorderLayout(0, 0));
 
 		JPanel volumePanel = new JPanel();
 		tabbedPane.addTab("Volume", null, volumePanel, null);
@@ -191,12 +196,8 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 		volumeTypeTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane_3.setViewportView(volumeTypeTable);
 
-		JPanel panel_3 = new JPanel();
-		tabbedPane.addTab("Image", null, panel_3, null);
-		panel_3.setLayout(new BorderLayout(0, 0));
-
 		JPanel panel_2 = new JPanel();
-		panel_3.add(panel_2, BorderLayout.SOUTH);
+		imagePanel.add(panel_2, BorderLayout.SOUTH);
 		FlowLayout flowLayout_1 = (FlowLayout) panel_2.getLayout();
 		flowLayout_1.setAlignment(FlowLayout.LEFT);
 
@@ -239,7 +240,7 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 				if (imageTable.getSelectedRow() == 1) {
 					String imageId = (String) sortableTableModel.getValueAt(imageTable.getSelectedRow(), sortableTableModel.getColumnIndex("Id"));
 					Command command = new Command();
-					command.command = "from titan: nova delete-image";
+					command.command = "from titan: glance image-show";
 					HashMap<String, String> parameters = new HashMap<String, String>();
 					parameters.put("$imageId", imageId);
 					command.parameters.add(parameters);
@@ -250,7 +251,7 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 		panel_2.add(btnViewMeta);
 
 		JScrollPane scrollPane = new JScrollPane();
-		panel_3.add(scrollPane, BorderLayout.CENTER);
+		imagePanel.add(scrollPane, BorderLayout.CENTER);
 
 		imageTable = new JTable();
 		tableSorterColumnListener = new TableSorterColumnListener(imageTable, sortableTableModel);
@@ -261,12 +262,12 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 		imageTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		scrollPane.setViewportView(imageTable);
 
-		JPanel panel_4 = new JPanel();
-		tabbedPane.addTab("Progress", null, panel_4, null);
-		panel_4.setLayout(new BorderLayout(0, 0));
+		JPanel progressPanel = new JPanel();
+		tabbedPane.addTab("Progress", null, progressPanel, null);
+		progressPanel.setLayout(new BorderLayout(0, 0));
 
 		JScrollPane scrollPane_1 = new JScrollPane();
-		panel_4.add(scrollPane_1);
+		progressPanel.add(scrollPane_1);
 
 		uploadTableModel.columnNames.clear();
 		uploadTableModel.columnNames.add("File");
@@ -301,7 +302,8 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 		Command command = new Command();
 		command.command = "from titan: cinder type-list";
 		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-		JSONArray images = JSONObject.fromObject(r.map.get("result")).getJSONArray("volume_types");
+		HttpResult httpResult = (HttpResult) r.map.get("result");
+		JSONArray images = JSONObject.fromObject(httpResult.content).getJSONArray("volume_types");
 		volumeTypeTableModel.columnNames.clear();
 		volumeTypeTableModel.columnNames.add("Id");
 		volumeTypeTableModel.columnNames.add("Name");
@@ -365,7 +367,8 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 		Command command = new Command();
 		command.command = "from titan: cinder list";
 		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-		JSONArray images = JSONObject.fromObject(r.map.get("result")).getJSONArray("volumes");
+		HttpResult httpResult = (HttpResult) r.map.get("result");
+		JSONArray images = JSONObject.fromObject(httpResult.content).getJSONArray("volumes");
 		volumeTableModel.columnNames.clear();
 		volumeTableModel.columnNames.add("Id");
 		volumeTableModel.columnNames.add("Name");
@@ -478,7 +481,8 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 		Command command = new Command();
 		command.command = "from titan: glance image-list";
 		ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-		JSONArray images = JSONObject.fromObject(r.map.get("result")).getJSONArray("images");
+		HttpResult httpResult = (HttpResult) r.map.get("result");
+		JSONArray images = JSONObject.fromObject(httpResult.content).getJSONArray("images");
 		imageTableModel.columnNames.clear();
 		imageTableModel.columnNames.add("Id");
 		imageTableModel.columnNames.add("Name");

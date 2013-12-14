@@ -3,8 +3,6 @@ package com.titan.vm;
 import java.awt.Component;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
-import java.util.Arrays;
-import java.util.Collection;
 import java.util.Vector;
 
 import javax.swing.JPanel;
@@ -19,6 +17,7 @@ import com.titan.TitanCommonLib;
 import com.titan.TitanSetting;
 import com.titan.communication.CommunicateLib;
 import com.titanserver.Command;
+import com.titanserver.HttpResult;
 import com.titanserver.ReturnCommand;
 
 public class VMIconPanel extends JPanel implements Runnable, VMPanel {
@@ -43,7 +42,8 @@ public class VMIconPanel extends JPanel implements Runnable, VMPanel {
 		command.command = "from titan: nova list";
 		if (servers == null) {
 			ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-			servers = JSONObject.fromObject(r.map.get("result")).getJSONArray("servers");
+			HttpResult httpResult = (HttpResult) r.map.get("result");
+			servers = JSONObject.fromObject(httpResult.content).getJSONArray("servers");
 		}
 		vmMainPanel.colLabel.setText(TitanSetting.getInstance().maxVMColumnCount + " columns");
 		int noOfVM = servers.size();
@@ -126,7 +126,8 @@ public class VMIconPanel extends JPanel implements Runnable, VMPanel {
 			Command command = new Command();
 			command.command = "from titan: nova list";
 			ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-			servers = JSONObject.fromObject(r.map.get("result")).getJSONArray("servers");
+			HttpResult httpResult = (HttpResult) r.map.get("result");
+			servers = JSONObject.fromObject(httpResult.content).getJSONArray("servers");
 			for (int x = 0; x < servers.size(); x++) {
 				JSONObject obj = servers.getJSONObject(x);
 				String instanceId = TitanCommonLib.getJSONString(obj, "id", null);
