@@ -22,6 +22,8 @@ import javax.swing.table.DefaultTableCellRenderer;
 import net.sf.json.JSONArray;
 import net.sf.json.JSONObject;
 
+import org.apache.http.Header;
+
 import com.peterswing.CommonLib;
 import com.peterswing.GenericTableModel;
 import com.peterswing.advancedswing.jprogressbardialog.JProgressBarDialog;
@@ -245,6 +247,11 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 					parameters.put("$imageId", imageId);
 					command.parameters.add(parameters);
 					ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+					HttpResult httpResult = (HttpResult) r.map.get("result");
+					Header headers[] = httpResult.headers;
+					for (Header header : headers) {
+						System.out.println(header.getName() + "==" + header.getValue());
+					}
 				}
 			}
 		});
