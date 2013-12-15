@@ -27,6 +27,7 @@ public class VMIcon extends JPanel {
 	EmptyBorder emptyBorder = new EmptyBorder(1, 1, 1, 1);
 	JSONObject json;
 	Image selectedImage = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/selected.png")).getImage();
+	public String vmName;
 
 	public VMIcon(JSONObject json) {
 		this.json = json;
@@ -35,7 +36,7 @@ public class VMIcon extends JPanel {
 		setLayout(new BorderLayout(0, 0));
 
 		add(iconLabel, BorderLayout.CENTER);
-		String vmName = TitanCommonLib.getJSONString(json, "name", "No name");
+		vmName = TitanCommonLib.getJSONString(json, "name", "No name");
 		if (vmName.length() > 15) {
 			vmName = vmName.substring(0, 15);
 		}

@@ -24,6 +24,8 @@ public class VMIconPanel extends JPanel implements Runnable, VMPanel {
 	JSONArray servers;
 	VMMainPanel vmMainPanel;
 	Vector<VMIcon> vmIcons = new Vector<VMIcon>();
+	String searchPattern;
+	int maxVMColumnCount;
 
 	public VMIconPanel(VMMainPanel vmMainPanel) {
 		this.vmMainPanel = vmMainPanel;
@@ -31,72 +33,36 @@ public class VMIconPanel extends JPanel implements Runnable, VMPanel {
 		new Thread(this).start();
 	}
 
-	@SuppressWarnings("unchecked")
+	public void init() {
+		init(searchPattern, maxVMColumnCount);
+	}
+
 	public void init(String searchPattern, int maxVMColumnCount) {
+		if (maxVMColumnCount == 0) {
+			return;
+		}
+		this.searchPattern = searchPattern;
+		this.maxVMColumnCount = maxVMColumnCount;
 		if (searchPattern != null) {
 			searchPattern = searchPattern.trim();
 		}
 		TitanSetting.getInstance().maxVMColumnCount = maxVMColumnCount;
 		TitanSetting.getInstance().save();
-		Command command = new Command();
-		command.command = "from titan: nova list";
-		if (servers == null) {
-			ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-			HttpResult httpResult = (HttpResult) r.map.get("result");
-			servers = JSONObject.fromObject(httpResult.content).getJSONArray("servers");
-		}
+
 		vmMainPanel.colLabel.setText(TitanSetting.getInstance().maxVMColumnCount + " columns");
+		reAddVMIconsToVector();
+
 		int noOfVM = servers.size();
 		int maxCol = maxVMColumnCount;
 		int maxRow = (int) Math.ceil(((float) noOfVM) / maxVMColumnCount);
 		String colStr = StringUtils.repeat("[]", maxCol);
 		String rowStr = StringUtils.repeat("[]", maxRow);
-		System.out.println(noOfVM + "," + maxRow + "," + maxCol);
+		//		System.out.println(noOfVM + "," + maxRow + "," + maxCol);
 		vmMainPanel.iconPanel.setLayout(new MigLayout("", colStr, rowStr));
-		int row = 0;
-		int col = 0;
-		for (Component c : getComponents()) {
-			vmIcons.add((VMIcon) c);
-		}
-		outer: for (VMIcon vmIcon : vmIcons) {
-			String instanceId = TitanCommonLib.getJSONString(vmIcon.json, "id", null);
-			for (int x = 0; x < servers.size(); x++) {
-				JSONObject obj = servers.getJSONObject(x);
-				String tempInstanceId = TitanCommonLib.getJSONString(obj, "id", null);
-				if (instanceId.equals(tempInstanceId)) {
-					continue outer;
-				}
-			}
-			vmIcons.remove(vmIcon);
-		}
-		outer: for (int x = 0; x < servers.size(); x++) {
-			JSONObject obj = servers.getJSONObject(x);
-			String instanceId = TitanCommonLib.getJSONString(obj, "id", null);
-			for (VMIcon vmIcon : vmIcons) {
-				String tempInstanceId = TitanCommonLib.getJSONString(vmIcon.json, "id", null);
-				if (instanceId.equals(tempInstanceId)) {
-					continue outer;
-				}
-			}
-			VMIcon vmIcon = new VMIcon(obj);
-			vmIcon.addMouseListener(new MouseAdapter() {
-				@Override
-				public void mousePressed(MouseEvent e) {
-					clearAllPanelsSelection();
-					VMIcon panel = (VMIcon) e.getSource();
-					vmMainPanel.selectedVM = panel.json;
-					panel.setClicked(!panel.clicked);
-					panel.setSelected(true);
-					if (vmMainPanel.isUpdatePropertyTableThreadRunning) {
-						vmMainPanel.isUpdatePropertyTableThreadTrigger = true;
-					}
-					new Thread(vmMainPanel).start();
-				}
-			});
-			vmIcons.add(vmIcon);
-		}
 
 		removeAll();
+		int row = 0;
+		int col = 0;
 		synchronized (vmIcons) {
 			for (VMIcon vmIcon : vmIcons) {
 				String name = TitanCommonLib.getJSONString(vmIcon.json, "name", null);
@@ -113,32 +79,87 @@ public class VMIconPanel extends JPanel implements Runnable, VMPanel {
 		updateUI();
 	}
 
-	private void clearAllPanelsSelection() {
-		for (VMIcon panel : vmIcons) {
-			panel.setSelected(false);
-			System.out.println(panel.getName());
-		}
-	}
-
-	public void run() {
-		while (true) {
+	private void reAddVMIconsToVector() {
+		synchronized (vmIcons) {
 			Command command = new Command();
 			command.command = "from titan: nova list";
 			ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
 			HttpResult httpResult = (HttpResult) r.map.get("result");
 			servers = JSONObject.fromObject(httpResult.content).getJSONArray("servers");
-			for (int x = 0; x < servers.size(); x++) {
-				JSONObject obj = servers.getJSONObject(x);
-				String instanceId = TitanCommonLib.getJSONString(obj, "id", null);
-				synchronized (vmIcons) {
-					for (VMIcon vmPanel : vmIcons) {
-						if (instanceId.equals(TitanCommonLib.getJSONString(vmPanel.json, "id", null))) {
-							vmPanel.json = obj;
-							vmPanel.repaint();
-						}
+
+			vmIcons.clear();
+			for (Component c : getComponents()) {
+				vmIcons.add((VMIcon) c);
+			}
+
+			outer: for (VMIcon vmIcon : vmIcons) {
+				String instanceId = TitanCommonLib.getJSONString(vmIcon.json, "id", null);
+				for (int x = 0; x < servers.size(); x++) {
+					JSONObject obj = servers.getJSONObject(x);
+					String tempInstanceId = TitanCommonLib.getJSONString(obj, "id", null);
+					if (instanceId.equals(tempInstanceId)) {
+						continue outer;
 					}
 				}
+				System.out.println("remove " + vmIcon.vmName);
+				vmIcons.remove(vmIcon);
 			}
+			outer: for (int x = 0; x < servers.size(); x++) {
+				JSONObject obj = servers.getJSONObject(x);
+				String instanceId = TitanCommonLib.getJSONString(obj, "id", null);
+				for (VMIcon vmIcon : vmIcons) {
+					String tempInstanceId = TitanCommonLib.getJSONString(vmIcon.json, "id", null);
+					if (instanceId.equals(tempInstanceId)) {
+						continue outer;
+					}
+				}
+				VMIcon vmIcon = new VMIcon(obj);
+				System.out.println("add " + vmIcon.vmName);
+				vmIcon.addMouseListener(new MouseAdapter() {
+					@Override
+					public void mousePressed(MouseEvent e) {
+						clearAllPanelsSelection();
+						VMIcon panel = (VMIcon) e.getSource();
+						vmMainPanel.selectedVM = panel.json;
+						panel.setClicked(!panel.clicked);
+						panel.setSelected(true);
+						if (vmMainPanel.isUpdatePropertyTableThreadRunning) {
+							vmMainPanel.isUpdatePropertyTableThreadTrigger = true;
+						}
+						new Thread(vmMainPanel).start();
+					}
+				});
+				vmIcons.add(vmIcon);
+			}
+		}
+	}
+
+	private void clearAllPanelsSelection() {
+		for (VMIcon panel : vmIcons) {
+			panel.setSelected(false);
+		}
+	}
+
+	public void run() {
+		while (true) {
+			init();
+			//			Command command = new Command();
+			//			command.command = "from titan: nova list";
+			//			ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+			//			HttpResult httpResult = (HttpResult) r.map.get("result");
+			//			servers = JSONObject.fromObject(httpResult.content).getJSONArray("servers");
+			//			for (int x = 0; x < servers.size(); x++) {
+			//				JSONObject obj = servers.getJSONObject(x);
+			//				String instanceId = TitanCommonLib.getJSONString(obj, "id", null);
+			//				synchronized (vmIcons) {
+			//					for (VMIcon vmPanel : vmIcons) {
+			//						if (instanceId.equals(TitanCommonLib.getJSONString(vmPanel.json, "id", null))) {
+			//							vmPanel.json = obj;
+			//							vmPanel.repaint();
+			//						}
+			//					}
+			//				}
+			//			}
 			try {
 				Thread.sleep(100);
 			} catch (InterruptedException e) {
@@ -150,12 +171,11 @@ public class VMIconPanel extends JPanel implements Runnable, VMPanel {
 	@Override
 	public Vector<JSONObject> getSelectedVM() {
 		Vector<JSONObject> r = new Vector<JSONObject>();
-		for (VMIcon vmPanel : vmIcons) {
-			if (vmPanel.clicked) {
-				//				String instanceId = TitanCommonLib.getJSONString(vmPanel.json, "id", null);
-				//				if (instanceId != null) {
-				r.add(vmPanel.json);
-				//				}
+		synchronized (vmIcons) {
+			for (VMIcon vmPanel : vmIcons) {
+				if (vmPanel.clicked) {
+					r.add(vmPanel.json);
+				}
 			}
 		}
 		return r;
