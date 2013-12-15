@@ -19,7 +19,7 @@ import net.sf.json.JSONObject;
 import com.titan.OS;
 import com.titan.TitanCommonLib;
 
-public class VMIcon extends JPanel {
+public class VMIcon extends JPanel implements Comparable {
 	JLabel label = new JLabel("");
 	public boolean clicked;
 	public boolean selected;
@@ -67,4 +67,8 @@ public class VMIcon extends JPanel {
 		repaint();
 	}
 
+	@Override
+	public int compareTo(Object o) {
+		return vmName.compareToIgnoreCase(((VMIcon) o).vmName);
+	}
 }

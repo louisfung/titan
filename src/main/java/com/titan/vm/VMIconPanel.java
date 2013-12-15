@@ -1,8 +1,10 @@
 package com.titan.vm;
 
 import java.awt.Component;
+import java.awt.event.InputEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Collections;
 import java.util.Vector;
 
 import javax.swing.JPanel;
@@ -121,7 +123,9 @@ public class VMIconPanel extends JPanel implements Runnable, VMPanel {
 						clearAllPanelsSelection();
 						VMIcon panel = (VMIcon) e.getSource();
 						vmMainPanel.selectedVM = panel.json;
-						panel.setClicked(!panel.clicked);
+						if ((e.getModifiers() & InputEvent.CTRL_MASK) == InputEvent.CTRL_MASK) {
+							panel.setClicked(!panel.clicked);
+						}
 						panel.setSelected(true);
 						if (vmMainPanel.isUpdatePropertyTableThreadRunning) {
 							vmMainPanel.isUpdatePropertyTableThreadTrigger = true;
@@ -131,6 +135,8 @@ public class VMIconPanel extends JPanel implements Runnable, VMPanel {
 				});
 				vmIcons.add(vmIcon);
 			}
+
+			Collections.sort(vmIcons);
 		}
 	}
 
@@ -161,7 +167,7 @@ public class VMIconPanel extends JPanel implements Runnable, VMPanel {
 			//				}
 			//			}
 			try {
-				Thread.sleep(100);
+				Thread.sleep(2000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
@@ -175,6 +181,13 @@ public class VMIconPanel extends JPanel implements Runnable, VMPanel {
 			for (VMIcon vmPanel : vmIcons) {
 				if (vmPanel.clicked) {
 					r.add(vmPanel.json);
+				}
+			}
+			if (r.size() == 0) {
+				for (VMIcon vmPanel : vmIcons) {
+					if (vmPanel.selected) {
+						r.add(vmPanel.json);
+					}
 				}
 			}
 		}
