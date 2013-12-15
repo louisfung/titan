@@ -36,8 +36,8 @@ public class VMIcon extends JPanel {
 
 		add(iconLabel, BorderLayout.CENTER);
 		String vmName = TitanCommonLib.getJSONString(json, "name", "No name");
-		if (vmName.length() > 10) {
-			vmName = vmName.substring(0, 10);
+		if (vmName.length() > 15) {
+			vmName = vmName.substring(0, 15);
 		}
 		label.setText(vmName);
 		label.setHorizontalAlignment(SwingConstants.CENTER);

@@ -28,8 +28,8 @@ public class ImageMetaDialog extends JDialog {
 	String imageId;
 	ImageMetaTableModel model = new ImageMetaTableModel();
 
-	public ImageMetaDialog(MainFrame mainframe, String imageId) {
-		super(mainframe, "Image meta", true);
+	public ImageMetaDialog(MainFrame mainframe, String imageId, String imageName) {
+		super(mainframe, imageName, true);
 		this.imageId = imageId;
 		setBounds(100, 100, 750, 500);
 		getContentPane().setLayout(new BorderLayout());
@@ -51,7 +51,7 @@ public class ImageMetaDialog extends JDialog {
 
 	protected void showImageMetaDialog() {
 		// TODO Auto-generated method stub
-		
+
 	}
 
 	private void init() {

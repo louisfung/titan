@@ -55,11 +55,10 @@ public class VMIconPanel extends JPanel implements Runnable, VMPanel {
 		vmMainPanel.iconPanel.setLayout(new MigLayout("", colStr, rowStr));
 		int row = 0;
 		int col = 0;
-		Vector<VMIcon> icons = new Vector<VMIcon>();
 		for (Component c : getComponents()) {
-			icons.add((VMIcon) c);
+			vmIcons.add((VMIcon) c);
 		}
-		outer: for (VMIcon vmIcon : icons) {
+		outer: for (VMIcon vmIcon : vmIcons) {
 			String instanceId = TitanCommonLib.getJSONString(vmIcon.json, "id", null);
 			for (int x = 0; x < servers.size(); x++) {
 				JSONObject obj = servers.getJSONObject(x);
@@ -68,12 +67,12 @@ public class VMIconPanel extends JPanel implements Runnable, VMPanel {
 					continue outer;
 				}
 			}
-			icons.remove(vmIcon);
+			vmIcons.remove(vmIcon);
 		}
 		outer: for (int x = 0; x < servers.size(); x++) {
 			JSONObject obj = servers.getJSONObject(x);
 			String instanceId = TitanCommonLib.getJSONString(obj, "id", null);
-			for (VMIcon vmIcon : icons) {
+			for (VMIcon vmIcon : vmIcons) {
 				String tempInstanceId = TitanCommonLib.getJSONString(vmIcon.json, "id", null);
 				if (instanceId.equals(tempInstanceId)) {
 					continue outer;
@@ -94,15 +93,14 @@ public class VMIconPanel extends JPanel implements Runnable, VMPanel {
 					new Thread(vmMainPanel).start();
 				}
 			});
-			icons.add(vmIcon);
+			vmIcons.add(vmIcon);
 		}
 
 		removeAll();
 		synchronized (vmIcons) {
-			for (VMIcon vmIcon : icons) {
+			for (VMIcon vmIcon : vmIcons) {
 				String name = TitanCommonLib.getJSONString(vmIcon.json, "name", null);
 				if (searchPattern == null || searchPattern.equals("") || name.toLowerCase().contains(searchPattern.toLowerCase())) {
-
 					add(vmIcon, "cell " + col + " " + row);
 					col++;
 					if (col == maxCol) {
@@ -118,6 +116,7 @@ public class VMIconPanel extends JPanel implements Runnable, VMPanel {
 	private void clearAllPanelsSelection() {
 		for (VMIcon panel : vmIcons) {
 			panel.setSelected(false);
+			System.out.println(panel.getName());
 		}
 	}
 

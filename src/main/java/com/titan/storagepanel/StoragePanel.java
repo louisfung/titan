@@ -292,7 +292,8 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 
 	void showImageMetaDialog() {
 		String imageId = (String) sortableTableModel.getValueAt(imageTable.getSelectedRow(), sortableTableModel.getColumnIndex("Id"));
-		ImageMetaDialog d = new ImageMetaDialog(mainframe, imageId);
+		String imageName = (String) sortableTableModel.getValueAt(imageTable.getSelectedRow(), sortableTableModel.getColumnIndex("Name"));
+		ImageMetaDialog d = new ImageMetaDialog(mainframe, imageId, imageName);
 		d.setVisible(true);
 	}
 
