@@ -34,13 +34,16 @@ import com.titan.MainPanel;
 import com.titan.TitanCommonLib;
 import com.titan.communication.CommunicateLib;
 import com.titan.keystonepanel.KeystonePanel;
+import com.titan.mainframe.MainFrame;
 import com.titanserver.Command;
 import com.titanserver.HttpResult;
 import com.titanserver.ReturnCommand;
+import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
 
 public class StoragePanel extends JPanel implements Runnable, MainPanel {
 	private JTable imageTable;
-	final JFrame frame;
+	final MainFrame mainframe;
 	JProgressBarDialog d;
 	GenericTableModel imageTableModel = new GenericTableModel();
 	SortableTableModel sortableTableModel = new SortableTableModel(imageTableModel);
@@ -60,8 +63,8 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 	TableSorterColumnListener volumeTypeTableSorterColumnListener;
 	private JTable volumeTypeTable;
 
-	public StoragePanel(final JFrame frame) {
-		this.frame = frame;
+	public StoragePanel(final MainFrame mainframe) {
+		this.mainframe = mainframe;
 		setLayout(new BorderLayout(0, 0));
 
 		JPanel panel_1 = new JPanel();
@@ -93,7 +96,7 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 					String volumeName = (String) sortableVolumeTypeTableModel.getValueAt(x, 1);
 					volumeTypes.put(volumeId, volumeName);
 				}
-				CreateVolumeDialog d = new CreateVolumeDialog(frame, volumeTypes);
+				CreateVolumeDialog d = new CreateVolumeDialog(mainframe, volumeTypes);
 				d.setVisible(true);
 				refreshVolume();
 			}
@@ -104,11 +107,11 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 		btnDeleteVolume.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (volumeTable.getSelectedRowCount() == 0) {
-					JOptionPane.showMessageDialog(frame, "Please select one volume !", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(mainframe, "Please select one volume !", "Error", JOptionPane.ERROR_MESSAGE);
 				} else {
 					String volumeId = (String) sortableVolumeTableModel.getValueAt(volumeTable.getSelectedRow(), volumeTableModel.getColumnIndex("Id"));
 					String volumeName = (String) sortableVolumeTableModel.getValueAt(volumeTable.getSelectedRow(), volumeTableModel.getColumnIndex("Name"));
-					int temp = JOptionPane.showConfirmDialog(frame, "Confirm to delete volume " + volumeName + " ?", "Warning", JOptionPane.YES_NO_OPTION);
+					int temp = JOptionPane.showConfirmDialog(mainframe, "Confirm to delete volume " + volumeName + " ?", "Warning", JOptionPane.YES_NO_OPTION);
 					if (temp == JOptionPane.YES_OPTION) {
 						Command command = new Command();
 						command.command = "from titan: cinder delete";
@@ -156,7 +159,7 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 		JButton btnCreateType = new JButton("Create type");
 		btnCreateType.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				CreateVolumeTypeDialog d = new CreateVolumeTypeDialog(frame);
+				CreateVolumeTypeDialog d = new CreateVolumeTypeDialog(mainframe);
 				d.setVisible(true);
 				refreshVolumeType();
 			}
@@ -167,11 +170,11 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 		btnDeleteType.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				if (volumeTypeTable.getSelectedRowCount() == 0) {
-					JOptionPane.showMessageDialog(frame, "Please select one volume type !", "Error", JOptionPane.ERROR_MESSAGE);
+					JOptionPane.showMessageDialog(mainframe, "Please select one volume type !", "Error", JOptionPane.ERROR_MESSAGE);
 				} else {
 					String volumeTypeId = (String) sortableVolumeTypeTableModel.getValueAt(volumeTypeTable.getSelectedRow(), volumeTypeTableModel.getColumnIndex("Id"));
 					String volumeTypeName = (String) sortableVolumeTypeTableModel.getValueAt(volumeTypeTable.getSelectedRow(), volumeTypeTableModel.getColumnIndex("Name"));
-					int temp = JOptionPane.showConfirmDialog(frame, "Confirm to delete volume type " + volumeTypeName + " ?", "Warning", JOptionPane.YES_NO_OPTION);
+					int temp = JOptionPane.showConfirmDialog(mainframe, "Confirm to delete volume type " + volumeTypeName + " ?", "Warning", JOptionPane.YES_NO_OPTION);
 					if (temp == JOptionPane.YES_OPTION) {
 						Command command = new Command();
 						command.command = "from titan: cinder type-delete";
@@ -206,7 +209,7 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 		JButton uploadButton = new JButton("Upload");
 		uploadButton.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				UploadImageDialog dialog = new UploadImageDialog(StoragePanel.this.frame);
+				UploadImageDialog dialog = new UploadImageDialog(mainframe);
 				dialog.setVisible(true);
 				if (dialog.refresh) {
 					refresh();
@@ -221,7 +224,7 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 				if (imageTable.getSelectedRowCount() == 1) {
 					String imageId = (String) sortableTableModel.getValueAt(imageTable.getSelectedRow(), sortableTableModel.getColumnIndex("Id"));
 					String imageName = (String) sortableTableModel.getValueAt(imageTable.getSelectedRow(), sortableTableModel.getColumnIndex("Name"));
-					int temp = JOptionPane.showConfirmDialog(StoragePanel.this.frame, "Confirm to delete image " + imageName + " ?", "Warning", JOptionPane.YES_NO_OPTION);
+					int temp = JOptionPane.showConfirmDialog(mainframe, "Confirm to delete image " + imageName + " ?", "Warning", JOptionPane.YES_NO_OPTION);
 					if (temp == JOptionPane.YES_OPTION) {
 						Command command = new Command();
 						command.command = "from titan: glance image-delete";
@@ -239,19 +242,8 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 		JButton btnViewMeta = new JButton("View meta");
 		btnViewMeta.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				if (imageTable.getSelectedRow() == 1) {
-					String imageId = (String) sortableTableModel.getValueAt(imageTable.getSelectedRow(), sortableTableModel.getColumnIndex("Id"));
-					Command command = new Command();
-					command.command = "from titan: glance image-show";
-					HashMap<String, String> parameters = new HashMap<String, String>();
-					parameters.put("$imageId", imageId);
-					command.parameters.add(parameters);
-					ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-					HttpResult httpResult = (HttpResult) r.map.get("result");
-					Header headers[] = httpResult.headers;
-					for (Header header : headers) {
-						System.out.println(header.getName() + "==" + header.getValue());
-					}
+				if (imageTable.getSelectedRowCount() == 1) {
+					showImageMetaDialog();
 				}
 			}
 		});
@@ -261,6 +253,14 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 		imagePanel.add(scrollPane, BorderLayout.CENTER);
 
 		imageTable = new JTable();
+		imageTable.addMouseListener(new MouseAdapter() {
+			@Override
+			public void mouseClicked(MouseEvent e) {
+				if (e.getClickCount() == 2) {
+					showImageMetaDialog();
+				}
+			}
+		});
 		tableSorterColumnListener = new TableSorterColumnListener(imageTable, sortableTableModel);
 		imageTable.getTableHeader().setReorderingAllowed(false);
 		imageTable.setModel(sortableTableModel);
@@ -290,8 +290,14 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 		refresh();
 	}
 
+	void showImageMetaDialog() {
+		String imageId = (String) sortableTableModel.getValueAt(imageTable.getSelectedRow(), sortableTableModel.getColumnIndex("Id"));
+		ImageMetaDialog d = new ImageMetaDialog(mainframe, imageId);
+		d.setVisible(true);
+	}
+
 	public void refresh() {
-		d = new JProgressBarDialog(frame, true);
+		d = new JProgressBarDialog(mainframe, true);
 		d.thread = new Thread(this);
 		d.jProgressBar.setIndeterminate(true);
 		d.jProgressBar.setStringPainted(true);
@@ -324,7 +330,7 @@ public class StoragePanel extends JPanel implements Runnable, MainPanel {
 		Vector<Object> col3 = new Vector<Object>();
 		//		Vector<Object> col4 = new Vector<Object>();
 
-		Hashtable<String, String> allTenants = new KeystonePanel(frame).getAllTenants();
+		Hashtable<String, String> allTenants = new KeystonePanel(mainframe).getAllTenants();
 
 		//		Enumeration<String> ee = allTenants.keys();
 		//		String tenantId = null;

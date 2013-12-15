@@ -26,6 +26,7 @@ import net.miginfocom.swing.MigLayout;
 import com.titan.TitanCommonLib;
 import com.titan.communication.CommunicateLib;
 import com.titanserver.Command;
+import com.titanserver.HttpResult;
 import com.titanserver.ReturnCommand;
 
 public class UploadImageDialog extends JDialog {
@@ -112,13 +113,12 @@ public class UploadImageDialog extends JDialog {
 				errorLabel.setVisible(false);
 				new Thread() {
 					public void run() {
-						String result = "";
 						try {
 							Command command = new Command();
 							command.command = "send file";
 							File file = new File(fileTextField.getText());
 							ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command, file, UploadImageDialog.this);
-							result = (String) r.map.get("result");
+							String result = (String) r.map.get("result");
 
 							if (result.equals("ok")) {
 								command = new Command();
@@ -133,18 +133,20 @@ public class UploadImageDialog extends JDialog {
 								parameters.put("$POSTDATA", file.getName());
 								command.parameters.add(parameters);
 								r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+								HttpResult result2 = (HttpResult) r.map.get("result");
+								if (result2.content.contains("active")) {
+									UploadImageDialog.this.setVisible(false);
+								} else {
+									errorLabel.setText(result2.content);
+									errorLabel.setVisible(true);
+								}
 							} else {
 								throw new Exception();
 							}
-							result = (String) r.map.get("result");
-							if (result.contains("active")) {
-								UploadImageDialog.this.setVisible(false);
-							} else {
-								errorLabel.setText(result);
-								errorLabel.setVisible(true);
-							}
+
 						} catch (Exception ex) {
-							errorLabel.setText((String) result);
+							ex.printStackTrace();
+							errorLabel.setText("error");
 							errorLabel.setVisible(true);
 						}
 
