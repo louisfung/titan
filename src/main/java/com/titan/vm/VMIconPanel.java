@@ -116,7 +116,6 @@ public class VMIconPanel extends JPanel implements Runnable, VMPanel {
 					}
 				}
 				VMIcon vmIcon = new VMIcon(obj);
-				System.out.println("add " + vmIcon.vmName);
 				vmIcon.addMouseListener(new MouseAdapter() {
 					@Override
 					public void mousePressed(MouseEvent e) {
@@ -149,23 +148,6 @@ public class VMIconPanel extends JPanel implements Runnable, VMPanel {
 	public void run() {
 		while (true) {
 			init();
-			//			Command command = new Command();
-			//			command.command = "from titan: nova list";
-			//			ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
-			//			HttpResult httpResult = (HttpResult) r.map.get("result");
-			//			servers = JSONObject.fromObject(httpResult.content).getJSONArray("servers");
-			//			for (int x = 0; x < servers.size(); x++) {
-			//				JSONObject obj = servers.getJSONObject(x);
-			//				String instanceId = TitanCommonLib.getJSONString(obj, "id", null);
-			//				synchronized (vmIcons) {
-			//					for (VMIcon vmPanel : vmIcons) {
-			//						if (instanceId.equals(TitanCommonLib.getJSONString(vmPanel.json, "id", null))) {
-			//							vmPanel.json = obj;
-			//							vmPanel.repaint();
-			//						}
-			//					}
-			//				}
-			//			}
 			try {
 				Thread.sleep(2000);
 			} catch (InterruptedException e) {

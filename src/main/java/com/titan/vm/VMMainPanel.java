@@ -9,6 +9,7 @@ import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Vector;
 
@@ -367,6 +368,7 @@ public class VMMainPanel extends JPanel implements Runnable {
 
 	private void initPropertyTableModel() {
 		propertyTableModel.data.add(new Property("instance", "", "", false));
+		propertyTableModel.data.add(new Property("instance", "name", ""));
 		propertyTableModel.data.add(new Property("instance", "id", ""));
 		propertyTableModel.data.add(new Property("instance", "status", ""));
 		propertyTableModel.data.add(new Property("instance", "updated", ""));
@@ -382,7 +384,6 @@ public class VMMainPanel extends JPanel implements Runnable {
 		propertyTableModel.data.add(new Property("instance", "flavor", ""));
 		propertyTableModel.data.add(new Property("instance", "OS-EXT-AZ:availability_zone", ""));
 		propertyTableModel.data.add(new Property("instance", "user_id", ""));
-		propertyTableModel.data.add(new Property("instance", "name", ""));
 		propertyTableModel.data.add(new Property("instance", "created", ""));
 		propertyTableModel.data.add(new Property("instance", "tenant_id", ""));
 		propertyTableModel.data.add(new Property("instance", "OS-DCF:diskConfig", ""));
@@ -414,6 +415,8 @@ public class VMMainPanel extends JPanel implements Runnable {
 		propertyTableModel.data.add(new Property("diagnostics", "vnet1_tx_drop", ""));
 		propertyTableModel.data.add(new Property("diagnostics", "vnet1_tx_errors", ""));
 		propertyTableModel.data.add(new Property("diagnostics", "vnet1_tx_packets", ""));
+
+		Collections.sort(propertyTableModel.data);
 
 		propertyTableModel.fireTableStructureChanged();
 	}
@@ -456,11 +459,11 @@ public class VMMainPanel extends JPanel implements Runnable {
 					String returnMessage = (String) r.map.get("result");
 					vmDialog.vmDialogTableModel.updateStatus(instanceId, "done");
 				}
-//				try {
-//					Thread.sleep(2000);
-//				} catch (InterruptedException e) {
-//					e.printStackTrace();
-//				}
+				//				try {
+				//					Thread.sleep(2000);
+				//				} catch (InterruptedException e) {
+				//					e.printStackTrace();
+				//				}
 				refresh();
 			}
 		};

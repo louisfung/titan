@@ -42,17 +42,39 @@ public class Property implements Comparable<Property> {
 
 	@Override
 	public int compareTo(Property o) {
+		if (type.equals(o.type)) {
+			if (name.equals("")) {
+				return -1;
+			} else if (o.name.equals("")) {
+				return 1;
+			} else {
+				if (name.equals("name")) {
+					return -1;
+				} else if (o.name.equals("name")) {
+					return 1;
+				} else {
+					return name.compareToIgnoreCase(o.name);
+				}
+			}
+		}
+		//		if (name.equals("")) {
+		//			return type.compareToIgnoreCase(o.type);
+		//		} else {
+		//			if (!o.name.equals("") && type.equals(o.type)) {
+		//				return name.compareToIgnoreCase(o.name);
+		//			}
+		//		}
 		return 0;
-//		if (isData && o.isData) {
-//			return name.compareToIgnoreCase(o.name);
-//		} else {
-//			if (!isData && type.equals(o.type)) {
-//				return 1;
-//			} else if (!o.isData && type.equals(o.type)) {
-//				return -1;
-//			} else {
-//				return type.compareToIgnoreCase(o.type);
-//			}
-//		}
+		//		if (isData && o.isData) {
+		//			return name.compareToIgnoreCase(o.name);
+		//		} else {
+		//			if (!isData && type.equals(o.type)) {
+		//				return 1;
+		//			} else if (!o.isData && type.equals(o.type)) {
+		//				return -1;
+		//			} else {
+		//				return type.compareToIgnoreCase(o.type);
+		//			}
+		//		}
 	}
 }
