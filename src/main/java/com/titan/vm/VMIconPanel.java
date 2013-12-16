@@ -100,10 +100,11 @@ public class VMIconPanel extends JPanel implements Runnable, VMPanel {
 					JSONObject obj = servers.getJSONObject(x);
 					String tempInstanceId = TitanCommonLib.getJSONString(obj, "id", null);
 					if (instanceId.equals(tempInstanceId)) {
+						vmIcon.json = obj;
+						vmIcon.updateVMName();
 						continue outer;
 					}
 				}
-				System.out.println("remove " + vmIcon.vmName);
 				vmIcons.remove(vmIcon);
 			}
 			outer: for (int x = 0; x < servers.size(); x++) {
