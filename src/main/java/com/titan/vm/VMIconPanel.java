@@ -69,7 +69,7 @@ public class VMIconPanel extends JPanel implements Runnable, VMPanel {
 			for (VMIcon vmIcon : vmIcons) {
 				String name = TitanCommonLib.getJSONString(vmIcon.json, "name", null);
 				if (searchPattern == null || searchPattern.equals("") || name.toLowerCase().contains(searchPattern.toLowerCase())) {
-					add(vmIcon, "cell " + col + " " + row);
+					add(vmIcon, "cell " + col + " " + row + ",aligny top");
 					col++;
 					if (col == maxCol) {
 						col = 0;
@@ -130,6 +130,13 @@ public class VMIconPanel extends JPanel implements Runnable, VMPanel {
 							vmMainPanel.isUpdatePropertyTableThreadTrigger = true;
 						}
 						new Thread(vmMainPanel).start();
+					}
+
+					@Override
+					public void mouseClicked(MouseEvent e) {
+						if (e.getClickCount() == 2) {
+							vmMainPanel.remote();
+						}
 					}
 				});
 				vmIcons.add(vmIcon);

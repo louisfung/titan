@@ -42,15 +42,15 @@ public class PropertyTableModel extends DefaultTableModel {
 	}
 
 	public boolean isCellEditable(int row, int column) {
-		return false;
+		if (column == 1) {
+			return true;
+		} else {
+			return false;
+		}
 	}
 
 	public Class getColumnClass(int columnIndex) {
-		try {
-			return getValueAt(0, columnIndex).getClass();
-		} catch (Exception ex) {
-			return Object.class;
-		}
+		return Property.class;
 	}
 
 	//	public void filter(String text) {

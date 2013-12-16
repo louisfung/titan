@@ -27,9 +27,12 @@ import javax.swing.JSplitPane;
 import javax.swing.JTable;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
+import javax.swing.ListSelectionModel;
 import javax.swing.RowFilter;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 import javax.swing.table.TableRowSorter;
 
 import net.sf.json.JSONObject;
@@ -44,6 +47,7 @@ import com.titan.instancepanel.ViewInstanceDialog;
 import com.titan.mainframe.MainFrame;
 import com.titan.vm.vmdialog.VMDialog;
 import com.titanserver.Command;
+import com.titanserver.HttpResult;
 import com.titanserver.ReturnCommand;
 
 public class VMMainPanel extends JPanel implements Runnable {
@@ -200,9 +204,7 @@ public class VMMainPanel extends JPanel implements Runnable {
 		JButton btnRemote = new JButton("Remote");
 		btnRemote.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
-				String instanceName = TitanCommonLib.getJSONString(selectedVM, "OS-EXT-SRV-ATTR:instance_name", null);
-				MonitorDialog monitorDialog = new MonitorDialog(instanceName);
-				monitorDialog.setVisible(true);
+				remote();
 			}
 		});
 		btnRemote.setIcon(new ImageIcon(VMMainPanel.class.getResource("/com/titan/image/famfamfam/application_osx_terminal.png")));
@@ -296,20 +298,34 @@ public class VMMainPanel extends JPanel implements Runnable {
 		propertyPanel.add(propertyScrollPane, BorderLayout.CENTER);
 
 		propertyTable = new JTable();
-		propertyTable.addMouseListener(new MouseAdapter() {
-			@Override
-			public void mouseClicked(MouseEvent e) {
-				Property property = (Property) propertyTable.getValueAt(propertyTable.getSelectedRow(), 0);
-				if (property.isData) {
-
-				} else {
-					property.expand = !property.expand;
-					propertyTableModel.fireTableStructureChanged();
+//		propertyTable.addMouseListener(new MouseAdapter() {
+//			@Override
+//			public void mouseClicked(MouseEvent e) {
+//				int r = propertyTable.getSelectedRow();
+//				if (r >= 0) {
+//					Property property = (Property) propertyTable.getValueAt(r, 0);
+//					if (property.isData) {
+//
+//					} else {
+//						property.expand = !property.expand;
+//						propertyTableModel.fireTableStructureChanged();
+//					}
+//				}
+//			}
+//		});
+		propertyTableModel.addTableModelListener(new TableModelListener() {
+			public void tableChanged(TableModelEvent e) {
+				int r = e.getFirstRow();
+				int c = e.getColumn();
+				if (r >= 0 && c >= 0) {
+					System.out.println("ch=" + r + "," + propertyTableModel.getValueAt(r, c));
 				}
 			}
 		});
 		propertyTable.setModel(propertyTableModel);
+		propertyTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		propertyTable.setDefaultRenderer(Property.class, new PropertyTableCellRenderer());
+		propertyTable.setDefaultEditor(Property.class, new PropertyTableEditor());
 		propertyTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		propertyTableRowSorter = new TableRowSorter<PropertyTableModel>(propertyTableModel);
 		propertyTable.setRowSorter(propertyTableRowSorter);
@@ -364,6 +380,12 @@ public class VMMainPanel extends JPanel implements Runnable {
 		propertyTable.getColumnModel().getColumn(0).setPreferredWidth(20);
 		propertyTable.getColumnModel().getColumn(1).setPreferredWidth(200);
 		propertyTable.getColumnModel().getColumn(2).setPreferredWidth(200);
+	}
+
+	public void remote() {
+		String instanceName = TitanCommonLib.getJSONString(selectedVM, "OS-EXT-SRV-ATTR:instance_name", null);
+		MonitorDialog monitorDialog = new MonitorDialog(instanceName);
+		monitorDialog.setVisible(true);
 	}
 
 	private void initPropertyTableModel() {
@@ -456,14 +478,9 @@ public class VMMainPanel extends JPanel implements Runnable {
 					vmDialog.vmDialogTableModel.updateStatus(instanceId, "running");
 					cmd.parameters.add(parameters);
 					ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), cmd);
-					String returnMessage = (String) r.map.get("result");
+					HttpResult httpResult = (HttpResult) r.map.get("result");
 					vmDialog.vmDialogTableModel.updateStatus(instanceId, "done");
 				}
-				//				try {
-				//					Thread.sleep(2000);
-				//				} catch (InterruptedException e) {
-				//					e.printStackTrace();
-				//				}
 				refresh();
 			}
 		};

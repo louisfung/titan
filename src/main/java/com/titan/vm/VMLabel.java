@@ -54,7 +54,7 @@ public class VMLabel extends JLabel {
 		super();
 		this.vmPanel = vmPanel;
 		setOS(os);
-		setPreferredSize(new Dimension(red.getWidth(null), red.getHeight(null)));
+		setPreferredSize(new Dimension(normal.getWidth(null), normal.getHeight(null)));
 		setOpaque(false);
 	}
 
