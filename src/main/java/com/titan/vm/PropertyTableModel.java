@@ -30,11 +30,13 @@ public class PropertyTableModel extends DefaultTableModel {
 	}
 
 	public void setValueAt(Object aValue, int row, int column) {
-		this.fireTableDataChanged();
+		Property property = (Property) aValue;
+		data.set(row, property);
+		fireTableCellUpdated(row, column);
 	}
 
 	public Object getValueAt(final int row, int column) {
-		if (row < getRowCount()) {
+		if (row >= 0 && row < getRowCount()) {
 			return data.get(row);
 		} else {
 			return null;
@@ -42,8 +44,12 @@ public class PropertyTableModel extends DefaultTableModel {
 	}
 
 	public boolean isCellEditable(int row, int column) {
-		if (column == 1) {
-			return true;
+		if (column == 2) {
+			if (((Property) getValueAt(row, column)).isEditable) {
+				return true;
+			} else {
+				return false;
+			}
 		} else {
 			return false;
 		}

@@ -28,6 +28,7 @@ public class VMIcon extends JPanel implements Comparable {
 	JSONObject json;
 	Image selectedImage = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/vmPanel/selected.png")).getImage();
 	public String vmName;
+	public int maxVMNameLength = 15;
 
 	public VMIcon(JSONObject json) {
 		this.json = json;
@@ -37,15 +38,11 @@ public class VMIcon extends JPanel implements Comparable {
 
 		add(iconLabel, BorderLayout.CENTER);
 		vmName = TitanCommonLib.getJSONString(json, "name", "No name");
-		//		if (vmName.length() > 15) {
-		//			vmName = vmName.substring(0, 15);
-		//		}
-		label.setText("<html><body><center>" + vmName.replaceAll("(.{15})", "$1<br>") + "</center></body></html>");
+		label.setText("<html><body><center>" + vmName.replaceAll("(.{" + maxVMNameLength + "})", "$1<br>") + "</center></body></html>");
 		label.setHorizontalAlignment(SwingConstants.CENTER);
 
 		add(label, BorderLayout.SOUTH);
 		setBorder(emptyBorder);
-		//		setPreferredSize(new Dimension(99, 110));
 		setMaximumSize(new Dimension(100, 200));
 		setOpaque(false);
 	}

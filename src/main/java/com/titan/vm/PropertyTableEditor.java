@@ -1,75 +1,64 @@
 package com.titan.vm;
 
-import java.awt.BorderLayout;
-import java.awt.Color;
 import java.awt.Component;
 import java.util.EventObject;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.event.CellEditorListener;
+import javax.swing.event.ChangeEvent;
 import javax.swing.table.TableCellEditor;
 
-public class PropertyTableEditor extends JPanel implements TableCellEditor {
-	JLabel jLabel = new JLabel();
-	Icon collapse = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/famfamfam/collapse.png"));
-	Icon expand = new ImageIcon(getClass().getClassLoader().getResource("com/titan/image/famfamfam/expand.png"));
-	Color backgrounColor = new Color(253, 253, 253);
+public class PropertyTableEditor extends JTextField implements TableCellEditor {
+	private CellEditorListener cellEditorListener = null;
+	Property originalProperty;
 
-	public PropertyTableEditor() {
-		this.setLayout(new BorderLayout());
-		this.add(jLabel, BorderLayout.CENTER);
-		jLabel.setOpaque(true);
+	@Override
+	public Component getTableCellEditorComponent(JTable table, Object obj, boolean isSelected, int row, int column) {
+		System.out.println("getTableCellEditorComponent");
+		Property property = (Property) obj;
+		originalProperty = property;
+
+		super.setText(property.value);
+
+		return this;
 	}
 
 	@Override
 	public Object getCellEditorValue() {
-		// TODO Auto-generated method stub
-		return null;
+		originalProperty.value = getText();
+		return originalProperty;
 	}
 
 	@Override
-	public boolean isCellEditable(EventObject anEvent) {
+	public boolean isCellEditable(EventObject e) {
 		return true;
 	}
 
 	@Override
-	public boolean shouldSelectCell(EventObject anEvent) {
-		// TODO Auto-generated method stub
-		return false;
+	public boolean shouldSelectCell(EventObject e) {
+		return true;
 	}
 
 	@Override
 	public boolean stopCellEditing() {
-		// TODO Auto-generated method stub
-		return false;
+		cellEditorListener.editingStopped(new ChangeEvent(this));
+		return true;
 	}
 
 	@Override
 	public void cancelCellEditing() {
-		// TODO Auto-generated method stub
-
+		cellEditorListener.editingCanceled(new ChangeEvent(this));
 	}
 
 	@Override
-	public void addCellEditorListener(CellEditorListener l) {
-		// TODO Auto-generated method stub
-
+	public void addCellEditorListener(CellEditorListener celleditorlistener) {
+		cellEditorListener = celleditorlistener;
 	}
 
 	@Override
-	public void removeCellEditorListener(CellEditorListener l) {
-		// TODO Auto-generated method stub
-
+	public void removeCellEditorListener(CellEditorListener celleditorlistener) {
+		if (this.cellEditorListener == celleditorlistener)
+			cellEditorListener = null;
 	}
-
-	@Override
-	public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-		return new JTextField(value.toString());
-	}
-
 }

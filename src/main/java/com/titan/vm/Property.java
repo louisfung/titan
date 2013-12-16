@@ -5,9 +5,9 @@ public class Property implements Comparable<Property> {
 	public String name;
 	public String value;
 	public boolean isData;
-	public boolean isModify;
 	public boolean expand = true;
 	public boolean isVisible = true;
+	public boolean isEditable;
 
 	public Property() {
 	}
@@ -20,12 +20,12 @@ public class Property implements Comparable<Property> {
 		this(type, name, value, isData, false);
 	}
 
-	public Property(String type, String name, String value, boolean isData, boolean isModify) {
+	public Property(String type, String name, String value, boolean isData, boolean isEditable) {
 		this.type = type;
 		this.name = name;
 		this.value = value;
 		this.isData = isData;
-		this.isModify = isModify;
+		this.isEditable = isEditable;
 	}
 
 	public String toString() {

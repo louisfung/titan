@@ -298,27 +298,37 @@ public class VMMainPanel extends JPanel implements Runnable {
 		propertyPanel.add(propertyScrollPane, BorderLayout.CENTER);
 
 		propertyTable = new JTable();
-//		propertyTable.addMouseListener(new MouseAdapter() {
-//			@Override
-//			public void mouseClicked(MouseEvent e) {
-//				int r = propertyTable.getSelectedRow();
-//				if (r >= 0) {
-//					Property property = (Property) propertyTable.getValueAt(r, 0);
-//					if (property.isData) {
-//
-//					} else {
-//						property.expand = !property.expand;
-//						propertyTableModel.fireTableStructureChanged();
-//					}
-//				}
-//			}
-//		});
+		//		propertyTable.addMouseListener(new MouseAdapter() {
+		//			@Override
+		//			public void mouseClicked(MouseEvent e) {
+		//				int r = propertyTable.getSelectedRow();
+		//				if (r >= 0) {
+		//					Property property = (Property) propertyTable.getValueAt(r, 0);
+		//					if (property.isData) {
+		//
+		//					} else {
+		//						property.expand = !property.expand;
+		//						propertyTableModel.fireTableStructureChanged();
+		//					}
+		//				}
+		//			}
+		//		});
 		propertyTableModel.addTableModelListener(new TableModelListener() {
 			public void tableChanged(TableModelEvent e) {
-				int r = e.getFirstRow();
-				int c = e.getColumn();
-				if (r >= 0 && c >= 0) {
-					System.out.println("ch=" + r + "," + propertyTableModel.getValueAt(r, c));
+				if (e.getType() == TableModelEvent.UPDATE && e.getColumn() >= 0) {
+					Property property = (Property) propertyTableModel.getValueAt(e.getFirstRow(), e.getColumn());
+					if (property.name.equals("name")) {
+						//						String originalName = TitanCommonLib.getJSONString(selectedVM, "name", null);
+
+						Command command = new Command();
+						command.command = "from titan: nova rename";
+						HashMap<String, String> parameters = new HashMap<String, String>();
+						parameters.put("$InstanceId", TitanCommonLib.getJSONString(selectedVM, "id", null));
+						parameters.put("$name", property.value);
+						command.parameters.add(parameters);
+						ReturnCommand r = CommunicateLib.send(TitanCommonLib.getCurrentServerIP(), command);
+						System.out.println(r);
+					}
 				}
 			}
 		});
@@ -326,6 +336,7 @@ public class VMMainPanel extends JPanel implements Runnable {
 		propertyTable.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 		propertyTable.setDefaultRenderer(Property.class, new PropertyTableCellRenderer());
 		propertyTable.setDefaultEditor(Property.class, new PropertyTableEditor());
+		//		propertyTable.getColumnModel().getColumn(3).setCellEditor(new PropertyTableEditor());
 		propertyTable.setAutoResizeMode(JTable.AUTO_RESIZE_OFF);
 		propertyTableRowSorter = new TableRowSorter<PropertyTableModel>(propertyTableModel);
 		propertyTable.setRowSorter(propertyTableRowSorter);
@@ -390,7 +401,7 @@ public class VMMainPanel extends JPanel implements Runnable {
 
 	private void initPropertyTableModel() {
 		propertyTableModel.data.add(new Property("instance", "", "", false));
-		propertyTableModel.data.add(new Property("instance", "name", ""));
+		propertyTableModel.data.add(new Property("instance", "name", "", true, true));
 		propertyTableModel.data.add(new Property("instance", "id", ""));
 		propertyTableModel.data.add(new Property("instance", "status", ""));
 		propertyTableModel.data.add(new Property("instance", "updated", ""));
